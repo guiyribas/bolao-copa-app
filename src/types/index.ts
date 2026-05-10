@@ -19,10 +19,22 @@ export interface Pool {
   documentId: string;
   name: string;
   description?: string;
+  /** Valor por participante (taxa do bolão). */
+  value: number;
   inviteCode: string;
   /** URL completa retornada pela API na criação (FRONTEND_URL/invite/CODE). */
   inviteLink?: string | null;
   admin?: User;
+  /**
+   * Quando vindo de `GET /api/pools/:id/session` — calculado no servidor (fiável).
+   */
+  isAdmin?: boolean;
+  /** Total de membros (vindo de `/session`). */
+  memberCount?: number;
+  /** Total de membros que já pagaram (vindo de `/session`). */
+  paidCount?: number;
+  /** Soma arrecadada = `paidCount * value` (vindo de `/session`). */
+  totalCollected?: number;
 }
 
 export interface PoolMembership {

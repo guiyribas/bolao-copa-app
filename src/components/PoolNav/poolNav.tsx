@@ -8,7 +8,11 @@ import * as styles from './poolNav.styles';
 
 export function PoolNav({ poolId, isAdmin }: PoolNavProps) {
   const pathname = usePathname();
-  const allTabs = isAdmin ? [...TABS, ADMIN_TAB] : TABS;
+  if (!isAdmin) {
+    return null;
+  }
+
+  const allTabs = [...TABS, ADMIN_TAB];
 
   return (
     <nav className={styles.nav}>

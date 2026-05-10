@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
+import CheckIcon from '@mui/icons-material/Check';
 import type { MatchCardProps } from './matchCard.types';
 import { formatMatchDate, matchCardBorderClass } from './matchCard.utils';
 import * as styles from './matchCard.styles';
@@ -39,7 +40,9 @@ export function MatchCard({ match, bet, onSave, readOnly }: MatchCardProps) {
   const outcomeBorder = matchCardBorderClass(bet?.points ?? null, match.phase);
 
   return (
-    <div className={twMerge(styles.card, outcomeBorder, isLive && styles.cardLive)}>
+    <div
+      className={twMerge(styles.card, outcomeBorder, isLive && styles.cardLive)}
+    >
       {isLive ? <LiveBroadcastDot /> : null}
       <div className={styles.mainRow}>
         <div className={styles.matchLine}>
@@ -56,9 +59,13 @@ export function MatchCard({ match, bet, onSave, readOnly }: MatchCardProps) {
 
           {!canUpdateScore ? (
             <div className={twMerge(styles.scoreCluster, 'font-mono')}>
-              <span className={styles.scoreDisplay}>{bet?.homeScore ?? '-'}</span>
+              <span className={styles.scoreDisplay}>
+                {bet?.homeScore ?? '-'}
+              </span>
               <span>x</span>
-              <span className={styles.scoreDisplay}>{bet?.awayScore ?? '-'}</span>
+              <span className={styles.scoreDisplay}>
+                {bet?.awayScore ?? '-'}
+              </span>
             </div>
           ) : (
             <div className={styles.scoreCluster}>
@@ -94,10 +101,7 @@ export function MatchCard({ match, bet, onSave, readOnly }: MatchCardProps) {
             type="button"
             onClick={handleSave}
             disabled={
-              saving ||
-              home === '' ||
-              away === '' ||
-              (hasBet && !isDirty)
+              saving || home === '' || away === '' || (hasBet && !isDirty)
             }
             aria-busy={saving}
             className={
@@ -111,7 +115,10 @@ export function MatchCard({ match, bet, onSave, readOnly }: MatchCardProps) {
                   aria-hidden
                 />
               ) : hasBet && !isDirty ? (
-                'Salvo ✓'
+                <>
+                  Salvo
+                  <CheckIcon className="size-4 shrink-0" aria-hidden />
+                </>
               ) : hasBet ? (
                 'Atualizar'
               ) : (
@@ -137,34 +144,17 @@ export function MatchCard({ match, bet, onSave, readOnly }: MatchCardProps) {
       </div>
 
       <div className={styles.metaBlock}>
-        <span className="min-w-0" aria-hidden />
-        <div className={styles.metaCenter}>
-          <span className={styles.dateLabel}>
-            {formatMatchDate(match.date)}
-          </span>
-          {isFinished && (
+        <span className={styles.dateLabel}>{formatMatchDate(match.date)}</span>
+        {isFinished && (
+          <>
+            <span className={styles.metaSeparator} aria-hidden>
+              ·
+            </span>
             <span className={styles.resultInfo}>
               {match.homeScore ?? '-'} x {match.awayScore ?? '-'}
             </span>
-          )}
-        </div>
-        <div className={styles.metaSideEnd}>
-          {canUpdateScore && bet?.points != null ? (
-            <div
-              className={styles.pointsRow}
-              aria-label={`Pontos nesta partida: ${bet.points}`}
-            >
-              <span className={styles.pointsLabel}>Pontos nesta partida:</span>
-              <span
-                className={
-                  bet.points === 0 ? styles.pointsValueZero : styles.pointsValue
-                }
-              >
-                {bet.points === 0 ? '0' : `+${bet.points}`}
-              </span>
-            </div>
-          ) : null}
-        </div>
+          </>
+        )}
       </div>
     </div>
   );

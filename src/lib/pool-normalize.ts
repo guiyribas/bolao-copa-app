@@ -40,14 +40,47 @@ function normalizeUserLike(raw: unknown): User | undefined {
   const username = pickStr(src, ['username']) ?? '';
   const email = pickStr(src, ['email']) ?? '';
 
-  if (!username && !email) return undefined;
+  const hasIdentity = id > 0 || Boolean(documentId?.trim());
+  if (!username && !email && !hasIdentity) return undefined;
+
+  const displayUsername =
+    username ||
+    email ||
+    (documentId?.trim()
+      ? `user_${documentId.trim().slice(0, 8)}`
+      : id > 0
+        ? `user_${id}`
+        : '?');
 
   return {
     id,
     documentId,
-    username: username || email || '?',
+    username: displayUsername,
     email,
   };
+}
+
+function pickDecimal(obj: Record<string, unknown>, keys: string[]): number {
+  for (const k of keys) {
+    const v = obj[k];
+    if (v == null) continue;
+    const n = typeof v === 'number' ? v : Number(String(v));
+    if (!Number.isNaN(n)) return n;
+  }
+  return 0;
+}
+
+function pickOptionalCount(
+  obj: Record<string, unknown>,
+  keys: string[]
+): number | undefined {
+  for (const k of keys) {
+    const v = obj[k];
+    if (v == null) continue;
+    const n = typeof v === 'number' ? v : Number(String(v));
+    if (!Number.isNaN(n)) return n;
+  }
+  return undefined;
 }
 
 /**
@@ -82,12 +115,24 @@ export function normalizePoolFromApi(body: unknown): Pool | null {
 
   const admin = normalizeUserLike(flat.admin);
 
+  const isAdminFlag = flat.isAdmin;
+  const isAdmin =
+    typeof isAdminFlag === 'boolean' ? isAdminFlag : undefined;
+
   return {
     documentId,
     name,
     description: pickStr(flat, ['description']),
+    value: pickDecimal(flat, ['value', 'valor']),
     inviteCode: pickStr(flat, ['inviteCode', 'invite_code']) ?? '',
     inviteLink: pickStr(flat, ['inviteLink', 'invite_link']) ?? null,
     admin,
+    isAdmin,
+    memberCount: pickOptionalCount(flat, ['memberCount', 'member_count']),
+    paidCount: pickOptionalCount(flat, ['paidCount', 'paid_count']),
+    totalCollected: pickOptionalCount(flat, [
+      'totalCollected',
+      'total_collected',
+    ]),
   };
 }

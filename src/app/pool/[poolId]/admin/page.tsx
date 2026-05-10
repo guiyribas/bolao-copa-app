@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
+import { usePoolLayout } from '@/contexts/pool-layout-context';
 import { apiFetch } from '@/lib/api';
 import { showErrorToast } from '@/lib/toast';
 import {
@@ -10,6 +11,137 @@ import {
   normalizeMemberEntry,
 } from '@/lib/member-entry';
 import type { MemberEntry } from '@/types';
+
+/** `pool.value` é armazenado em centavos; o input mostra em reais (ex.: "50,00"). */
+function centsToReaisInput(cents: number): string {
+  return (cents / 100).toFixed(2).replace('.', ',');
+}
+
+function AdminPoolSettingsForm() {
+  const params = useParams();
+  const poolId = params.poolId as string;
+  const { jwt } = useAuthStore();
+  const { pool, refreshPool, isAdmin } = usePoolLayout();
+  const [name, setName] = useState(pool.name);
+  const [description, setDescription] = useState(pool.description ?? '');
+  const [valueInput, setValueInput] = useState(
+    centsToReaisInput(pool.value ?? 0)
+  );
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setName(pool.name);
+    setDescription(pool.description ?? '');
+    setValueInput(centsToReaisInput(pool.value ?? 0));
+  }, [pool]);
+
+  if (!isAdmin) return null;
+
+  async function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (!jwt) return;
+    const reais = Number(String(valueInput).replace(',', '.'));
+    if (Number.isNaN(reais) || reais < 0) {
+      showErrorToast(new Error('Indique um valor válido (≥ 0).'));
+      return;
+    }
+    const valueCents = Math.round(reais * 100);
+    setSaving(true);
+    try {
+      await apiFetch(
+        `/api/pools/${poolId}/settings`,
+        {
+          method: 'PATCH',
+          body: JSON.stringify({
+            name: name.trim(),
+            description: description.trim() === '' ? null : description.trim(),
+            value: valueCents,
+          }),
+        },
+        jwt
+      );
+      await refreshPool();
+    } catch (err) {
+      showErrorToast(err);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <section className="mb-8 rounded-xl border border-neutral-200/80 bg-white p-4 shadow-sm shadow-neutral-950/5">
+      <h3 className="text-sm font-semibold text-neutral-900 mb-3">
+        Dados do bolão
+      </h3>
+      <form onSubmit={onSubmit} className="space-y-4 max-w-xl">
+        <div>
+          <label
+            htmlFor="pool-admin-name"
+            className="block text-xs font-medium text-neutral-600 mb-1"
+          >
+            Nome
+          </label>
+          <input
+            id="pool-admin-name"
+            type="text"
+            value={name}
+            onChange={(ev) => setName(ev.target.value)}
+            required
+            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-neutral-900 focus:border-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-400"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="pool-admin-description"
+            className="block text-xs font-medium text-neutral-600 mb-1"
+          >
+            Descrição
+          </label>
+          <textarea
+            id="pool-admin-description"
+            value={description}
+            onChange={(ev) => setDescription(ev.target.value)}
+            rows={3}
+            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-neutral-900 focus:border-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-400"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="pool-admin-value"
+            className="block text-xs font-medium text-neutral-600 mb-1"
+          >
+            Valor por participante (R$)
+          </label>
+          <div className="relative max-w-xs">
+            <span
+              className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-sm text-neutral-500"
+              aria-hidden
+            >
+              R$
+            </span>
+            <input
+              id="pool-admin-value"
+              type="text"
+              inputMode="decimal"
+              value={valueInput}
+              onChange={(ev) => setValueInput(ev.target.value)}
+              required
+              placeholder="0,00"
+              className="w-full rounded-lg border border-neutral-300 px-3 py-2 pl-9 text-sm text-neutral-900 tabular-nums focus:border-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-400"
+            />
+          </div>
+        </div>
+        <button
+          type="submit"
+          disabled={saving}
+          className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800 disabled:opacity-50"
+        >
+          {saving ? 'A guardar…' : 'Guardar alterações'}
+        </button>
+      </form>
+    </section>
+  );
+}
 
 export default function AdminPage() {
   const params = useParams();
@@ -86,6 +218,8 @@ export default function AdminPage() {
         Marque quem já quitou a participação no bolão. Participantes sem marcação
         aparecem como pendentes de pagamento.
       </p>
+
+      <AdminPoolSettingsForm />
 
       <div className="rounded-xl border border-neutral-200/80 bg-white shadow-sm shadow-neutral-950/5 overflow-hidden">
         <table className="w-full border-collapse text-sm">

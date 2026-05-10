@@ -42,7 +42,10 @@ const TAB_TRIGGER_CLASS = twMerge(
 export default function HomePage() {
   const router = useRouter();
   const { jwt, hasHydrated } = useAuthStore();
-  const [homeTab, setHomeTab] = useQueryState(HOME_TAB_QUERY_KEY, homeTabParser);
+  const [homeTab, setHomeTab] = useQueryState(
+    HOME_TAB_QUERY_KEY,
+    homeTabParser
+  );
   const [matches, setMatches] = useState<Match[]>([]);
   const [matchesError, setMatchesError] = useState<string | null>(null);
   const [matchesLoading, setMatchesLoading] = useState(true);
@@ -127,7 +130,7 @@ export default function HomePage() {
                 Copa do Mundo da FIFA 2026™
               </h1>
               <p className="text-sm leading-relaxed text-slate-600 md:text-[15px]">
-                Resultados reais
+                Partidas e Resultados em tempo real
               </p>
             </div>
             <Link

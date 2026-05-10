@@ -1,14 +1,16 @@
 import { apiFetch } from './api';
+import { normalizePoolFromApi } from './pool-normalize';
 import type { Pool } from '@/types';
 
 export async function fetchPoolByInviteCode(
   inviteCode: string
 ): Promise<Pool | null> {
-  const res = await apiFetch<{ data: Pool[] }>(
+  const res = await apiFetch<{ data: unknown[] }>(
     `/api/pools?filters[inviteCode][$eq]=${encodeURIComponent(inviteCode)}`
   );
   const first = res.data?.[0];
-  return first ?? null;
+  if (first == null) return null;
+  return normalizePoolFromApi({ data: first });
 }
 
 export async function joinPoolByInviteCode(
