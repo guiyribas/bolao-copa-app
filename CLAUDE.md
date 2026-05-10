@@ -1,1 +1,1 @@
-@AGENTS.md
+Project AI guidance lives in `.cursor/rules/`.
