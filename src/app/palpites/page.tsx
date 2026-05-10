@@ -14,6 +14,7 @@ import { showErrorToast } from '@/lib/toast';
 import { GROUP_PHASE } from '@/lib/match-phases';
 import { matchesListPath } from '@/lib/matches-query';
 import { normalizeMatchesPayload } from '@/lib/match-status';
+import { areMatchOpponentsDefined } from '@/lib/match-opponents';
 import { buildTeamFlagLookup } from '@/lib/team-flag-lookup';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { MatchCard } from '@/components/MatchCard/matchCard';
@@ -165,6 +166,10 @@ export default function PalpitesPage() {
     awayScore: number
   ) {
     if (!jwt) return;
+    const target = matches.find((m) => m.documentId === matchId);
+    if (target != null && !areMatchOpponentsDefined(target)) {
+      return;
+    }
     try {
       await apiFetch(
         '/api/bets',

@@ -11,6 +11,7 @@ import * as styles from './matchCard.styles';
 import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
 import { LiveBroadcastDot } from '@/components/LiveBroadcastDot/liveBroadcastDot';
 import { matchDetailTextLinkClass } from '@/components/FixtureMatchRow/fixtureMatchRow.styles';
+import { areMatchOpponentsDefined } from '@/lib/match-opponents';
 
 export function MatchCard({
   match,
@@ -22,8 +23,13 @@ export function MatchCard({
   const isPast = new Date(match.date) <= new Date();
   const isFinished = match.status === 'finished';
   const isLive = match.status === 'live';
-  /** Bloqueia se o horário da partida já passou ou se o jogo foi finalizado. */
-  const canUpdateScore = !readOnly && !isPast && !isFinished;
+  /** Edição só em partidas futuras / não encerradas, com permissão explícita. */
+  const canShowEditor = !readOnly && !isPast && !isFinished;
+  const opponentsDefined = areMatchOpponentsDefined(match);
+  /** Mata-mata (ou inconsistência nos dados): partida existe mas vagas dos times não. */
+  const bettingLocked = canShowEditor && !opponentsDefined;
+  /** Pode persistir placar apenas com adversários já definidos e fora da janela bloqueada. */
+  const canSaveBet = canShowEditor && !bettingLocked;
   const [home, setHome] = useState<string>(bet?.homeScore?.toString() ?? '');
   const [away, setAway] = useState<string>(bet?.awayScore?.toString() ?? '');
   const [saving, setSaving] = useState(false);
@@ -34,7 +40,7 @@ export function MatchCard({
     away !== (bet?.awayScore?.toString() ?? '');
 
   async function handleSave() {
-    if (!canUpdateScore || home === '' || away === '' || !onSave) return;
+    if (!canSaveBet || home === '' || away === '' || !onSave) return;
     setSaving(true);
     try {
       await onSave(Number(home), Number(away));
@@ -61,7 +67,7 @@ export function MatchCard({
         )}
       </div>
 
-      {!canUpdateScore ? (
+      {!canShowEditor ? (
         <div className={twMerge(styles.scoreCluster, 'font-mono')}>
           <span className={styles.scoreDisplay}>{bet?.homeScore ?? '-'}</span>
           <span>x</span>
@@ -73,16 +79,28 @@ export function MatchCard({
             type="number"
             min={0}
             value={home}
+            disabled={bettingLocked}
             onChange={(e) => setHome(e.target.value)}
-            className={styles.scoreInput}
+            className={twMerge(
+              styles.scoreInput,
+              bettingLocked &&
+                'cursor-not-allowed bg-neutral-100 text-neutral-500 opacity-80'
+            )}
+            aria-disabled={bettingLocked}
           />
-          <span>x</span>
+          <span className={bettingLocked ? 'text-neutral-400' : ''}>x</span>
           <input
             type="number"
             min={0}
             value={away}
+            disabled={bettingLocked}
             onChange={(e) => setAway(e.target.value)}
-            className={styles.scoreInput}
+            className={twMerge(
+              styles.scoreInput,
+              bettingLocked &&
+                'cursor-not-allowed bg-neutral-100 text-neutral-500 opacity-80'
+            )}
+            aria-disabled={bettingLocked}
           />
         </div>
       )}
@@ -98,7 +116,7 @@ export function MatchCard({
   );
 
   const matchLineEl =
-    !canUpdateScore && detailHref ? (
+    !canShowEditor && detailHref ? (
       <Link
         href={detailHref}
         className={twMerge(
@@ -122,7 +140,9 @@ export function MatchCard({
         styles.card,
         outcomeBorder,
         isLive && styles.cardLive,
-        detailHref && 'transition-shadow hover:shadow-sm'
+        detailHref && 'transition-shadow hover:shadow-sm',
+        bettingLocked &&
+          'bg-neutral-50/90 opacity-[0.88] saturate-[0.92] shadow-none'
       )}
     >
       {isLive ? <LiveBroadcastDot /> : null}
@@ -130,12 +150,16 @@ export function MatchCard({
         {matchLineEl}
 
         <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-2">
-          {canUpdateScore ? (
+          {canShowEditor ? (
             <button
               type="button"
               onClick={handleSave}
               disabled={
-                saving || home === '' || away === '' || (hasBet && !isDirty)
+                bettingLocked ||
+                saving ||
+                home === '' ||
+                away === '' ||
+                (hasBet && !isDirty)
               }
               aria-busy={saving}
               className={
@@ -192,6 +216,16 @@ export function MatchCard({
           <span className={styles.dateLabel}>
             {formatMatchDate(match.date)}
           </span>
+          {bettingLocked && (
+            <>
+              <span className={styles.metaSeparator} aria-hidden>
+                ·
+              </span>
+              <span className="text-xs font-medium text-amber-900/85">
+                Adversários a definir
+              </span>
+            </>
+          )}
           {isFinished && (
             <>
               <span className={styles.metaSeparator} aria-hidden>
