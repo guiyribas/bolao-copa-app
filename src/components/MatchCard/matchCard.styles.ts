@@ -34,12 +34,11 @@ export const saveBtn = twMerge(
   'inline-flex w-full shrink-0 sm:w-auto sm:min-w-[5.5rem]',
   'min-h-9 items-center justify-center self-stretch sm:self-auto',
   'rounded-xl px-3 py-2 text-sm font-semibold text-yellow-50',
-  'bg-linear-to-r from-emerald-800 via-emerald-900 to-emerald-950',
-  'shadow-md shadow-emerald-950/25 transition-[background-image,box-shadow]',
-  'hover:from-emerald-700 hover:via-emerald-800 hover:to-emerald-900',
+  'bg-emerald-800 shadow-md shadow-emerald-900/25 transition-[background-color,box-shadow,color]',
+  'enabled:hover:bg-emerald-700',
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2',
-  'disabled:cursor-not-allowed disabled:opacity-50',
-  'disabled:hover:from-emerald-800 disabled:hover:via-emerald-900 disabled:hover:to-emerald-950'
+  'disabled:cursor-not-allowed disabled:bg-none disabled:bg-neutral-300 disabled:text-neutral-500',
+  'disabled:shadow-none'
 );
 export const saveBtnSaved = twMerge(
   'inline-flex w-full shrink-0 sm:w-auto sm:min-w-[5.5rem]',

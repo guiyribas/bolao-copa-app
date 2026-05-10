@@ -282,7 +282,7 @@ export default function PalpitesPage() {
           <span className="material-symbols-outlined text-lg" aria-hidden>
             print
           </span>
-          Imprimir meus palpites
+          Meus palpites para impressão
         </Link>
       </div>
 
