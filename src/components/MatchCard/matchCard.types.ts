@@ -6,4 +6,6 @@ export interface MatchCardProps {
   /** Sem edição (ex.: palpites de outro participante). */
   readOnly?: boolean;
   onSave?: (homeScore: number, awayScore: number) => Promise<void>;
+  /** Link opcional para a página da partida (palpites por bolão). */
+  detailHref?: string;
 }

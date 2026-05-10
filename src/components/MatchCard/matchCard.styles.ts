@@ -59,10 +59,12 @@ export const inlinePoints = twMerge(
 );
 export const resultInfo = twMerge('text-xs tabular-nums text-gray-500');
 export const dateLabel = twMerge('text-xs text-gray-400');
-/** Linha única com data e (quando finalizado) o placar real, separados por bullet. */
+/** Linha única com data e (quando finalizado) o placar real; com `detailHref`, link à direita via classe extra no componente. */
 export const metaBlock = twMerge(
-  'flex w-full flex-wrap items-center justify-center gap-x-1.5 border-t border-neutral-100 pt-2 whitespace-nowrap'
+  'flex w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1 border-t border-neutral-100 pt-2'
 );
+export const metaBlockCentered = twMerge('justify-center');
+export const metaBlockSplit = twMerge('justify-between');
 export const metaSeparator = twMerge('text-neutral-300');
 export const pointsLabel = twMerge('hidden text-neutral-600 sm:inline');
 export const pointsValue = twMerge('font-semibold text-green-700 tabular-nums');

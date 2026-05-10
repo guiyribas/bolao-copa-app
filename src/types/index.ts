@@ -47,6 +47,8 @@ export interface PoolMembership {
 
 export interface Match {
   documentId: string;
+  /** Título da partida no Strapi (ex.: seed da Copa). */
+  title?: string;
   homeTeam: Team;
   awayTeam: Team;
   date: string;
@@ -104,4 +106,28 @@ export interface MemberEntry {
   hasPaid: boolean;
   joinedAt: string;
   membershipId: string;
+}
+
+/** Resposta de `GET /api/pools/match/:matchDocumentId/bets`. */
+export interface PoolMatchBetRow {
+  userId: string;
+  username: string;
+  homeScore: number | null;
+  awayScore: number | null;
+  points: number | null;
+  hasBet: boolean;
+  isViewer: boolean;
+}
+
+export interface PoolMatchSection {
+  poolDocumentId: string;
+  poolName: string;
+  entries: PoolMatchBetRow[];
+}
+
+export interface PoolMatchBetsPayload {
+  matchDocumentId: string;
+  matchStatus: string;
+  revealed: boolean;
+  pools: PoolMatchSection[];
 }

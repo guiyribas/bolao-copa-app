@@ -304,6 +304,7 @@ export default function PalpitesPage() {
                     match={match}
                     bet={bet}
                     onSave={(h, a) => saveBet(match.documentId, h, a)}
+                    detailHref={`/partida/${match.documentId}`}
                   />
                 );
               })}

@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import type { Match } from '@/types';
 import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
 import { formatMatchDate } from '@/components/MatchCard/matchCard.utils';
@@ -66,12 +68,22 @@ export function FixtureMatchRow({ match }: { match: Match }) {
 
       <div className={styles.meta}>
         <span className={statusBadgeClass(match.status)}>{statusLabel(match.status)}</span>
-        <span>
-          J{match.matchNumber}
-          {match.group ? ` · Grupo ${match.group}` : ''}
-          {' · '}
-          {formatMatchDate(match.date)}
-        </span>
+        <div className={styles.metaDetailRow}>
+          <span className="min-w-0 shrink text-neutral-500">
+            J{match.matchNumber}
+            {match.group ? ` · Grupo ${match.group}` : ''}
+            {' · '}
+            {formatMatchDate(match.date)}
+          </span>
+          <Link
+            href={`/partida/${encodeURIComponent(match.documentId)}`}
+            className={twMerge(styles.matchDetailTextLinkClass, 'shrink-0')}
+            aria-label="Ver palpites para a partida"
+          >
+            Ver palpites para a partida
+            <ChevronRightIcon className="size-3.5 opacity-80" aria-hidden />
+          </Link>
+        </div>
       </div>
     </div>
   );
