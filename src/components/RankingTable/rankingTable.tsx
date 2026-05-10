@@ -33,10 +33,14 @@ export function RankingTable({ ranking }: RankingTableProps) {
         <thead className={styles.thead}>
           <tr className={styles.headerRow}>
             <th className="py-3 pl-3 pr-2 w-12 align-middle">#</th>
-            <th className="py-3 pr-2 align-middle">Palpiteiro</th>
+            <th className={styles.nameSubHeader}>Participante</th>
             <th className={styles.pointsSubHeader}>Grupos</th>
             <th className={styles.pointsSubHeader}>Mata-mata</th>
-            <th className={`${styles.pointsSubHeader} font-semibold text-neutral-700`}>Total</th>
+            <th
+              className={`${styles.pointsSubHeader} font-semibold text-neutral-700`}
+            >
+              Total
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -53,8 +57,12 @@ export function RankingTable({ ranking }: RankingTableProps) {
                     {entry.username}
                   </Link>
                 </td>
-                <td className={styles.pointsCell}>{pointsCellValue(entry.pointsGroupPhase)}</td>
-                <td className={styles.pointsCell}>{pointsCellValue(entry.pointsKnockout)}</td>
+                <td className={styles.pointsCell}>
+                  {pointsCellValue(entry.pointsGroupPhase)}
+                </td>
+                <td className={styles.pointsCell}>
+                  {pointsCellValue(entry.pointsKnockout)}
+                </td>
                 <td className={styles.pointsCellStrong}>{entry.points}</td>
               </tr>
             );

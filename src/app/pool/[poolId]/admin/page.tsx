@@ -73,24 +73,52 @@ function AdminPoolSettingsForm() {
       <h3 className="text-sm font-semibold text-neutral-900 mb-3">
         Dados do bolão
       </h3>
-      <form onSubmit={onSubmit} className="space-y-4 max-w-xl">
-        <div>
-          <label
-            htmlFor="pool-admin-name"
-            className="block text-xs font-medium text-neutral-600 mb-1"
-          >
-            Nome
-          </label>
-          <input
-            id="pool-admin-name"
-            type="text"
-            value={name}
-            onChange={(ev) => setName(ev.target.value)}
-            required
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-neutral-900 focus:border-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-400"
-          />
+      <form onSubmit={onSubmit} className="w-full space-y-4">
+        <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-[3fr_1fr] lg:items-end lg:gap-x-6">
+          <div className="min-w-0">
+            <label
+              htmlFor="pool-admin-name"
+              className="block text-xs font-medium text-neutral-600 mb-1"
+            >
+              Nome
+            </label>
+            <input
+              id="pool-admin-name"
+              type="text"
+              value={name}
+              onChange={(ev) => setName(ev.target.value)}
+              required
+              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-neutral-900 focus:border-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-400"
+            />
+          </div>
+          <div className="min-w-0">
+            <label
+              htmlFor="pool-admin-value"
+              className="block text-xs font-medium text-neutral-600 mb-1"
+            >
+              Valor por participante (R$)
+            </label>
+            <div className="relative w-full">
+              <span
+                className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-sm text-neutral-500"
+                aria-hidden
+              >
+                R$
+              </span>
+              <input
+                id="pool-admin-value"
+                type="text"
+                inputMode="decimal"
+                value={valueInput}
+                onChange={(ev) => setValueInput(ev.target.value)}
+                required
+                placeholder="0,00"
+                className="w-full rounded-lg border border-neutral-300 px-3 py-2 pl-9 text-sm text-neutral-900 tabular-nums focus:border-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-400"
+              />
+            </div>
+          </div>
         </div>
-        <div>
+        <div className="w-full">
           <label
             htmlFor="pool-admin-description"
             className="block text-xs font-medium text-neutral-600 mb-1"
@@ -101,42 +129,16 @@ function AdminPoolSettingsForm() {
             id="pool-admin-description"
             value={description}
             onChange={(ev) => setDescription(ev.target.value)}
-            rows={3}
-            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-neutral-900 focus:border-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-400"
+            rows={8}
+            className="min-h-44 w-full resize-y rounded-lg border border-neutral-300 px-3 py-2.5 text-sm text-neutral-900 focus:border-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-400"
           />
-        </div>
-        <div>
-          <label
-            htmlFor="pool-admin-value"
-            className="block text-xs font-medium text-neutral-600 mb-1"
-          >
-            Valor por participante (R$)
-          </label>
-          <div className="relative max-w-xs">
-            <span
-              className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-sm text-neutral-500"
-              aria-hidden
-            >
-              R$
-            </span>
-            <input
-              id="pool-admin-value"
-              type="text"
-              inputMode="decimal"
-              value={valueInput}
-              onChange={(ev) => setValueInput(ev.target.value)}
-              required
-              placeholder="0,00"
-              className="w-full rounded-lg border border-neutral-300 px-3 py-2 pl-9 text-sm text-neutral-900 tabular-nums focus:border-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-400"
-            />
-          </div>
         </div>
         <button
           type="submit"
           disabled={saving}
-          className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800 disabled:opacity-50"
+          className="w-full rounded-lg bg-neutral-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-neutral-800 disabled:opacity-50 sm:w-auto"
         >
-          {saving ? 'A guardar…' : 'Guardar alterações'}
+          {saving ? 'Salvando…' : 'Salvar alterações'}
         </button>
       </form>
     </section>

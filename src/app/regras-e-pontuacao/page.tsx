@@ -19,10 +19,7 @@ const listClass = 'list-disc pl-5 space-y-2';
 export default function RegrasEPontuacaoPage() {
   return (
     <div className="max-w-3xl">
-      <PageBreadcrumb
-        label={REGRAS_PONTUACAO_META.title}
-        className="mb-3"
-      />
+      <PageBreadcrumb label={REGRAS_PONTUACAO_META.title} className="mb-3" />
       <h1 className="text-2xl font-bold text-neutral-900 mb-2">
         {REGRAS_PONTUACAO_META.title}
       </h1>
@@ -37,17 +34,18 @@ export default function RegrasEPontuacaoPage() {
         <div className={proseClass}>
           <ul className={listClass}>
             <li>
-              Você dá <strong>um palpite por partida</strong> (placar do mandante ×
-              visitante).
+              Você dá <strong>um palpite por partida</strong> (placar do
+              mandante × visitante).
             </li>
             <li>
-              Esse palpite vale <strong>em todos os bolões</strong> nos quais você
-              participa; não é preciso repetir por bolão.
+              Esse palpite vale <strong>em todos os bolões</strong> nos quais
+              você participa; não é preciso repetir por bolão.
             </li>
             <li>
-              Enquanto a partida estiver no período permitido pelo sistema, você pode{' '}
-              <strong>alterar</strong> o palpite; depois do encerramento das apostas
-              para aquela partida, o valor fica travado.
+              Você pode <strong>alterar</strong> o palpite até o{' '}
+              <strong>horário marcado para o início do jogo</strong> (o mesmo
+              que aparece para a partida no sistema); depois desse horário, o
+              valor fica travado.
             </li>
           </ul>
         </div>
@@ -59,21 +57,28 @@ export default function RegrasEPontuacaoPage() {
         </h2>
         <div className={proseClass}>
           <p>
-            Quando a partida termina e o <strong>resultado oficial</strong> entra no
-            sistema, seu palpite é comparado ao placar real. Vale a <strong>
-              combinação de maior pontuação
-            </strong>{' '}
-            entre as regras abaixo (veja os esclarecimentos: a pontuação{' '}
+            Quando a partida termina e o <strong>resultado oficial</strong>{' '}
+            entra no sistema, seu palpite é comparado ao placar real. Vale a{' '}
+            <strong>combinação de maior pontuação</strong> entre as regras
+            abaixo (veja os esclarecimentos: a pontuação{' '}
             <strong>não é cumulativa</strong>).
           </p>
           <p>
-            Na <strong>fase de grupos</strong>, usa-se a coluna &quot;Pontuação&quot;. No{' '}
-            <strong>mata-mata</strong>, os pontos seguem a coluna &quot;Fase final&quot;
-            (+50% em relação à base da fase de grupos).
+            Na <strong>fase de grupos</strong>, usa-se a coluna
+            &quot;Grupos&quot;. No <strong>mata-mata</strong>, os pontos seguem
+            a coluna &quot;Mata-mata&quot;.
           </p>
           <p>
-            Na tela de palpites, partidas já disputadas mostram o placar real e os
-            pontos ganhos naquela partida (por exemplo{' '}
+            No <strong>mata-mata</strong>, o placar usado para pontuar é o{' '}
+            <strong>resultado final da partida em campo</strong> (tempo
+            regulamentar e, se existir, prorrogação). Gols da decisão por
+            pênaltis não entram no mandante × visitante — em jogos decididos nos
+            pênaltis, costuma-se registrar o placar ao fim da prorrogação (por
+            exemplo 1×1 antes dos pênaltis).
+          </p>
+          <p>
+            Na tela de palpites, partidas já disputadas mostram o placar real e
+            os pontos ganhos naquela partida (por exemplo{' '}
             <span className="font-semibold text-green-800">+10 pts</span>).
           </p>
 
@@ -85,10 +90,10 @@ export default function RegrasEPontuacaoPage() {
                     Descrição
                   </th>
                   <th className="py-2 px-3 font-semibold text-neutral-900 text-right whitespace-nowrap w-24">
-                    Pontuação
+                    Grupos
                   </th>
                   <th className="py-2 px-3 font-semibold text-neutral-900 text-right whitespace-nowrap w-28">
-                    Fase final (+50%)
+                    Mata-mata
                   </th>
                 </tr>
               </thead>
@@ -96,7 +101,9 @@ export default function RegrasEPontuacaoPage() {
                 {tabelaPontuacaoPartidas.map((row) => (
                   <tr key={row.titulo} className="border-b border-neutral-100">
                     <td className="py-2.5 px-3 align-top">
-                      <div className="font-medium text-neutral-900">{row.titulo}</div>
+                      <div className="font-medium text-neutral-900">
+                        {row.titulo}
+                      </div>
                       <div className="text-neutral-600 mt-1 text-xs sm:text-sm">
                         {row.detalhe}
                       </div>
@@ -133,18 +140,24 @@ export default function RegrasEPontuacaoPage() {
         <div className={proseClass}>
           <ul className={listClass}>
             <li>
-              Cada bolão tem sua própria <strong>classificação</strong>: somam-se os
-              pontos de todas as partidas em que você tem palpite válido.
+              Cada bolão tem sua própria <strong>classificação</strong>:
+              somam-se os pontos de todas as partidas em que você tem palpite
+              válido.
             </li>
             <li>
-              O ranking pode exibir o <strong>total</strong> e, quando disponível, a
-              divisão entre pontos na <strong>fase de grupos</strong> e no{' '}
-              <strong>mata-mata</strong>.
+              O ranking pode exibir o <strong>total</strong> e, quando
+              disponível, a divisão entre pontos na{' '}
+              <strong>fase de grupos</strong> e no <strong>mata-mata</strong>.
             </li>
             <li>
-              Entrar em um bolão é feito por <strong>convite</strong> (link ou código).
-              Quem cria o bolão é o administrador e pode usar a área dedicada para
-              gerenciar participantes.
+              Em caso de <strong>empate no total de pontos</strong>, o desempate
+              é: mais palpites com <strong>placar exato</strong>; em seguida,
+              ordem alfabética do nome de utilizador.
+            </li>
+            <li>
+              Entrar em um bolão é feito por <strong>convite</strong> (link ou
+              código). Quem cria o bolão é o administrador e pode usar a área
+              dedicada para gerenciar participantes.
             </li>
           </ul>
         </div>
@@ -156,10 +169,11 @@ export default function RegrasEPontuacaoPage() {
         </h2>
         <div className={proseClass}>
           <p>
-            Com base nos seus palpites nas partidas da fase de grupos, o app pode montar
-            uma <strong>tabela simulada</strong> por grupo, útil para imaginar
-            classificações antes do apito final. Isso é apenas uma projeção a partir dos
-            seus palpites; a classificação oficial da Copa segue o regulamento da FIFA.
+            Com base nos seus palpites nas partidas da fase de grupos, o app
+            pode montar uma <strong>tabela simulada</strong> por grupo, útil
+            para imaginar classificações antes do apito final. Isso é apenas uma
+            projeção a partir dos seus palpites; a classificação oficial da Copa
+            segue o regulamento da FIFA.
           </p>
         </div>
       </section>

@@ -31,6 +31,11 @@ export const nameCell = twMerge('py-3 pr-2');
 export const nameCellMedal = twMerge(nameCell, 'font-semibold text-neutral-900');
 export const pointsCell = twMerge('py-3 px-2 text-right tabular-nums text-neutral-700');
 export const pointsCellStrong = twMerge(pointsCell, 'font-bold text-neutral-900');
+/** Mesma tipografia das colunas de pontos, alinhada à esquerda (nome). */
+export const nameSubHeader = twMerge(
+  'py-3 pr-2 text-left align-middle text-[11px] font-medium normal-case tracking-normal text-neutral-500'
+);
+
 export const pointsSubHeader = twMerge(
   'py-3 px-2 text-right text-[11px] font-medium normal-case tracking-normal text-neutral-500'
 );

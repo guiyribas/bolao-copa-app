@@ -8,7 +8,7 @@ export const REGRAS_PONTUACAO_META = {
     'Como funcionam palpites, bolões e pontos no Bolão Copa 2026.',
 } as const;
 
-/** Linhas da tabela (partidas). `faseFinal` é +50% sobre a base no mata-mata. */
+/** Linhas da tabela (partidas): `pontos` (coluna Grupos); `faseFinal` (coluna Mata-mata). */
 export const tabelaPontuacaoPartidas = [
   {
     titulo: 'Placar exato',
