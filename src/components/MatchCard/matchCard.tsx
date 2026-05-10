@@ -8,12 +8,12 @@ import * as styles from './matchCard.styles';
 import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
 import { LiveBroadcastDot } from '@/components/LiveBroadcastDot/liveBroadcastDot';
 
-export function MatchCard({ match, bet, onSave }: MatchCardProps) {
+export function MatchCard({ match, bet, onSave, readOnly }: MatchCardProps) {
   const isPast = new Date(match.date) <= new Date();
   const isFinished = match.status === 'finished';
   const isLive = match.status === 'live';
   /** Bloqueia se o horário da partida já passou ou se o jogo foi finalizado. */
-  const canUpdateScore = !isPast && !isFinished;
+  const canUpdateScore = !readOnly && !isPast && !isFinished;
   const [home, setHome] = useState<string>(bet?.homeScore?.toString() ?? '');
   const [away, setAway] = useState<string>(bet?.awayScore?.toString() ?? '');
   const [saving, setSaving] = useState(false);
@@ -24,7 +24,7 @@ export function MatchCard({ match, bet, onSave }: MatchCardProps) {
     away !== (bet?.awayScore?.toString() ?? '');
 
   async function handleSave() {
-    if (!canUpdateScore || home === '' || away === '') return;
+    if (!canUpdateScore || home === '' || away === '' || !onSave) return;
     setSaving(true);
     try {
       await onSave(Number(home), Number(away));

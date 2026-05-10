@@ -75,7 +75,13 @@ export default function RankingPage() {
       .finally(() => setLoading(false));
   }, [jwt, poolId, hasHydrated]);
 
-  if (loading) return <p>Carregando ranking...</p>;
+  if (loading) {
+    return (
+      <div>
+        <p>Carregando ranking...</p>
+      </div>
+    );
+  }
 
   return (
     <div>

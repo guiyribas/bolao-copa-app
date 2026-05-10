@@ -134,7 +134,7 @@ export default function HomePage() {
               href={MEUS_BOLOES_PATH}
               className="inline-flex shrink-0 items-center justify-center rounded-xl bg-linear-to-r from-emerald-800 via-emerald-900 to-emerald-950 px-4 py-2.5 text-sm font-semibold text-yellow-50 shadow-lg shadow-emerald-950/25 transition hover:from-emerald-700 hover:via-emerald-800 hover:to-emerald-900 focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             >
-              Meus bolões
+              Bolões
             </Link>
           </div>
         </div>

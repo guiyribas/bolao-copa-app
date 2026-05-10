@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { RankingTableProps } from './rankingTable.types';
 import * as styles from './rankingTable.styles';
 
@@ -44,7 +45,14 @@ export function RankingTable({ ranking }: RankingTableProps) {
             return (
               <tr key={entry.userId} className={rowClassForRank(rank)}>
                 <td className={posClassForRank(rank)}>{rank}</td>
-                <td className={nameClassForRank(rank)}>{entry.username}</td>
+                <td className={nameClassForRank(rank)}>
+                  <Link
+                    href={`/user/${encodeURIComponent(entry.username)}`}
+                    className="underline underline-offset-2 decoration-neutral-400 hover:decoration-neutral-900 hover:text-neutral-950"
+                  >
+                    {entry.username}
+                  </Link>
+                </td>
                 <td className={styles.pointsCell}>{pointsCellValue(entry.pointsGroupPhase)}</td>
                 <td className={styles.pointsCell}>{pointsCellValue(entry.pointsKnockout)}</td>
                 <td className={styles.pointsCellStrong}>{entry.points}</td>

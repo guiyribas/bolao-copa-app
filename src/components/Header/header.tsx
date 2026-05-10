@@ -3,11 +3,10 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import {
   HOME_PATH,
-  HOME_TAB_QUERY_KEY,
   MEUS_BOLOES_PATH,
   REGRAS_E_PONTUACAO_PATH,
 } from '@/lib/navigation';
@@ -17,15 +16,9 @@ const BRAND_IMAGE = '/WC26_Logo.avif';
 
 export function Header() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { jwt, user, hasHydrated, logout } = useAuthStore();
 
-  const homeTabParam = searchParams.get(HOME_TAB_QUERY_KEY);
-  const isHomeAllMatchesActive =
-    pathname === HOME_PATH &&
-    (homeTabParam === null ||
-      homeTabParam === '' ||
-      homeTabParam === 'all');
+  const isHomeActive = pathname === HOME_PATH;
   const [menuOpen, setMenuOpen] = useState(false);
 
   const isAuthPage = pathname === '/login' || pathname === '/register';
@@ -82,16 +75,16 @@ export function Header() {
           <>
             <nav className={styles.desktopNav} aria-label="Principal">
               <Link
-                href={`${HOME_PATH}?${HOME_TAB_QUERY_KEY}=all`}
-                className={styles.navLink(isHomeAllMatchesActive)}
+                href={HOME_PATH}
+                className={styles.navLink(isHomeActive)}
               >
-                Todas as partidas
+                Partidas e resultados
               </Link>
               <Link
                 href={MEUS_BOLOES_PATH}
                 className={styles.navLink(pathname === MEUS_BOLOES_PATH)}
               >
-                Meus bolões
+                Bolões
               </Link>
               <Link
                 href="/palpites"
@@ -168,18 +161,18 @@ export function Header() {
 
           <nav className={styles.mobileNav} aria-label="Principal">
             <Link
-              href={`${HOME_PATH}?${HOME_TAB_QUERY_KEY}=all`}
+              href={HOME_PATH}
               onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(isHomeAllMatchesActive)}
+              className={styles.mobileNavLink(isHomeActive)}
             >
-              Todas as partidas
+              Partidas e resultados
             </Link>
             <Link
               href={MEUS_BOLOES_PATH}
               onClick={() => setMenuOpen(false)}
               className={styles.mobileNavLink(pathname === MEUS_BOLOES_PATH)}
             >
-              Meus bolões
+              Bolões
             </Link>
             <Link
               href="/palpites"

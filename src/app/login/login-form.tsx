@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { login } from '@/lib/auth';
 import { HOME_PATH, safeReturnUrl } from '@/lib/navigation';
 import { useAuthStore } from '@/stores/auth-store';
@@ -40,6 +41,7 @@ export function LoginForm() {
 
   return (
     <div className="max-w-sm mx-auto mt-16">
+      <PageBreadcrumb label="Login" className="mb-4" />
       <h1 className="text-xl font-bold mb-6">Login</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <input

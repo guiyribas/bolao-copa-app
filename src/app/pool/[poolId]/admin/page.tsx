@@ -64,8 +64,20 @@ export default function AdminPage() {
     }
   }
 
-  if (loading) return <p>Carregando membros...</p>;
-  if (error) return <p className="text-red-600">{error}</p>;
+  if (loading) {
+    return (
+      <div>
+        <p>Carregando membros...</p>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div>
+        <p className="text-red-600">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div>

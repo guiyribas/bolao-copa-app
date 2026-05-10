@@ -13,6 +13,7 @@ import {
   isAlreadyMemberError,
   messageForJoinError,
 } from '@/lib/join-messages';
+import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { MEUS_BOLOES_PATH } from '@/lib/navigation';
 import type { Pool } from '@/types';
 
@@ -120,11 +121,14 @@ export default function InvitePage() {
 
   if (poolError) {
     return (
-      <div className="mt-16 text-center">
-        <p className="text-red-600 mb-4">{poolError}</p>
-        <Link href={MEUS_BOLOES_PATH} className="underline text-sm">
-          Voltar aos meus bolões
-        </Link>
+      <div className="mt-16">
+        <PageBreadcrumb label="Convite" className="mb-4" />
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{poolError}</p>
+          <Link href={MEUS_BOLOES_PATH} className="underline text-sm">
+            Voltar aos bolões
+          </Link>
+        </div>
       </div>
     );
   }
@@ -136,6 +140,7 @@ export default function InvitePage() {
   if (joinError) {
     return (
       <div className="max-w-md mx-auto mt-16 text-center">
+        <PageBreadcrumb label="Convite" className="mb-4 text-left" />
         <h1 className="text-lg font-bold mb-2">{pool.name}</h1>
         <p className="text-red-600 text-sm mb-6">{joinError}</p>
         <button
@@ -151,7 +156,7 @@ export default function InvitePage() {
         </button>
         <p className="mt-6">
           <Link href={MEUS_BOLOES_PATH} className="underline text-sm">
-            Voltar aos meus bolões
+            Voltar aos bolões
           </Link>
         </p>
       </div>

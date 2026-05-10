@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, usePathname, useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { useAuthStore } from '@/stores/auth-store';
 import { getMe } from '@/lib/auth';
 import { apiFetch } from '@/lib/api';
+import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { PoolNav } from '@/components/PoolNav/poolNav';
 import { MEUS_BOLOES_PATH } from '@/lib/navigation';
 import { normalizePoolFromApi } from '@/lib/pool-normalize';
@@ -120,10 +120,12 @@ export default function PoolLayout({
     <div>
       <div className="flex justify-between items-center mb-4">
         <div className="min-w-0 flex-1">
-          <Link href={MEUS_BOLOES_PATH} className="text-sm underline">
-            ← Meus bolões
-          </Link>
-          <h1 className="text-xl font-bold mt-1">{pool.name}</h1>
+          <PageBreadcrumb
+            segments={[{ label: 'Bolões', href: MEUS_BOLOES_PATH }]}
+            label={pool.name}
+            className="mb-2"
+          />
+          <h1 className="text-xl font-bold">{pool.name}</h1>
           {isRankingPage && poolDescription ? (
             <p className="text-sm text-neutral-600 mt-2 max-w-prose leading-relaxed whitespace-pre-wrap">
               {poolDescription}

@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import {
   REGRAS_PONTUACAO_META,
   esclarecimentosPontuacao,
   tabelaPontuacaoPartidas,
 } from '@/lib/regras-pontuacao';
-import { HOME_PATH, MEUS_BOLOES_PATH } from '@/lib/navigation';
+import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 
 export const metadata: Metadata = {
   title: `${REGRAS_PONTUACAO_META.title} · Bolão Copa 2026`,
@@ -20,6 +19,10 @@ const listClass = 'list-disc pl-5 space-y-2';
 export default function RegrasEPontuacaoPage() {
   return (
     <div className="max-w-3xl">
+      <PageBreadcrumb
+        label={REGRAS_PONTUACAO_META.title}
+        className="mb-3"
+      />
       <h1 className="text-2xl font-bold text-neutral-900 mb-2">
         {REGRAS_PONTUACAO_META.title}
       </h1>
@@ -160,21 +163,6 @@ export default function RegrasEPontuacaoPage() {
           </p>
         </div>
       </section>
-
-      <p className="text-sm text-neutral-600 pt-4 border-t border-neutral-200">
-        Voltar para{' '}
-        <Link href={HOME_PATH} className="underline font-medium text-neutral-800">
-          página inicial
-        </Link>{' '}
-        ou{' '}
-        <Link
-          href={MEUS_BOLOES_PATH}
-          className="underline font-medium text-neutral-800"
-        >
-          meus bolões
-        </Link>
-        .
-      </p>
     </div>
   );
 }

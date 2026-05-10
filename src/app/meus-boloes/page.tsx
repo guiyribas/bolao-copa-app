@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { useAuthStore } from '@/stores/auth-store';
 import { apiFetch } from '@/lib/api';
-import { HOME_PATH } from '@/lib/navigation';
 import type { PoolMembership } from '@/types';
 
 export default function MeusBoloesPage() {
@@ -33,17 +33,11 @@ export default function MeusBoloesPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-xl font-bold">Meus bolões</h1>
+        <PageBreadcrumb label="Bolões" className="mb-3" />
+        <h1 className="text-xl font-bold">Bolões</h1>
         <p className="mt-2 text-sm leading-relaxed text-neutral-600">
-          Aqui aparecem os bolões em que você participa. Para calendário da
-          Copa, jogos e placar oficial, abra a{' '}
-          <Link
-            href={HOME_PATH}
-            className="font-semibold text-emerald-900 underline decoration-emerald-500/40 underline-offset-[3px] transition hover:text-emerald-950 hover:decoration-emerald-600/55"
-          >
-            página inicial
-          </Link>
-          .
+          Aqui aparecem os bolões em que você participa. O calendário da Copa,
+          jogos e placar oficial ficam na página inicial.
         </p>
       </div>
 

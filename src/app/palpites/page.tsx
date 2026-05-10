@@ -13,7 +13,8 @@ import { showErrorToast } from '@/lib/toast';
 import { GROUP_PHASE } from '@/lib/match-phases';
 import { matchesListPath } from '@/lib/matches-query';
 import { normalizeMatchesPayload } from '@/lib/match-status';
-import { resolveTeamFlagUrl } from '@/lib/strapi-media';
+import { buildTeamFlagLookup } from '@/lib/team-flag-lookup';
+import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { MatchCard } from '@/components/MatchCard/matchCard';
 import { FilterPill } from '@/components/FilterPill/filterPill';
 import { GroupTable } from '@/components/GroupTable/groupTable';
@@ -38,18 +39,6 @@ function getMatchGroupKey(m: Match): string | undefined {
   const g = m.group ?? m.homeTeam?.group;
   if (g == null || String(g).trim() === '') return undefined;
   return String(g).trim();
-}
-
-function buildTeamFlagLookup(matches: Match[]): Map<string, string | null> {
-  const map = new Map<string, string | null>();
-  for (const m of matches) {
-    for (const t of [m.homeTeam, m.awayTeam]) {
-      if (t?.documentId && !map.has(t.documentId)) {
-        map.set(t.documentId, resolveTeamFlagUrl(t));
-      }
-    }
-  }
-  return map;
 }
 
 function enrichStandingsFlags(
@@ -207,8 +196,22 @@ export default function PalpitesPage() {
     return sortedGroupsKeys;
   }, [phase, activeGroupKey, sortedGroupsKeys]);
 
-  if (!hasHydrated || !jwt) return <p>Carregando...</p>;
-  if (loading) return <p>Carregando partidas...</p>;
+  if (!hasHydrated || !jwt) {
+    return (
+      <div>
+        <PageBreadcrumb label="Palpites" className="mb-3" />
+        <p>Carregando...</p>
+      </div>
+    );
+  }
+  if (loading) {
+    return (
+      <div>
+        <PageBreadcrumb label="Palpites" className="mb-3" />
+        <p>Carregando partidas...</p>
+      </div>
+    );
+  }
 
   const matchGroupKeys = [
     ...new Set(
@@ -225,6 +228,7 @@ export default function PalpitesPage() {
 
   return (
     <div>
+      <PageBreadcrumb label="Palpites" className="mb-3" />
       <h1 className="text-xl font-bold mb-2">Palpites</h1>
       <p className="text-sm text-gray-600 mb-4">
         Um palpite por partida vale para todos os bolões em que você participa.
