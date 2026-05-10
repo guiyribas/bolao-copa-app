@@ -25,7 +25,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <NuqsAdapter>
           <Header />
-          <main className="w-full max-w-237.5 mx-auto px-4 py-6 flex-1">
+          <main className="w-full max-w-237.5 mx-auto px-4 py-6 flex-1 print:max-w-none print:px-2 print:py-2">
             {children}
           </main>
           <AppToaster />

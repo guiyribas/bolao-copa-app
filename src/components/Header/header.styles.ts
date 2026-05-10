@@ -3,7 +3,8 @@ import { twMerge } from 'tailwind-merge';
 export const header = twMerge(
   'sticky top-0 z-50 w-full border-b border-yellow-400/40',
   'bg-linear-to-r from-emerald-950 via-emerald-900 to-emerald-950',
-  'shadow-[0_8px_24px_-12px_rgba(0,0,0,0.45)]'
+  'shadow-[0_8px_24px_-12px_rgba(0,0,0,0.45)]',
+  'print:hidden'
 );
 
 export const headerInner = twMerge(

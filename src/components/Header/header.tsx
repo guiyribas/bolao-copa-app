@@ -121,7 +121,7 @@ export function Header() {
               </Link>
               <Link
                 href="/palpites"
-                className={styles.navLink(pathname === '/palpites')}
+                className={styles.navLink(pathname.startsWith('/palpites'))}
               >
                 Palpites
               </Link>
@@ -285,7 +285,7 @@ export function Header() {
             <Link
               href="/palpites"
               onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(pathname === '/palpites')}
+              className={styles.mobileNavLink(pathname.startsWith('/palpites'))}
             >
               Palpites
             </Link>

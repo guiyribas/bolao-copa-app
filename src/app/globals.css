@@ -52,3 +52,10 @@ body {
     cursor: not-allowed;
   }
 }
+
+@media print {
+  @page {
+    margin: 6mm;
+    size: A4 portrait;
+  }
+}

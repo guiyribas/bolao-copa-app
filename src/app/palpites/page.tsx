@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   Root as CollapsibleRoot,
@@ -75,8 +76,7 @@ export default function PalpitesPage() {
   const [partidasOpen, setPartidasOpen] = useState(true);
   const [simulacaoOpen, setSimulacaoOpen] = useState(true);
 
-  const showGroupSimulation =
-    phase === '' || phase === GROUP_PHASE;
+  const showGroupSimulation = phase === '' || phase === GROUP_PHASE;
 
   useEffect(() => {
     if (!hasHydrated) return;
@@ -131,7 +131,9 @@ export default function PalpitesPage() {
         } else {
           setMatches([]);
           const msg =
-            mRes.reason instanceof Error ? mRes.reason.message : String(mRes.reason);
+            mRes.reason instanceof Error
+              ? mRes.reason.message
+              : String(mRes.reason);
           setLoadError((prev) => prev ?? msg);
           console.error('Falha ao carregar partidas:', mRes.reason);
         }
@@ -157,7 +159,11 @@ export default function PalpitesPage() {
       .finally(() => setLoading(false));
   }, [jwt, phase, hasHydrated, router, showGroupSimulation]);
 
-  async function saveBet(matchId: string, homeScore: number, awayScore: number) {
+  async function saveBet(
+    matchId: string,
+    homeScore: number,
+    awayScore: number
+  ) {
     if (!jwt) return;
     try {
       await apiFetch(
@@ -171,14 +177,16 @@ export default function PalpitesPage() {
         jwt
       );
 
-      const betRes = await apiFetch<{ data: Bet[] }>(`/api/bets/my-bets`, {}, jwt);
+      const betRes = await apiFetch<{ data: Bet[] }>(
+        `/api/bets/my-bets`,
+        {},
+        jwt
+      );
       setBets(betRes.data || []);
       if (showGroupSimulation) {
-        const groupRes = await apiFetch<{ data: Record<string, TeamStanding[]> }>(
-          `/api/bets/group-simulation`,
-          {},
-          jwt
-        );
+        const groupRes = await apiFetch<{
+          data: Record<string, TeamStanding[]>;
+        }>(`/api/bets/group-simulation`, {}, jwt);
         setGroups(groupRes.data || {});
       }
     } catch (e) {
@@ -247,19 +255,31 @@ export default function PalpitesPage() {
 
   const matchGroupKeys = [
     ...new Set(
-      matches
-        .map(getMatchGroupKey)
-        .filter((k): k is string => Boolean(k))
+      matches.map(getMatchGroupKey).filter((k): k is string => Boolean(k))
     ),
   ].sort();
 
   return (
     <div>
       <PageBreadcrumb label="Palpites" className="mb-3" />
-      <h1 className="text-xl font-bold mb-2">Palpites</h1>
-      <p className="text-sm text-gray-600 mb-4">
-        Um palpite por partida vale para todos os bolões em que você participa.
-      </p>
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-xl font-bold mb-2">Palpites</h1>
+          <p className="text-sm text-gray-600">
+            Um palpite por partida vale para todos os bolões em que você
+            participa.
+          </p>
+        </div>
+        <Link
+          href="/palpites/impressao"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm font-medium text-neutral-800 outline-none hover:bg-neutral-50 focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
+        >
+          <span className="material-symbols-outlined text-lg" aria-hidden>
+            print
+          </span>
+          Imprimir meus palpites
+        </Link>
+      </div>
 
       {loadError && (
         <p className="text-sm text-red-600 mb-4" role="alert">
@@ -278,7 +298,9 @@ export default function PalpitesPage() {
           aria-controls="palpites-partidas-content"
           id="palpites-partidas-trigger"
         >
-          <span className="text-base font-semibold text-neutral-900">Partidas</span>
+          <span className="text-base font-semibold text-neutral-900">
+            Partidas
+          </span>
           <span
             className={`material-symbols-outlined shrink-0 text-neutral-600 transition-transform duration-200 ${
               partidasOpen ? 'rotate-180' : ''
@@ -288,7 +310,10 @@ export default function PalpitesPage() {
             expand_more
           </span>
         </CollapsibleTrigger>
-        <CollapsibleContent id="palpites-partidas-content" aria-labelledby="palpites-partidas-trigger">
+        <CollapsibleContent
+          id="palpites-partidas-content"
+          aria-labelledby="palpites-partidas-trigger"
+        >
           <div className="px-3 pb-4 pt-3">
             <div className="flex gap-2 mb-4 flex-wrap">
               {PHASES.map((p) => (
@@ -321,36 +346,38 @@ export default function PalpitesPage() {
             ) : null}
 
             <div className="space-y-6">
-              {displayMatchesByDay.map(({ dayKey, label, matches: dayMatches }) => (
-                <section
-                  key={dayKey}
-                  aria-labelledby={`palpites-match-day-${dayKey}`}
-                  className="space-y-2"
-                >
-                  <h2
-                    id={`palpites-match-day-${dayKey}`}
-                    className="text-xs font-semibold text-slate-600 border-b border-slate-200 pb-2 capitalize"
+              {displayMatchesByDay.map(
+                ({ dayKey, label, matches: dayMatches }) => (
+                  <section
+                    key={dayKey}
+                    aria-labelledby={`palpites-match-day-${dayKey}`}
+                    className="space-y-2"
                   >
-                    {label}
-                  </h2>
-                  <div className="flex flex-col gap-2">
-                    {dayMatches.map((match) => {
-                      const bet = bets.find(
-                        (b) => b.match?.documentId === match.documentId
-                      );
-                      return (
-                        <MatchCard
-                          key={`${match.documentId}-${bet?.documentId ?? 'none'}-${bet?.homeScore ?? ''}-${bet?.awayScore ?? ''}`}
-                          match={match}
-                          bet={bet}
-                          onSave={(h, a) => saveBet(match.documentId, h, a)}
-                          detailHref={`/partida/${match.documentId}`}
-                        />
-                      );
-                    })}
-                  </div>
-                </section>
-              ))}
+                    <h2
+                      id={`palpites-match-day-${dayKey}`}
+                      className="text-xs font-semibold text-slate-600 border-b border-slate-200 pb-2 capitalize"
+                    >
+                      {label}
+                    </h2>
+                    <div className="flex flex-col gap-2">
+                      {dayMatches.map((match) => {
+                        const bet = bets.find(
+                          (b) => b.match?.documentId === match.documentId
+                        );
+                        return (
+                          <MatchCard
+                            key={`${match.documentId}-${bet?.documentId ?? 'none'}-${bet?.homeScore ?? ''}-${bet?.awayScore ?? ''}`}
+                            match={match}
+                            bet={bet}
+                            onSave={(h, a) => saveBet(match.documentId, h, a)}
+                            detailHref={`/partida/${match.documentId}`}
+                          />
+                        );
+                      })}
+                    </div>
+                  </section>
+                )
+              )}
               {displayMatches.length === 0 && (
                 <p className="text-gray-500">Nenhuma partida encontrada.</p>
               )}
@@ -371,7 +398,9 @@ export default function PalpitesPage() {
             aria-controls="palpites-simulacao-content"
             id="palpites-simulacao-trigger"
           >
-            <span className="text-base font-semibold text-neutral-900">Simulação dos grupos</span>
+            <span className="text-base font-semibold text-neutral-900">
+              Simulação dos grupos
+            </span>
             <span
               className={`material-symbols-outlined shrink-0 text-neutral-600 transition-transform duration-200 ${
                 simulacaoOpen ? 'rotate-180' : ''
@@ -381,8 +410,14 @@ export default function PalpitesPage() {
               expand_more
             </span>
           </CollapsibleTrigger>
-          <CollapsibleContent id="palpites-simulacao-content" aria-labelledby="palpites-simulacao-trigger">
-            <section className="px-3 pb-4 pt-3" aria-labelledby="palpites-simulacao-trigger">
+          <CollapsibleContent
+            id="palpites-simulacao-content"
+            aria-labelledby="palpites-simulacao-trigger"
+          >
+            <section
+              className="px-3 pb-4 pt-3"
+              aria-labelledby="palpites-simulacao-trigger"
+            >
               <p className="text-xs text-gray-500 mb-4">
                 {simulationGroupKeys.length === 1
                   ? 'Tabela calculada com base nos seus palpites'
@@ -400,7 +435,10 @@ export default function PalpitesPage() {
                     <GroupTable
                       key={group}
                       group={group}
-                      standings={enrichStandingsFlags(groups[group], teamFlagLookup)}
+                      standings={enrichStandingsFlags(
+                        groups[group],
+                        teamFlagLookup
+                      )}
                     />
                   ))}
                 </div>
