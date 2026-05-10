@@ -31,7 +31,13 @@ function statusLabel(status: Match['status']): string {
   }
 }
 
-export function FixtureMatchRow({ match }: { match: Match }) {
+export function FixtureMatchRow({
+  match,
+  showPalpitesLink = true,
+}: {
+  match: Match;
+  showPalpitesLink?: boolean;
+}) {
   const hs = match.homeScore;
   const as = match.awayScore;
   const hasScores = hs != null && as != null;
@@ -75,14 +81,16 @@ export function FixtureMatchRow({ match }: { match: Match }) {
             {' · '}
             {formatMatchDate(match.date)}
           </span>
-          <Link
-            href={`/partida/${encodeURIComponent(match.documentId)}`}
-            className={twMerge(styles.matchDetailTextLinkClass, 'shrink-0')}
-            aria-label="Ver palpites para a partida"
-          >
-            Ver palpites para a partida
-            <ChevronRightIcon className="size-3.5 opacity-80" aria-hidden />
-          </Link>
+          {showPalpitesLink ? (
+            <Link
+              href={`/partida/${encodeURIComponent(match.documentId)}`}
+              className={twMerge(styles.matchDetailTextLinkClass, 'shrink-0')}
+              aria-label="Ver palpites para a partida"
+            >
+              Ver palpites para a partida
+              <ChevronRightIcon className="size-3.5 opacity-80" aria-hidden />
+            </Link>
+          ) : null}
         </div>
       </div>
     </div>

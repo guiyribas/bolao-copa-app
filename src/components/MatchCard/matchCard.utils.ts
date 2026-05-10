@@ -48,3 +48,12 @@ export function formatLocalDateLong(ref: Date = new Date()): string {
     year: 'numeric',
   });
 }
+
+/** Chave `YYYY-MM-DD` no calendário local (ordenável) para agrupar partidas por dia. */
+export function localCalendarDayKey(dateStr: string): string {
+  const d = new Date(dateStr);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}

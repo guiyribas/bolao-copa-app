@@ -16,6 +16,10 @@ import { normalizeMatchesPayload } from '@/lib/match-status';
 import { buildTeamFlagLookup } from '@/lib/team-flag-lookup';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { MatchCard } from '@/components/MatchCard/matchCard';
+import {
+  formatLocalDateLong,
+  localCalendarDayKey,
+} from '@/components/MatchCard/matchCard.utils';
 import { FilterPill } from '@/components/FilterPill/filterPill';
 import { GroupTable } from '@/components/GroupTable/groupTable';
 import type { Match, Bet, TeamStanding } from '@/types';
@@ -196,6 +200,34 @@ export default function PalpitesPage() {
     return sortedGroupsKeys;
   }, [phase, activeGroupKey, sortedGroupsKeys]);
 
+  const displayMatches = useMemo(() => {
+    const list =
+      phase === GROUP_PHASE && activeGroupKey
+        ? matches.filter((m) => getMatchGroupKey(m) === activeGroupKey)
+        : matches;
+    return [...list].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+  }, [matches, phase, activeGroupKey]);
+
+  const displayMatchesByDay = useMemo(() => {
+    const groups: { dayKey: string; label: string; matches: Match[] }[] = [];
+    for (const m of displayMatches) {
+      const dayKey = localCalendarDayKey(m.date);
+      const last = groups[groups.length - 1];
+      if (last?.dayKey === dayKey) {
+        last.matches.push(m);
+      } else {
+        groups.push({
+          dayKey,
+          label: formatLocalDateLong(new Date(m.date)),
+          matches: [m],
+        });
+      }
+    }
+    return groups;
+  }, [displayMatches]);
+
   if (!hasHydrated || !jwt) {
     return (
       <div>
@@ -220,11 +252,6 @@ export default function PalpitesPage() {
         .filter((k): k is string => Boolean(k))
     ),
   ].sort();
-
-  const displayMatches =
-    phase === GROUP_PHASE && activeGroupKey
-      ? matches.filter((m) => getMatchGroupKey(m) === activeGroupKey)
-      : matches;
 
   return (
     <div>
@@ -293,21 +320,37 @@ export default function PalpitesPage() {
               </div>
             ) : null}
 
-            <div className="flex flex-col gap-2">
-              {displayMatches.map((match) => {
-                const bet = bets.find(
-                  (b) => b.match?.documentId === match.documentId
-                );
-                return (
-                  <MatchCard
-                    key={`${match.documentId}-${bet?.documentId ?? 'none'}-${bet?.homeScore ?? ''}-${bet?.awayScore ?? ''}`}
-                    match={match}
-                    bet={bet}
-                    onSave={(h, a) => saveBet(match.documentId, h, a)}
-                    detailHref={`/partida/${match.documentId}`}
-                  />
-                );
-              })}
+            <div className="space-y-6">
+              {displayMatchesByDay.map(({ dayKey, label, matches: dayMatches }) => (
+                <section
+                  key={dayKey}
+                  aria-labelledby={`palpites-match-day-${dayKey}`}
+                  className="space-y-2"
+                >
+                  <h2
+                    id={`palpites-match-day-${dayKey}`}
+                    className="text-xs font-semibold text-slate-600 border-b border-slate-200 pb-2 capitalize"
+                  >
+                    {label}
+                  </h2>
+                  <div className="flex flex-col gap-2">
+                    {dayMatches.map((match) => {
+                      const bet = bets.find(
+                        (b) => b.match?.documentId === match.documentId
+                      );
+                      return (
+                        <MatchCard
+                          key={`${match.documentId}-${bet?.documentId ?? 'none'}-${bet?.homeScore ?? ''}-${bet?.awayScore ?? ''}`}
+                          match={match}
+                          bet={bet}
+                          onSave={(h, a) => saveBet(match.documentId, h, a)}
+                          detailHref={`/partida/${match.documentId}`}
+                        />
+                      );
+                    })}
+                  </div>
+                </section>
+              ))}
               {displayMatches.length === 0 && (
                 <p className="text-gray-500">Nenhuma partida encontrada.</p>
               )}

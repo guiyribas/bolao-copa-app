@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   Root as TabsRoot,
@@ -23,6 +22,7 @@ import { KnockoutBracket } from '@/components/KnockoutBracket/knockoutBracket';
 import {
   formatLocalDateLong,
   isSameLocalCalendarDay,
+  localCalendarDayKey,
 } from '@/components/MatchCard/matchCard.utils';
 import { normalizeMatchesPayload } from '@/lib/match-status';
 import type { Match } from '@/types';
@@ -30,6 +30,8 @@ import type { Match } from '@/types';
 const HOME_TAB_VALUES = ['all', 'today', 'groups', 'knockout'] as const;
 
 const homeTabParser = parseAsStringLiteral(HOME_TAB_VALUES).withDefault('all');
+
+const HOME_FIXTURES_GRID_CLASS = 'grid grid-cols-2 gap-2';
 
 const TAB_TRIGGER_CLASS = twMerge(
   'text-sm px-3 py-2 rounded-t-md border border-b-0 border-slate-200/90 transition-colors',
@@ -40,7 +42,6 @@ const TAB_TRIGGER_CLASS = twMerge(
 );
 
 export default function HomePage() {
-  const router = useRouter();
   const { jwt, hasHydrated } = useAuthStore();
   const [homeTab, setHomeTab] = useQueryState(
     HOME_TAB_QUERY_KEY,
@@ -52,12 +53,8 @@ export default function HomePage() {
 
   useEffect(() => {
     if (!hasHydrated) return;
-    if (!jwt) {
-      router.push('/login');
-      return;
-    }
-
-    apiFetch<unknown>(matchesListPath(undefined), {}, jwt)
+    void Promise.resolve().then(() => setMatchesLoading(true));
+    apiFetch<unknown>(matchesListPath(undefined), {}, jwt ?? null)
       .then((raw) => {
         setMatches(normalizeMatchesPayload(raw));
         setMatchesError(null);
@@ -67,7 +64,7 @@ export default function HomePage() {
         setMatchesError(e instanceof Error ? e.message : String(e));
       })
       .finally(() => setMatchesLoading(false));
-  }, [jwt, router, hasHydrated]);
+  }, [jwt, hasHydrated]);
 
   const sortedAllMatches = useMemo(
     () =>
@@ -87,6 +84,24 @@ export default function HomePage() {
     [sortedAllMatches]
   );
 
+  const sortedAllMatchesByDay = useMemo(() => {
+    const groups: { dayKey: string; label: string; matches: Match[] }[] = [];
+    for (const m of sortedAllMatches) {
+      const dayKey = localCalendarDayKey(m.date);
+      const last = groups[groups.length - 1];
+      if (last?.dayKey === dayKey) {
+        last.matches.push(m);
+      } else {
+        groups.push({
+          dayKey,
+          label: formatLocalDateLong(new Date(m.date)),
+          matches: [m],
+        });
+      }
+    }
+    return groups;
+  }, [sortedAllMatches]);
+
   const groupMatches = useMemo(
     () => sortedAllMatches.filter((m) => m.phase === GROUP_PHASE),
     [sortedAllMatches]
@@ -102,7 +117,8 @@ export default function HomePage() {
   );
 
   if (!hasHydrated) return <p>Carregando...</p>;
-  if (!jwt) return null;
+
+  const showPalpitesLink = Boolean(jwt);
 
   return (
     <div className="space-y-8">
@@ -133,12 +149,14 @@ export default function HomePage() {
                 Partidas e Resultados em tempo real
               </p>
             </div>
-            <Link
-              href={MEUS_BOLOES_PATH}
-              className="inline-flex shrink-0 items-center justify-center rounded-xl bg-linear-to-r from-emerald-800 via-emerald-900 to-emerald-950 px-4 py-2.5 text-sm font-semibold text-yellow-50 shadow-lg shadow-emerald-950/25 transition hover:from-emerald-700 hover:via-emerald-800 hover:to-emerald-900 focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-            >
-              Bolões
-            </Link>
+            {jwt ? (
+              <Link
+                href={MEUS_BOLOES_PATH}
+                className="inline-flex shrink-0 items-center justify-center rounded-xl bg-linear-to-r from-emerald-800 via-emerald-900 to-emerald-950 px-4 py-2.5 text-sm font-semibold text-yellow-50 shadow-lg shadow-emerald-950/25 transition hover:from-emerald-700 hover:via-emerald-800 hover:to-emerald-900 focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+              >
+                Bolões
+              </Link>
+            ) : null}
           </div>
         </div>
 
@@ -179,9 +197,29 @@ export default function HomePage() {
                 Nenhuma partida cadastrada.
               </p>
             ) : (
-              <div className="flex flex-col gap-2">
-                {sortedAllMatches.map((m) => (
-                  <FixtureMatchRow key={m.documentId} match={m} />
+              <div className="space-y-6">
+                {sortedAllMatchesByDay.map(({ dayKey, label, matches: dayMatches }) => (
+                  <section
+                    key={dayKey}
+                    aria-labelledby={`match-day-${dayKey}`}
+                    className="space-y-2"
+                  >
+                    <h2
+                      id={`match-day-${dayKey}`}
+                      className="text-xs font-semibold text-slate-600 border-b border-slate-200 pb-2 capitalize"
+                    >
+                      {label}
+                    </h2>
+                    <div className={HOME_FIXTURES_GRID_CLASS}>
+                      {dayMatches.map((m) => (
+                        <FixtureMatchRow
+                          key={m.documentId}
+                          match={m}
+                          showPalpitesLink={showPalpitesLink}
+                        />
+                      ))}
+                    </div>
+                  </section>
                 ))}
               </div>
             )}
@@ -204,12 +242,16 @@ export default function HomePage() {
               </p>
             ) : (
               <>
-                <p className="text-xs text-neutral-500 mb-3 capitalize">
+                <p className="text-xs font-semibold text-slate-600 border-b border-slate-200 pb-2 mb-2 capitalize">
                   {formatLocalDateLong()}
                 </p>
-                <div className="flex flex-col gap-2">
+                <div className={HOME_FIXTURES_GRID_CLASS}>
                   {todayMatches.map((m) => (
-                    <FixtureMatchRow key={m.documentId} match={m} />
+                    <FixtureMatchRow
+                      key={m.documentId}
+                      match={m}
+                      showPalpitesLink={showPalpitesLink}
+                    />
                   ))}
                 </div>
               </>
@@ -257,7 +299,11 @@ export default function HomePage() {
                   ) : (
                     <div className="flex flex-col gap-2">
                       {groupMatches.map((m) => (
-                        <FixtureMatchRow key={m.documentId} match={m} />
+                        <FixtureMatchRow
+                          key={m.documentId}
+                          match={m}
+                          showPalpitesLink={showPalpitesLink}
+                        />
                       ))}
                     </div>
                   )}

@@ -9,6 +9,7 @@ import {
   HOME_PATH,
   MEUS_BOLOES_PATH,
   REGRAS_E_PONTUACAO_PATH,
+  SOBRE_PATH,
 } from '@/lib/navigation';
 import * as styles from './header.styles';
 
@@ -22,8 +23,8 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const isAuthPage = pathname === '/login' || pathname === '/register';
-  const showNav = hasHydrated && !!jwt && !isAuthPage;
-  const showPublicRulesLink = hasHydrated && !jwt && !isAuthPage;
+  const showUserNav = hasHydrated && !!jwt && !isAuthPage;
+  const showGuestNav = hasHydrated && !jwt;
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -50,7 +51,7 @@ export function Header() {
             priority
             className={styles.logoImage}
           />
-          {showNav ? (
+          {showUserNav ? (
             <div className={styles.logoTextColumn}>
               <span className={styles.logoTitle}>Bolão Copa 2026</span>
               <span className={styles.logoUserName}>{user?.username}</span>
@@ -60,18 +61,50 @@ export function Header() {
           )}
         </Link>
 
-        {showPublicRulesLink && (
-          <nav className="ml-auto md:ml-0" aria-label="Informações">
-            <Link
-              href={REGRAS_E_PONTUACAO_PATH}
-              className={styles.navLink(pathname === REGRAS_E_PONTUACAO_PATH)}
+        {showGuestNav && (
+          <>
+            <nav className={styles.desktopNav} aria-label="Principal">
+              <Link
+                href={HOME_PATH}
+                className={styles.navLink(isHomeActive)}
+              >
+                Partidas e resultados
+              </Link>
+              <Link
+                href={REGRAS_E_PONTUACAO_PATH}
+                className={styles.navLink(pathname === REGRAS_E_PONTUACAO_PATH)}
+              >
+                Regras e pontuação
+              </Link>
+              <Link
+                href={SOBRE_PATH}
+                className={styles.navLink(pathname === SOBRE_PATH)}
+              >
+                Sobre
+              </Link>
+              <Link
+                href="/login"
+                className={styles.navLink(pathname === '/login')}
+              >
+                Entrar
+              </Link>
+            </nav>
+
+            <button
+              type="button"
+              aria-expanded={menuOpen}
+              aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+              onClick={() => setMenuOpen((open) => !open)}
+              className={styles.hamburgerButton}
             >
-              Regras e pontuação
-            </Link>
-          </nav>
+              <span className="material-symbols-outlined" aria-hidden>
+                {menuOpen ? 'close' : 'menu'}
+              </span>
+            </button>
+          </>
         )}
 
-        {showNav && (
+        {showUserNav && (
           <>
             <nav className={styles.desktopNav} aria-label="Principal">
               <Link
@@ -98,6 +131,12 @@ export function Header() {
               >
                 Regras
               </Link>
+              <Link
+                href={SOBRE_PATH}
+                className={styles.navLink(pathname === SOBRE_PATH)}
+              >
+                Sobre
+              </Link>
               <button
                 type="button"
                 onClick={logout}
@@ -122,7 +161,76 @@ export function Header() {
         )}
       </div>
 
-      {menuOpen && showNav && (
+      {menuOpen && showGuestNav && (
+        <div
+          className={styles.mobileOverlay}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
+        >
+          <div className={styles.mobileOverlayBar}>
+            <Link
+              href={HOME_PATH}
+              className={styles.logoLink}
+              onClick={() => setMenuOpen(false)}
+            >
+              <Image
+                src={BRAND_IMAGE}
+                alt=""
+                width={260}
+                height={72}
+                className={styles.logoImage}
+              />
+              <span className={styles.logoTitle}>Bolão Copa 2026</span>
+            </Link>
+            <button
+              type="button"
+              aria-label="Fechar menu"
+              onClick={() => setMenuOpen(false)}
+              className={styles.hamburgerButton}
+            >
+              <span className="material-symbols-outlined" aria-hidden>
+                close
+              </span>
+            </button>
+          </div>
+
+          <nav className={styles.mobileNav} aria-label="Principal">
+            <Link
+              href={HOME_PATH}
+              onClick={() => setMenuOpen(false)}
+              className={styles.mobileNavLink(isHomeActive)}
+            >
+              Partidas e resultados
+            </Link>
+            <Link
+              href={REGRAS_E_PONTUACAO_PATH}
+              onClick={() => setMenuOpen(false)}
+              className={styles.mobileNavLink(
+                pathname === REGRAS_E_PONTUACAO_PATH
+              )}
+            >
+              Regras e pontuação
+            </Link>
+            <Link
+              href={SOBRE_PATH}
+              onClick={() => setMenuOpen(false)}
+              className={styles.mobileNavLink(pathname === SOBRE_PATH)}
+            >
+              Sobre
+            </Link>
+            <Link
+              href="/login"
+              onClick={() => setMenuOpen(false)}
+              className={styles.mobileNavLink(pathname === '/login')}
+            >
+              Entrar
+            </Link>
+          </nav>
+        </div>
+      )}
+
+      {menuOpen && showUserNav && (
         <div
           className={styles.mobileOverlay}
           role="dialog"
@@ -189,6 +297,13 @@ export function Header() {
               )}
             >
               Regras e pontuação
+            </Link>
+            <Link
+              href={SOBRE_PATH}
+              onClick={() => setMenuOpen(false)}
+              className={styles.mobileNavLink(pathname === SOBRE_PATH)}
+            >
+              Sobre
             </Link>
             <button
               type="button"
