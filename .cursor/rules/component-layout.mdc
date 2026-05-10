@@ -1,0 +1,27 @@
+---
+description: Standard file layout for UI components.
+globs: ['components/**/*']
+---
+
+# Component File Layout
+
+Every UI component must use this structure:
+
+```
+ComponentName/
+├── componentName.tsx
+├── componentName.styles.ts
+├── componentName.utils.ts
+├── componentName.constants.ts
+├── componentName.types.ts
+├── componentName.context.tsx
+└── components/
+```
+
+- `componentName.tsx`: Main rendering & composition
+- `componentName.styles.ts`: Tailwind + CVA styles
+- `componentName.utils.ts`: Utilities scoped to this component
+- `componentName.constants.ts`: Constant values scoped here
+- `componentName.types.ts`: Types scoped to this component
+- `componentName.context.tsx`: Local context to prevent prop drilling
+- `/components/`: Subcomponents used only here

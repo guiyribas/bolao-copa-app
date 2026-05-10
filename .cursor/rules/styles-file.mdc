@@ -1,0 +1,52 @@
+---
+description: Tailwind + CVA styling files for components.
+globs: ['components/**/*.styles.ts']
+---
+
+# Styles File Guidelines
+
+Each component may include a `componentName.styles.ts` for Tailwind and CVA:
+
+```ts
+import { cva } from 'class-variance-authority'
+
+export const buttonStyles = cva('px-4 py-2 font-medium', {
+  variants: {
+    intent: {
+      primary: 'bg-blue-500 text-white hover:bg-blue-600',
+      secondary: 'bg-gray-200 text-black',
+    },
+    size: {
+      sm: 'text-sm',
+      lg: 'text-lg',
+    },
+  },
+  defaultVariants: {
+    intent: 'primary',
+    size: 'sm',
+  },
+})
+```
+
+If variants aren't needed, but styles are too much to be inline, use only the `twMerge` helper:
+
+```ts
+import { twMerge } from 'tailwind-merge'
+
+export const styles = twMerge(
+  'flex flex-col tablet:flex-row items-center',
+  'gap-8 tablet:gap-24 p-12 tablet:px-16',
+  'z-raised w-full bg-neutral-50',
+  'border border-neutral-200 rounded-xl',
+)
+```
+
+For styles with no variants but that can be extended via `className`, export a function:
+
+```ts
+import { twMerge } from 'tailwind-merge'
+
+export function container(className?: string) {
+  return twMerge('flex flex-col gap-4 p-4 rounded-lg border', className)
+}
+```
