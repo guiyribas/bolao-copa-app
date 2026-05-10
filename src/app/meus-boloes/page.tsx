@@ -34,18 +34,16 @@ export default function MeusBoloesPage() {
     <div>
       <div className="mb-6">
         <h1 className="text-xl font-bold">Meus bolões</h1>
-        <p className="text-sm text-neutral-600 mt-1">
-          Copa e placar oficial ficam na{' '}
-          <Link href={HOME_PATH} className="underline font-medium text-neutral-800">
+        <p className="mt-2 text-sm leading-relaxed text-neutral-600">
+          Aqui aparecem os bolões em que você participa. Para calendário da
+          Copa, jogos e placar oficial, abra a{' '}
+          <Link
+            href={HOME_PATH}
+            className="font-semibold text-emerald-900 underline decoration-emerald-500/40 underline-offset-[3px] transition hover:text-emerald-950 hover:decoration-emerald-600/55"
+          >
             página inicial
           </Link>
           .
-        </p>
-        <p className="text-sm text-neutral-500 mt-2 max-w-xl">
-          Se você é <strong className="font-medium text-neutral-700">administrador</strong> de um
-          bolão, entre nele pelo link abaixo: aparecerão a aba{' '}
-          <strong className="font-medium text-neutral-700">Admin</strong> (pagamentos e convites) e o
-          bloco para copiar o link de convite. Isso fica neste site, não no painel do Strapi.
         </p>
       </div>
 
@@ -70,7 +68,9 @@ export default function MeusBoloesPage() {
               >
                 <td className="py-3 pr-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
-                    <span className="font-medium text-neutral-900">{m.pool.name}</span>
+                    <span className="font-medium text-neutral-900">
+                      {m.pool.name}
+                    </span>
                     <Link
                       href={`/pool/${m.pool.documentId}/ranking`}
                       className="shrink-0 text-sm font-medium text-neutral-800 underline underline-offset-2 decoration-neutral-300 hover:decoration-neutral-800"

@@ -33,15 +33,19 @@ export const scoreDisplay = twMerge('w-6 text-center');
 export const saveBtn = twMerge(
   'inline-flex w-full shrink-0 sm:w-auto sm:min-w-[5.5rem]',
   'min-h-9 items-center justify-center self-stretch sm:self-auto',
-  'rounded-md px-3 py-2 text-sm font-medium text-white bg-neutral-900',
-  'transition-colors hover:bg-neutral-800',
-  'disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-neutral-900'
+  'rounded-xl px-3 py-2 text-sm font-semibold text-yellow-50',
+  'bg-linear-to-r from-emerald-800 via-emerald-900 to-emerald-950',
+  'shadow-md shadow-emerald-950/25 transition-[background-image,box-shadow]',
+  'hover:from-emerald-700 hover:via-emerald-800 hover:to-emerald-900',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2',
+  'disabled:cursor-not-allowed disabled:opacity-50',
+  'disabled:hover:from-emerald-800 disabled:hover:via-emerald-900 disabled:hover:to-emerald-950'
 );
 export const saveBtnSaved = twMerge(
   'inline-flex w-full shrink-0 sm:w-auto sm:min-w-[5.5rem]',
   'min-h-9 items-center justify-center self-stretch sm:self-auto',
-  'rounded-md px-3 py-2 text-sm font-medium',
-  'border border-green-200 bg-green-50 text-green-700',
+  'rounded-xl px-3 py-2 text-sm font-semibold',
+  'border border-emerald-200 bg-emerald-50 text-emerald-800',
   'disabled:cursor-default disabled:opacity-100'
 );
 export const saveBtnInner = twMerge(

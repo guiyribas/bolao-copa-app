@@ -243,7 +243,7 @@ export default function PalpitesPage() {
       >
         <CollapsibleTrigger
           type="button"
-          className="flex w-full items-center justify-between gap-2 px-3 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 rounded-t-lg border-b border-neutral-100 data-[state=closed]:rounded-lg data-[state=open]:border-b"
+          className="flex w-full items-center justify-between gap-2 px-3 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 rounded-t-lg border-b border-neutral-100 data-[state=closed]:rounded-lg data-[state=open]:border-b"
           aria-controls="palpites-partidas-content"
           id="palpites-partidas-trigger"
         >
@@ -319,7 +319,7 @@ export default function PalpitesPage() {
         >
           <CollapsibleTrigger
             type="button"
-            className="flex w-full items-center justify-between gap-2 px-3 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2 rounded-t-lg border-b border-neutral-100 data-[state=closed]:rounded-lg data-[state=open]:border-b"
+            className="flex w-full items-center justify-between gap-2 px-3 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 rounded-t-lg border-b border-neutral-100 data-[state=closed]:rounded-lg data-[state=open]:border-b"
             aria-controls="palpites-simulacao-content"
             id="palpites-simulacao-trigger"
           >

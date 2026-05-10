@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { twMerge } from 'tailwind-merge';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import {
   HOME_PATH,
+  HOME_TAB_QUERY_KEY,
   MEUS_BOLOES_PATH,
   REGRAS_E_PONTUACAO_PATH,
 } from '@/lib/navigation';
@@ -17,7 +17,15 @@ const BRAND_IMAGE = '/WC26_Logo.avif';
 
 export function Header() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { jwt, user, hasHydrated, logout } = useAuthStore();
+
+  const homeTabParam = searchParams.get(HOME_TAB_QUERY_KEY);
+  const isHomeAllMatchesActive =
+    pathname === HOME_PATH &&
+    (homeTabParam === null ||
+      homeTabParam === '' ||
+      homeTabParam === 'all');
   const [menuOpen, setMenuOpen] = useState(false);
 
   const isAuthPage = pathname === '/login' || pathname === '/register';
@@ -49,7 +57,14 @@ export function Header() {
             priority
             className={styles.logoImage}
           />
-          <span className={styles.logoTitle}>Bolão Copa 2026</span>
+          {showNav ? (
+            <div className={styles.logoTextColumn}>
+              <span className={styles.logoTitle}>Bolão Copa 2026</span>
+              <span className={styles.logoUserName}>{user?.username}</span>
+            </div>
+          ) : (
+            <span className={styles.logoTitle}>Bolão Copa 2026</span>
+          )}
         </Link>
 
         {showPublicRulesLink && (
@@ -66,6 +81,12 @@ export function Header() {
         {showNav && (
           <>
             <nav className={styles.desktopNav} aria-label="Principal">
+              <Link
+                href={`${HOME_PATH}?${HOME_TAB_QUERY_KEY}=all`}
+                className={styles.navLink(isHomeAllMatchesActive)}
+              >
+                Todas as partidas
+              </Link>
               <Link
                 href={MEUS_BOLOES_PATH}
                 className={styles.navLink(pathname === MEUS_BOLOES_PATH)}
@@ -84,7 +105,6 @@ export function Header() {
               >
                 Regras
               </Link>
-              <span className={styles.userName}>{user?.username}</span>
               <button
                 type="button"
                 onClick={logout}
@@ -129,7 +149,10 @@ export function Header() {
                 height={72}
                 className={styles.logoImage}
               />
-              <span className={styles.logoTitle}>Bolão Copa 2026</span>
+              <div className={styles.logoTextColumn}>
+                <span className={styles.logoTitle}>Bolão Copa 2026</span>
+                <span className={styles.logoUserName}>{user?.username}</span>
+              </div>
             </Link>
             <button
               type="button"
@@ -145,36 +168,35 @@ export function Header() {
 
           <nav className={styles.mobileNav} aria-label="Principal">
             <Link
+              href={`${HOME_PATH}?${HOME_TAB_QUERY_KEY}=all`}
+              onClick={() => setMenuOpen(false)}
+              className={styles.mobileNavLink(isHomeAllMatchesActive)}
+            >
+              Todas as partidas
+            </Link>
+            <Link
               href={MEUS_BOLOES_PATH}
               onClick={() => setMenuOpen(false)}
-              className={twMerge(
-                styles.mobileNavLink,
-                pathname === MEUS_BOLOES_PATH && 'font-bold underline'
-              )}
+              className={styles.mobileNavLink(pathname === MEUS_BOLOES_PATH)}
             >
               Meus bolões
             </Link>
             <Link
               href="/palpites"
               onClick={() => setMenuOpen(false)}
-              className={twMerge(
-                styles.mobileNavLink,
-                pathname === '/palpites' && 'font-bold underline'
-              )}
+              className={styles.mobileNavLink(pathname === '/palpites')}
             >
               Palpites
             </Link>
             <Link
               href={REGRAS_E_PONTUACAO_PATH}
               onClick={() => setMenuOpen(false)}
-              className={twMerge(
-                styles.mobileNavLink,
-                pathname === REGRAS_E_PONTUACAO_PATH && 'font-bold underline'
+              className={styles.mobileNavLink(
+                pathname === REGRAS_E_PONTUACAO_PATH
               )}
             >
               Regras e pontuação
             </Link>
-            <span className={styles.mobileUserName}>{user?.username}</span>
             <button
               type="button"
               onClick={() => {

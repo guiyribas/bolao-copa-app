@@ -7,6 +7,9 @@ export const REGRAS_E_PONTUACAO_PATH = '/regras-e-pontuacao';
 /** Página inicial: placar Copa. */
 export const HOME_PATH = '/';
 
+/** Query param da aba na home: `all` | `today` | `groups` | `knockout`. */
+export const HOME_TAB_QUERY_KEY = 'tab';
+
 /** Internal path only; prevents open redirects via `returnUrl`. */
 export function safeReturnUrl(
   raw: string | null | undefined,

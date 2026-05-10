@@ -11,12 +11,16 @@ export type FilterPillProps = {
 
 const base = twMerge(
   'inline-flex min-h-9 shrink-0 items-center justify-center rounded-full border px-3 py-2',
-  'text-sm font-medium transition-colors',
-  'outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2'
+  'text-sm font-semibold transition-[color,box-shadow,background-image]',
+  'outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2'
 );
 
 const inactive = 'border-neutral-200 bg-white text-neutral-800 hover:bg-neutral-50';
-const active = 'border-neutral-900 bg-neutral-900 text-white hover:bg-neutral-800';
+const active = twMerge(
+  'border-transparent text-yellow-50 shadow-sm shadow-emerald-950/25',
+  'bg-linear-to-r from-emerald-800 via-emerald-900 to-emerald-950',
+  'hover:from-emerald-700 hover:via-emerald-800 hover:to-emerald-900'
+);
 
 export function FilterPill({
   selected,

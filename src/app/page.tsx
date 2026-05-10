@@ -15,7 +15,8 @@ import { apiFetch } from '@/lib/api';
 import { matchesListPath } from '@/lib/matches-query';
 import { standingsFromGroupMatches } from '@/lib/standings-from-matches';
 import { isKnockoutPhase, GROUP_PHASE } from '@/lib/match-phases';
-import { MEUS_BOLOES_PATH } from '@/lib/navigation';
+import { HOME_TAB_QUERY_KEY, MEUS_BOLOES_PATH } from '@/lib/navigation';
+import { parseAsStringLiteral, useQueryState } from 'nuqs';
 import { FixtureMatchRow } from '@/components/FixtureMatchRow/fixtureMatchRow';
 import { GroupTable } from '@/components/GroupTable/groupTable';
 import { KnockoutBracket } from '@/components/KnockoutBracket/knockoutBracket';
@@ -25,6 +26,10 @@ import {
 } from '@/components/MatchCard/matchCard.utils';
 import { normalizeMatchesPayload } from '@/lib/match-status';
 import type { Match } from '@/types';
+
+const HOME_TAB_VALUES = ['all', 'today', 'groups', 'knockout'] as const;
+
+const homeTabParser = parseAsStringLiteral(HOME_TAB_VALUES).withDefault('all');
 
 const TAB_TRIGGER_CLASS = twMerge(
   'text-sm px-3 py-2 rounded-t-md border border-b-0 border-slate-200/90 transition-colors',
@@ -37,6 +42,7 @@ const TAB_TRIGGER_CLASS = twMerge(
 export default function HomePage() {
   const router = useRouter();
   const { jwt, hasHydrated } = useAuthStore();
+  const [homeTab, setHomeTab] = useQueryState(HOME_TAB_QUERY_KEY, homeTabParser);
   const [matches, setMatches] = useState<Match[]>([]);
   const [matchesError, setMatchesError] = useState<string | null>(null);
   const [matchesLoading, setMatchesLoading] = useState(true);
@@ -133,7 +139,13 @@ export default function HomePage() {
           </div>
         </div>
 
-        <TabsRoot defaultValue="all" className="w-full">
+        <TabsRoot
+          value={homeTab}
+          onValueChange={(v) =>
+            void setHomeTab(v as (typeof HOME_TAB_VALUES)[number])
+          }
+          className="w-full"
+        >
           <TabsList
             className="flex flex-wrap gap-1 border-b border-slate-200/95 mb-4"
             aria-label="Filtrar por fase"
