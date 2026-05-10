@@ -43,6 +43,10 @@ export interface PoolMembership {
   user: User;
   hasPaid: boolean;
   joinedAt: string;
+  /** Posição no ranking do bolão (1 = primeiro). Só preenchido em `/api/pools/mine/memberships`. */
+  rankingPlace?: number | null;
+  /** Total de participantes no ranking desse bolão. */
+  rankingTotal?: number;
 }
 
 export interface Match {
