@@ -28,5 +28,13 @@ export async function register(
 }
 
 export async function getMe(token: string): Promise<User> {
-  return apiFetch<User>('/api/users/me', {}, token);
+  const body = await apiFetch<unknown>('/api/users/me', {}, token);
+  if (body && typeof body === 'object') {
+    const o = body as Record<string, unknown>;
+    const inner = o.data;
+    if (inner && typeof inner === 'object' && !Array.isArray(inner)) {
+      return inner as User;
+    }
+  }
+  return body as User;
 }

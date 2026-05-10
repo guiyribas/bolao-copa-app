@@ -12,6 +12,7 @@ import { apiFetch } from '@/lib/api';
 import { showErrorToast } from '@/lib/toast';
 import { GROUP_PHASE } from '@/lib/match-phases';
 import { matchesListPath } from '@/lib/matches-query';
+import { normalizeMatchesPayload } from '@/lib/match-status';
 import { resolveTeamFlagUrl } from '@/lib/strapi-media';
 import { MatchCard } from '@/components/MatchCard/matchCard';
 import { FilterPill } from '@/components/FilterPill/filterPill';
@@ -133,7 +134,7 @@ export default function PalpitesPage() {
         const gRes = results[2];
 
         if (mRes.status === 'fulfilled') {
-          setMatches(normalizeList<Match>(mRes.value));
+          setMatches(normalizeMatchesPayload(mRes.value));
         } else {
           setMatches([]);
           const msg =

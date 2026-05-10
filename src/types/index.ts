@@ -1,5 +1,7 @@
 export interface User {
   id: number;
+  /** Strapi 5 — usado em relations e URLs quando `id` numérico não bate com o populate. */
+  documentId?: string;
   username: string;
   email: string;
 }

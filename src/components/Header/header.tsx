@@ -1,12 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import { useAuthStore } from '@/stores/auth-store';
-import { HOME_PATH, MEUS_BOLOES_PATH, REGRAS_E_PONTUACAO_PATH } from '@/lib/navigation';
+import {
+  HOME_PATH,
+  MEUS_BOLOES_PATH,
+  REGRAS_E_PONTUACAO_PATH,
+} from '@/lib/navigation';
 import * as styles from './header.styles';
+
+const BRAND_IMAGE = '/WC26_Logo.avif';
 
 export function Header() {
   const pathname = usePathname();
@@ -15,8 +22,7 @@ export function Header() {
 
   const isAuthPage = pathname === '/login' || pathname === '/register';
   const showNav = hasHydrated && !!jwt && !isAuthPage;
-  const showPublicRulesLink =
-    hasHydrated && !jwt && !isAuthPage;
+  const showPublicRulesLink = hasHydrated && !jwt && !isAuthPage;
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -34,8 +40,16 @@ export function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.headerInner}>
-        <Link href={HOME_PATH} className={styles.logo}>
-          Bolão Copa 2026
+        <Link href={HOME_PATH} className={styles.logoLink}>
+          <Image
+            src={BRAND_IMAGE}
+            alt=""
+            width={260}
+            height={72}
+            priority
+            className={styles.logoImage}
+          />
+          <span className={styles.logoTitle}>Bolão Copa 2026</span>
         </Link>
 
         {showPublicRulesLink && (
@@ -71,7 +85,11 @@ export function Header() {
                 Regras
               </Link>
               <span className={styles.userName}>{user?.username}</span>
-              <button type="button" onClick={logout} className={styles.logoutButton}>
+              <button
+                type="button"
+                onClick={logout}
+                className={styles.logoutButton}
+              >
                 Sair
               </button>
             </nav>
@@ -92,9 +110,27 @@ export function Header() {
       </div>
 
       {menuOpen && showNav && (
-        <div className={styles.mobileOverlay} role="dialog" aria-modal="true" aria-label="Menu">
+        <div
+          className={styles.mobileOverlay}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
+        >
           <div className={styles.mobileOverlayBar}>
-            <span className={styles.logo}>Bolão Copa 2026</span>
+            <Link
+              href={HOME_PATH}
+              className={styles.logoLink}
+              onClick={() => setMenuOpen(false)}
+            >
+              <Image
+                src={BRAND_IMAGE}
+                alt=""
+                width={260}
+                height={72}
+                className={styles.logoImage}
+              />
+              <span className={styles.logoTitle}>Bolão Copa 2026</span>
+            </Link>
             <button
               type="button"
               aria-label="Fechar menu"

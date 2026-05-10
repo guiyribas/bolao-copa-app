@@ -41,6 +41,12 @@ export default function MeusBoloesPage() {
           </Link>
           .
         </p>
+        <p className="text-sm text-neutral-500 mt-2 max-w-xl">
+          Se você é <strong className="font-medium text-neutral-700">administrador</strong> de um
+          bolão, entre nele pelo link abaixo: aparecerão a aba{' '}
+          <strong className="font-medium text-neutral-700">Admin</strong> (pagamentos e convites) e o
+          bloco para copiar o link de convite. Isso fica neste site, não no painel do Strapi.
+        </p>
       </div>
 
       {loading ? (

@@ -5,6 +5,11 @@ export const card = twMerge(
   'border border-neutral-200 rounded p-3 flex flex-col gap-2 text-sm'
 );
 
+/** Partida ao vivo: destaque sem sombra grande (evita “manchar” o card seguinte na lista). */
+export const cardLive = twMerge(
+  'relative ring-2 ring-red-500/35 shadow-sm shadow-neutral-900/10'
+);
+
 /** Mobile: times + placar numa linha; Salvar em linha cheia abaixo. sm+: tudo numa linha. */
 export const mainRow = twMerge(
   'flex w-full flex-col gap-2 sm:flex-row sm:flex-nowrap sm:items-center sm:gap-3 min-h-[2.25rem]'
@@ -32,8 +37,21 @@ export const saveBtn = twMerge(
   'transition-colors hover:bg-neutral-800',
   'disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-neutral-900'
 );
+export const saveBtnSaved = twMerge(
+  'inline-flex w-full shrink-0 sm:w-auto sm:min-w-[5.5rem]',
+  'min-h-9 items-center justify-center self-stretch sm:self-auto',
+  'rounded-md px-3 py-2 text-sm font-medium',
+  'border border-green-200 bg-green-50 text-green-700',
+  'disabled:cursor-default disabled:opacity-100'
+);
 export const saveBtnInner = twMerge(
   'inline-flex min-h-[1.25rem] w-full items-center justify-center gap-1'
+);
+export const inlinePoints = twMerge(
+  'inline-flex w-full shrink-0 sm:w-auto sm:min-w-[5.5rem]',
+  'min-h-9 items-center justify-center self-stretch sm:self-auto',
+  'gap-2 rounded-md px-3 py-2 text-sm',
+  'border border-neutral-200 bg-neutral-50'
 );
 export const resultInfo = twMerge('text-xs tabular-nums text-gray-500');
 export const dateLabel = twMerge('text-xs text-gray-400');

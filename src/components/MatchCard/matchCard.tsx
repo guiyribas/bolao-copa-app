@@ -6,15 +6,22 @@ import type { MatchCardProps } from './matchCard.types';
 import { formatMatchDate, matchCardBorderClass } from './matchCard.utils';
 import * as styles from './matchCard.styles';
 import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
+import { LiveBroadcastDot } from '@/components/LiveBroadcastDot/liveBroadcastDot';
 
 export function MatchCard({ match, bet, onSave }: MatchCardProps) {
   const isPast = new Date(match.date) <= new Date();
   const isFinished = match.status === 'finished';
+  const isLive = match.status === 'live';
   /** Bloqueia se o horário da partida já passou ou se o jogo foi finalizado. */
   const canUpdateScore = !isPast && !isFinished;
   const [home, setHome] = useState<string>(bet?.homeScore?.toString() ?? '');
   const [away, setAway] = useState<string>(bet?.awayScore?.toString() ?? '');
   const [saving, setSaving] = useState(false);
+
+  const hasBet = bet != null;
+  const isDirty =
+    home !== (bet?.homeScore?.toString() ?? '') ||
+    away !== (bet?.awayScore?.toString() ?? '');
 
   async function handleSave() {
     if (!canUpdateScore || home === '' || away === '') return;
@@ -32,7 +39,8 @@ export function MatchCard({ match, bet, onSave }: MatchCardProps) {
   const outcomeBorder = matchCardBorderClass(bet?.points ?? null, match.phase);
 
   return (
-    <div className={twMerge(styles.card, outcomeBorder)}>
+    <div className={twMerge(styles.card, outcomeBorder, isLive && styles.cardLive)}>
+      {isLive ? <LiveBroadcastDot /> : null}
       <div className={styles.mainRow}>
         <div className={styles.matchLine}>
           <div className={styles.teamColHome}>
@@ -81,24 +89,51 @@ export function MatchCard({ match, bet, onSave }: MatchCardProps) {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={!canUpdateScore || saving || home === '' || away === ''}
-          aria-busy={saving}
-          className={styles.saveBtn}
-        >
-          <span className={styles.saveBtnInner}>
-            {saving ? (
-              <span
-                className="inline-block h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent"
-                aria-hidden
-              />
-            ) : (
-              'Salvar'
-            )}
-          </span>
-        </button>
+        {canUpdateScore ? (
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={
+              saving ||
+              home === '' ||
+              away === '' ||
+              (hasBet && !isDirty)
+            }
+            aria-busy={saving}
+            className={
+              hasBet && !isDirty ? styles.saveBtnSaved : styles.saveBtn
+            }
+          >
+            <span className={styles.saveBtnInner}>
+              {saving ? (
+                <span
+                  className="inline-block h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent"
+                  aria-hidden
+                />
+              ) : hasBet && !isDirty ? (
+                'Salvo ✓'
+              ) : hasBet ? (
+                'Atualizar'
+              ) : (
+                'Salvar'
+              )}
+            </span>
+          </button>
+        ) : bet?.points != null ? (
+          <div
+            className={styles.inlinePoints}
+            aria-label={`Pontos nesta partida: ${bet.points}`}
+          >
+            <span className={styles.pointsLabel}>Pts:</span>
+            <span
+              className={
+                bet.points === 0 ? styles.pointsValueZero : styles.pointsValue
+              }
+            >
+              {bet.points === 0 ? '0' : `+${bet.points}`}
+            </span>
+          </div>
+        ) : null}
       </div>
 
       <div className={styles.metaBlock}>
@@ -114,7 +149,7 @@ export function MatchCard({ match, bet, onSave }: MatchCardProps) {
           )}
         </div>
         <div className={styles.metaSideEnd}>
-          {bet?.points != null ? (
+          {canUpdateScore && bet?.points != null ? (
             <div
               className={styles.pointsRow}
               aria-label={`Pontos nesta partida: ${bet.points}`}

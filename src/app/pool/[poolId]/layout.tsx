@@ -1,12 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/auth-store';
+import { getMe } from '@/lib/auth';
 import { apiFetch } from '@/lib/api';
 import { PoolNav } from '@/components/PoolNav/poolNav';
 import { MEUS_BOLOES_PATH } from '@/lib/navigation';
+import { normalizePoolFromApi } from '@/lib/pool-normalize';
+import { isSameUser } from '@/lib/user-match';
 import type { Pool } from '@/types';
 
 function AdminInviteCard({ pool }: { pool: Pool }) {
@@ -71,9 +74,21 @@ export default function PoolLayout({
 }) {
   const params = useParams();
   const poolId = params.poolId as string;
+  const pathname = usePathname();
   const router = useRouter();
   const { jwt, user, hasHydrated } = useAuthStore();
+  const setAuth = useAuthStore((s) => s.setAuth);
   const [pool, setPool] = useState<Pool | null>(null);
+
+  /** Alinha sessão com Strapi (ex.: `documentId`) para comparar com `pool.admin`. */
+  useEffect(() => {
+    if (!hasHydrated || !jwt) return;
+    getMe(jwt)
+      .then((fresh) => setAuth(fresh, jwt))
+      .catch(() => {
+        /* token inválido: fluxo de login cobre outras páginas */
+      });
+  }, [hasHydrated, jwt, setAuth]);
 
   useEffect(() => {
     if (!hasHydrated) return;
@@ -82,27 +97,38 @@ export default function PoolLayout({
       return;
     }
 
-    apiFetch<{ data: Pool }>(
-      `/api/pools/${poolId}?populate=admin`,
+    apiFetch<unknown>(
+      `/api/pools/${poolId}?populate[admin]=true`,
       {},
       jwt
     )
-      .then((res) => setPool(res.data))
+      .then((res) => {
+        const normalized = normalizePoolFromApi(res);
+        if (normalized) setPool(normalized);
+        else router.push(MEUS_BOLOES_PATH);
+      })
       .catch(() => router.push(MEUS_BOLOES_PATH));
   }, [jwt, poolId, router, hasHydrated]);
 
   if (!hasHydrated || !pool) return <p>Carregando...</p>;
 
-  const isAdmin = pool.admin?.id === user?.id;
+  const isAdmin = isSameUser(pool.admin, user);
+  const isRankingPage = pathname?.includes('/ranking') ?? false;
+  const poolDescription = pool.description?.trim();
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <div>
+        <div className="min-w-0 flex-1">
           <Link href={MEUS_BOLOES_PATH} className="text-sm underline">
             ← Meus bolões
           </Link>
           <h1 className="text-xl font-bold mt-1">{pool.name}</h1>
+          {isRankingPage && poolDescription ? (
+            <p className="text-sm text-neutral-600 mt-2 max-w-prose leading-relaxed whitespace-pre-wrap">
+              {poolDescription}
+            </p>
+          ) : null}
         </div>
       </div>
       {isAdmin ? <AdminInviteCard pool={pool} /> : null}

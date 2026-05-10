@@ -23,24 +23,16 @@ import {
   formatLocalDateLong,
   isSameLocalCalendarDay,
 } from '@/components/MatchCard/matchCard.utils';
+import { normalizeMatchesPayload } from '@/lib/match-status';
 import type { Match } from '@/types';
 
 const TAB_TRIGGER_CLASS = twMerge(
-  'text-sm px-3 py-2 rounded-t-md border border-b-0 border-neutral-200',
-  'data-[state=active]:bg-black data-[state=active]:text-white data-[state=inactive]:bg-neutral-50',
-  'data-[state=inactive]:hover:bg-neutral-100 outline-none focus-visible:ring-2 ring-offset-2 ring-neutral-900'
+  'text-sm px-3 py-2 rounded-t-md border border-b-0 border-slate-200/90 transition-colors',
+  'data-[state=active]:border-yellow-400/50 data-[state=active]:bg-linear-to-b data-[state=active]:from-emerald-900 data-[state=active]:to-emerald-950',
+  'data-[state=active]:text-yellow-50 data-[state=active]:shadow-[inset_0_-2px_0_rgba(234,179,8,0.4)]',
+  'data-[state=inactive]:bg-white/90 data-[state=inactive]:text-slate-700 data-[state=inactive]:hover:bg-emerald-50/90',
+  'outline-none focus-visible:ring-2 ring-yellow-500/50 ring-offset-2 ring-offset-white'
 );
-
-function normalizeMatchList(payload: unknown): Match[] {
-  if (
-    payload &&
-    typeof payload === 'object' &&
-    Array.isArray((payload as { data?: unknown }).data)
-  ) {
-    return (payload as { data: Match[] }).data;
-  }
-  return [];
-}
 
 export default function HomePage() {
   const router = useRouter();
@@ -58,7 +50,7 @@ export default function HomePage() {
 
     apiFetch<unknown>(matchesListPath(undefined), {}, jwt)
       .then((raw) => {
-        setMatches(normalizeMatchList(raw));
+        setMatches(normalizeMatchesPayload(raw));
         setMatchesError(null);
       })
       .catch((e) => {
@@ -104,29 +96,46 @@ export default function HomePage() {
   if (!jwt) return null;
 
   return (
-    <div>
-      <section aria-labelledby="copa-real-heading">
-        <div className="flex flex-wrap items-baseline justify-between gap-2 mb-4">
-          <div>
-            <h1 id="copa-real-heading" className="text-xl font-bold">
-              Copa 2026: placar oficial
-            </h1>
-            <p className="text-sm text-neutral-600 mt-1">
-              Resultados reais atualizados no sistema (manual ou por API
-              depois).
-            </p>
+    <div className="space-y-8">
+      <section aria-labelledby="copa-real-heading" className="space-y-6">
+        <div className="relative overflow-hidden rounded-2xl border border-emerald-200/80 bg-linear-to-br from-emerald-50/95 via-white to-amber-50/40 px-5 py-6 shadow-[0_12px_40px_-24px_rgba(6,78,59,0.22)] md:px-8 md:py-8">
+          <div
+            className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full bg-linear-to-br from-emerald-600/22 via-transparent to-emerald-400/10 blur-3xl"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute -bottom-20 -left-12 h-44 w-44 rounded-full bg-linear-to-tr from-amber-400/18 to-transparent blur-3xl"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute bottom-8 right-10 h-32 w-32 rounded-full bg-linear-to-tr from-yellow-400/14 to-transparent blur-3xl md:right-24"
+            aria-hidden
+          />
+
+          <div className="relative flex flex-wrap items-start justify-between gap-5">
+            <div className="max-w-xl space-y-3">
+              <h1
+                id="copa-real-heading"
+                className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl"
+              >
+                Copa do Mundo da FIFA 2026™
+              </h1>
+              <p className="text-sm leading-relaxed text-slate-600 md:text-[15px]">
+                Resultados reais
+              </p>
+            </div>
+            <Link
+              href={MEUS_BOLOES_PATH}
+              className="inline-flex shrink-0 items-center justify-center rounded-xl bg-linear-to-r from-emerald-800 via-emerald-900 to-emerald-950 px-4 py-2.5 text-sm font-semibold text-yellow-50 shadow-lg shadow-emerald-950/25 transition hover:from-emerald-700 hover:via-emerald-800 hover:to-emerald-900 focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+            >
+              Meus bolões
+            </Link>
           </div>
-          <Link
-            href={MEUS_BOLOES_PATH}
-            className="text-sm underline text-neutral-800 shrink-0"
-          >
-            Meus bolões
-          </Link>
         </div>
 
         <TabsRoot defaultValue="all" className="w-full">
           <TabsList
-            className="flex flex-wrap gap-1 border-b border-neutral-200 mb-4"
+            className="flex flex-wrap gap-1 border-b border-slate-200/95 mb-4"
             aria-label="Filtrar por fase"
           >
             <TabsTrigger value="all" className={TAB_TRIGGER_CLASS}>

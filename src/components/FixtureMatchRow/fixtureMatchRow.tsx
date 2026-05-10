@@ -5,6 +5,7 @@ import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
 import { formatMatchDate } from '@/components/MatchCard/matchCard.utils';
 import * as styles from './fixtureMatchRow.styles';
 import { twMerge } from 'tailwind-merge';
+import { LiveBroadcastDot } from '@/components/LiveBroadcastDot/liveBroadcastDot';
 
 function statusBadgeClass(status: Match['status']): string {
   switch (status) {
@@ -32,9 +33,11 @@ export function FixtureMatchRow({ match }: { match: Match }) {
   const hs = match.homeScore;
   const as = match.awayScore;
   const hasScores = hs != null && as != null;
+  const isLive = match.status === 'live';
 
   return (
-    <div className={styles.row}>
+    <div className={twMerge(styles.row, isLive && styles.rowLive)}>
+      {isLive ? <LiveBroadcastDot /> : null}
       <div className={styles.sideHome}>
         {match.homeTeam ? (
           <TeamWithFlag team={match.homeTeam} nameClassName="text-right" />
