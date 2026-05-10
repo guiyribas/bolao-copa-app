@@ -13,7 +13,7 @@ import { useAuthStore } from '@/stores/auth-store';
 import { apiFetch } from '@/lib/api';
 import { matchesListPath } from '@/lib/matches-query';
 import { standingsFromGroupMatches } from '@/lib/standings-from-matches';
-import { isKnockoutPhase, GROUP_PHASE } from '@/lib/match-phases';
+import { isKnockoutPhase } from '@/lib/match-phases';
 import { HOME_TAB_QUERY_KEY, MEUS_BOLOES_PATH } from '@/lib/navigation';
 import { parseAsStringLiteral, useQueryState } from 'nuqs';
 import { FixtureMatchRow } from '@/components/FixtureMatchRow/fixtureMatchRow';
@@ -101,11 +101,6 @@ export default function HomePage() {
     }
     return groups;
   }, [sortedAllMatches]);
-
-  const groupMatches = useMemo(
-    () => sortedAllMatches.filter((m) => m.phase === GROUP_PHASE),
-    [sortedAllMatches]
-  );
 
   const groupStandings = useMemo(
     () => standingsFromGroupMatches(matches),
@@ -282,27 +277,6 @@ export default function HomePage() {
                           key={gk}
                           group={gk}
                           standings={groupStandings[gk]}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <h2 className="text-sm font-semibold text-neutral-800 mb-2">
-                    Calendário da fase de grupos
-                  </h2>
-                  {groupMatches.length === 0 ? (
-                    <p className="text-sm text-neutral-500">
-                      Sem jogos de grupo nesta lista.
-                    </p>
-                  ) : (
-                    <div className="flex flex-col gap-2">
-                      {groupMatches.map((m) => (
-                        <FixtureMatchRow
-                          key={m.documentId}
-                          match={m}
-                          showPalpitesLink={showPalpitesLink}
                         />
                       ))}
                     </div>
