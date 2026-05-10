@@ -1,0 +1,136 @@
+'use client';
+
+import { useState } from 'react';
+import { twMerge } from 'tailwind-merge';
+import type { MatchCardProps } from './matchCard.types';
+import { formatMatchDate, matchCardBorderClass } from './matchCard.utils';
+import * as styles from './matchCard.styles';
+import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
+
+export function MatchCard({ match, bet, onSave }: MatchCardProps) {
+  const isPast = new Date(match.date) <= new Date();
+  const isFinished = match.status === 'finished';
+  /** Bloqueia se o horário da partida já passou ou se o jogo foi finalizado. */
+  const canUpdateScore = !isPast && !isFinished;
+  const [home, setHome] = useState<string>(bet?.homeScore?.toString() ?? '');
+  const [away, setAway] = useState<string>(bet?.awayScore?.toString() ?? '');
+  const [saving, setSaving] = useState(false);
+
+  async function handleSave() {
+    if (!canUpdateScore || home === '' || away === '') return;
+    setSaving(true);
+    try {
+      await onSave(Number(home), Number(away));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const homeTeam = match.homeTeam;
+  const awayTeam = match.awayTeam;
+
+  const outcomeBorder = matchCardBorderClass(bet?.points ?? null, match.phase);
+
+  return (
+    <div className={twMerge(styles.card, outcomeBorder)}>
+      <div className={styles.mainRow}>
+        <div className={styles.matchLine}>
+          <div className={styles.teamColHome}>
+            {homeTeam ? (
+              <TeamWithFlag
+                team={homeTeam}
+                nameClassName={twMerge(styles.teamName, 'text-right')}
+              />
+            ) : (
+              <span className={styles.teamName}>???</span>
+            )}
+          </div>
+
+          {!canUpdateScore ? (
+            <div className={twMerge(styles.scoreCluster, 'font-mono')}>
+              <span className={styles.scoreDisplay}>{bet?.homeScore ?? '-'}</span>
+              <span>x</span>
+              <span className={styles.scoreDisplay}>{bet?.awayScore ?? '-'}</span>
+            </div>
+          ) : (
+            <div className={styles.scoreCluster}>
+              <input
+                type="number"
+                min={0}
+                value={home}
+                onChange={(e) => setHome(e.target.value)}
+                className={styles.scoreInput}
+              />
+              <span>x</span>
+              <input
+                type="number"
+                min={0}
+                value={away}
+                onChange={(e) => setAway(e.target.value)}
+                className={styles.scoreInput}
+              />
+            </div>
+          )}
+
+          <div className={styles.teamColAway}>
+            {awayTeam ? (
+              <TeamWithFlag team={awayTeam} nameClassName={styles.teamName} />
+            ) : (
+              <span className={styles.teamName}>???</span>
+            )}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={!canUpdateScore || saving || home === '' || away === ''}
+          aria-busy={saving}
+          className={styles.saveBtn}
+        >
+          <span className={styles.saveBtnInner}>
+            {saving ? (
+              <span
+                className="inline-block h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent"
+                aria-hidden
+              />
+            ) : (
+              'Salvar'
+            )}
+          </span>
+        </button>
+      </div>
+
+      <div className={styles.metaBlock}>
+        <span className="min-w-0" aria-hidden />
+        <div className={styles.metaCenter}>
+          <span className={styles.dateLabel}>
+            {formatMatchDate(match.date)}
+          </span>
+          {isFinished && (
+            <span className={styles.resultInfo}>
+              {match.homeScore ?? '-'} x {match.awayScore ?? '-'}
+            </span>
+          )}
+        </div>
+        <div className={styles.metaSideEnd}>
+          {bet?.points != null ? (
+            <div
+              className={styles.pointsRow}
+              aria-label={`Pontos nesta partida: ${bet.points}`}
+            >
+              <span className={styles.pointsLabel}>Pontos nesta partida:</span>
+              <span
+                className={
+                  bet.points === 0 ? styles.pointsValueZero : styles.pointsValue
+                }
+              >
+                {bet.points === 0 ? '0' : `+${bet.points}`}
+              </span>
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}

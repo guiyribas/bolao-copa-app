@@ -1,0 +1,12 @@
+import { twMerge } from 'tailwind-merge';
+
+export const row = twMerge('inline-flex items-center gap-1.5 min-w-0 max-w-full');
+export const name = twMerge('truncate font-medium');
+export const flagImg = twMerge(
+  'shrink-0 rounded-[2px] object-cover border border-neutral-200/80',
+  'w-[22px] h-[16px]'
+);
+export const flagPlaceholder = twMerge(
+  'shrink-0 inline-flex items-center justify-center w-[22px] h-[16px]',
+  'rounded-[2px] bg-neutral-100 text-[10px] text-neutral-500 font-mono'
+);

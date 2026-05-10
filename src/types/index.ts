@@ -1,0 +1,93 @@
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+}
+
+export interface Team {
+  documentId: string;
+  name: string;
+  code: string;
+  group: string;
+  /** Upload Strapi (`url` no nível root ou dentro de `data`, conforme o populate). */
+  flag?: { url?: string } | null;
+}
+
+export interface Pool {
+  documentId: string;
+  name: string;
+  description?: string;
+  inviteCode: string;
+  /** URL completa retornada pela API na criação (FRONTEND_URL/invite/CODE). */
+  inviteLink?: string | null;
+  admin?: User;
+}
+
+export interface PoolMembership {
+  documentId: string;
+  pool: Pool;
+  user: User;
+  hasPaid: boolean;
+  joinedAt: string;
+}
+
+export interface Match {
+  documentId: string;
+  homeTeam: Team;
+  awayTeam: Team;
+  date: string;
+  venue: string;
+  homeScore: number | null;
+  awayScore: number | null;
+  phase: string;
+  group?: string;
+  status: 'scheduled' | 'live' | 'finished';
+  matchNumber: number;
+}
+
+export interface Bet {
+  documentId: string;
+  user: User;
+  match: Match;
+  homeScore: number;
+  awayScore: number;
+  points: number | null;
+}
+
+export interface RankingEntry {
+  userId: string;
+  username: string;
+  /** Total de pontos no bolão. */
+  points: number;
+  /** Pontos só na fase de grupos, quando a API enviar o breakdown. */
+  pointsGroupPhase?: number | null;
+  /** Pontos só no mata-mata, quando a API enviar o breakdown. */
+  pointsKnockout?: number | null;
+}
+
+export interface TeamStanding {
+  teamId: string;
+  teamName: string;
+  teamCode: string;
+  /** Da API de mídia do time, quando existir; senão a UI usa CDN pelo `teamCode`. */
+  flagUrl?: string | null;
+  played: number;
+  wins: number;
+  draws: number;
+  losses: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  goalDifference: number;
+  points: number;
+}
+
+export interface MemberEntry {
+  id: number;
+  /** Document ID do usuário (Strapi 5); usar no PATCH de pagamento. */
+  userDocumentId: string;
+  username: string;
+  email: string;
+  hasPaid: boolean;
+  joinedAt: string;
+  membershipId: string;
+}
