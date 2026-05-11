@@ -11,9 +11,8 @@ import {
   REGRAS_E_PONTUACAO_PATH,
   SOBRE_PATH,
 } from '@/lib/navigation';
+import { SITE_BRAND_LOGO_PATH } from '@/lib/site-brand';
 import * as styles from './header.styles';
-
-const BRAND_IMAGE = '/WC26_Logo.avif';
 
 export function Header() {
   const pathname = usePathname();
@@ -44,7 +43,7 @@ export function Header() {
       <div className={styles.headerInner}>
         <Link href={HOME_PATH} className={styles.logoLink}>
           <Image
-            src={BRAND_IMAGE}
+            src={SITE_BRAND_LOGO_PATH}
             alt=""
             width={260}
             height={72}
@@ -175,7 +174,7 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
             >
               <Image
-                src={BRAND_IMAGE}
+                src={SITE_BRAND_LOGO_PATH}
                 alt=""
                 width={260}
                 height={72}
@@ -244,7 +243,7 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
             >
               <Image
-                src={BRAND_IMAGE}
+                src={SITE_BRAND_LOGO_PATH}
                 alt=""
                 width={260}
                 height={72}

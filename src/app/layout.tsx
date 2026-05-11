@@ -1,8 +1,8 @@
-import type { Metadata } from 'next';
 import { Geist } from 'next/font/google';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Header } from '@/components/Header/header';
 import { AppToaster } from '@/components/AppToaster/app-toaster';
+import { defaultSiteMetadata } from '@/lib/site-metadata';
 import './globals.css';
 
 const geistSans = Geist({
@@ -10,10 +10,7 @@ const geistSans = Geist({
   subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
-  title: 'Bolão Copa 2026',
-  description: 'Bolão da Copa do Mundo 2026',
-};
+export const metadata = defaultSiteMetadata;
 
 export default function RootLayout({
   children,

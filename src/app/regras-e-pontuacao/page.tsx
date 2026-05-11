@@ -5,6 +5,7 @@ import {
   tabelaPontuacaoPartidas,
 } from '@/lib/regras-pontuacao';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
+import { SiteFifaDisclaimer } from '@/components/SiteFifaDisclaimer/siteFifaDisclaimer';
 
 export const metadata: Metadata = {
   title: `${REGRAS_PONTUACAO_META.title} · Bolão Copa 2026`,
@@ -177,6 +178,8 @@ export default function RegrasEPontuacaoPage() {
           </p>
         </div>
       </section>
+
+      <SiteFifaDisclaimer />
     </div>
   );
 }

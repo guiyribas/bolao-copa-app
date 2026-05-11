@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
+import { SiteFifaDisclaimer } from '@/components/SiteFifaDisclaimer/siteFifaDisclaimer';
 import { ApiError, apiFetch } from '@/lib/api';
 const sectionClass = 'mb-10 last:mb-0';
 const h2Class = 'text-lg font-semibold text-neutral-900 mb-2';
@@ -350,6 +351,7 @@ export function SobreForm() {
             interface e da API está disponível para consulta, aprendizado ou
             sugestões.
           </p>
+          <SiteFifaDisclaimer className="mt-3" />
           <OpenSourceRepoLinks />
           <p>
             Por ser um serviço à comunidade, os custos de hospedagem e operação
