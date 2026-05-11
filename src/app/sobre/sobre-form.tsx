@@ -370,7 +370,9 @@ export function SobreForm() {
         </div>
         <SupportQrBlock />
       </section>
-      <SiteFifaDisclaimer className="mt-3" />
+      <div className="mt-3">
+        <SiteFifaDisclaimer />
+      </div>
     </div>
   );
 }

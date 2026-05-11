@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import type { Match } from '@/types';
+import { selecaoPath } from '@/lib/navigation';
 import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
 import { formatMatchDate } from '@/components/MatchCard/matchCard.utils';
 import * as styles from './fixtureMatchRow.styles';
@@ -48,7 +49,15 @@ export function FixtureMatchRow({
       {isLive ? <LiveBroadcastDot /> : null}
       <div className={styles.sideHome}>
         {match.homeTeam ? (
-          <TeamWithFlag team={match.homeTeam} nameClassName="text-right" />
+          <TeamWithFlag
+            team={match.homeTeam}
+            nameClassName="text-right"
+            href={
+              match.homeTeam.documentId
+                ? selecaoPath(match.homeTeam.documentId)
+                : undefined
+            }
+          />
         ) : (
           <span>-</span>
         )}
@@ -69,7 +78,18 @@ export function FixtureMatchRow({
       </div>
 
       <div className={styles.side}>
-        {match.awayTeam ? <TeamWithFlag team={match.awayTeam} /> : <span>-</span>}
+        {match.awayTeam ? (
+          <TeamWithFlag
+            team={match.awayTeam}
+            href={
+              match.awayTeam.documentId
+                ? selecaoPath(match.awayTeam.documentId)
+                : undefined
+            }
+          />
+        ) : (
+          <span>-</span>
+        )}
       </div>
 
       <div className={styles.meta}>

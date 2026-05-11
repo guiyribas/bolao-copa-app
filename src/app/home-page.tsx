@@ -22,9 +22,9 @@ import { KnockoutBracket } from '@/components/KnockoutBracket/knockoutBracket';
 import {
   formatLocalDateLong,
   isSameLocalCalendarDay,
-  localCalendarDayKey,
 } from '@/components/MatchCard/matchCard.utils';
 import { normalizeMatchesPayload } from '@/lib/match-status';
+import { groupMatchesByLocalDay } from '@/lib/team-matches';
 import type { Match } from '@/types';
 
 const HOME_TAB_VALUES = ['all', 'today', 'groups', 'knockout'] as const;
@@ -84,23 +84,10 @@ export default function HomePage() {
     [sortedAllMatches]
   );
 
-  const sortedAllMatchesByDay = useMemo(() => {
-    const groups: { dayKey: string; label: string; matches: Match[] }[] = [];
-    for (const m of sortedAllMatches) {
-      const dayKey = localCalendarDayKey(m.date);
-      const last = groups[groups.length - 1];
-      if (last?.dayKey === dayKey) {
-        last.matches.push(m);
-      } else {
-        groups.push({
-          dayKey,
-          label: formatLocalDateLong(new Date(m.date)),
-          matches: [m],
-        });
-      }
-    }
-    return groups;
-  }, [sortedAllMatches]);
+  const sortedAllMatchesByDay = useMemo(
+    () => groupMatchesByLocalDay(sortedAllMatches),
+    [sortedAllMatches]
+  );
 
   const groupStandings = useMemo(
     () => standingsFromGroupMatches(matches),

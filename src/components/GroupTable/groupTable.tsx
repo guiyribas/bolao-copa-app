@@ -1,5 +1,6 @@
 import type { GroupTableProps } from './groupTable.types';
 import * as styles from './groupTable.styles';
+import { selecaoPath } from '@/lib/navigation';
 import { StandingWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
 
 export function GroupTable({ group, standings }: GroupTableProps) {
@@ -30,6 +31,7 @@ export function GroupTable({ group, standings }: GroupTableProps) {
                   code={team.teamCode}
                   name={team.teamName || team.teamCode}
                   flagUrl={team.flagUrl}
+                  href={team.teamId ? selecaoPath(team.teamId) : undefined}
                 />
               </td>
               <td className={styles.cellPoints}>{team.points}</td>

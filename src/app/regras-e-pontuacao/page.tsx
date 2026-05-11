@@ -5,7 +5,6 @@ import {
 } from '@/lib/regras-pontuacao';
 import { pageMetadata } from '@/lib/site-metadata';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
-import { SiteFifaDisclaimer } from '@/components/SiteFifaDisclaimer/siteFifaDisclaimer';
 
 export const metadata = pageMetadata(REGRAS_PONTUACAO_META.title, {
   description: REGRAS_PONTUACAO_META.description,

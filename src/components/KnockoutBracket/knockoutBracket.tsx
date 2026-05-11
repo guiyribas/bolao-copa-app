@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import type { Match } from '@/types';
+import { selecaoPath } from '@/lib/navigation';
 import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
 import { formatMatchDate } from '@/components/MatchCard/matchCard.utils';
 import { resolveTeamFlagUrl } from '@/lib/strapi-media';
@@ -63,6 +64,7 @@ function BracketTeamRow({
           team={team}
           className="min-w-0 flex-1"
           nameClassName={twMerge(styles.teamName, 'text-[11px]')}
+          href={selecaoPath(team.documentId)}
         />
         {score != null ? <span className={styles.scoreInline}>{score}</span> : null}
       </div>

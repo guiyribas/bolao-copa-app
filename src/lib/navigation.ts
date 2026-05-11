@@ -10,6 +10,11 @@ export const SOBRE_PATH = '/sobre';
 /** Página inicial: placar Copa. */
 export const HOME_PATH = '/';
 
+/** Página pública de uma seleção (`documentId` do time no Strapi). */
+export function selecaoPath(teamDocumentId: string): string {
+  return `/selecao/${encodeURIComponent(teamDocumentId)}`;
+}
+
 /** Pedido de e-mail para redefinir senha. */
 export const FORGOT_PASSWORD_PATH = '/forgot-password';
 

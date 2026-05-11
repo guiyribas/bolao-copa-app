@@ -12,6 +12,7 @@ import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
 import { LiveBroadcastDot } from '@/components/LiveBroadcastDot/liveBroadcastDot';
 import { matchDetailTextLinkClass } from '@/components/FixtureMatchRow/fixtureMatchRow.styles';
 import { areMatchOpponentsDefined } from '@/lib/match-opponents';
+import { selecaoPath } from '@/lib/navigation';
 
 export function MatchCard({
   match,
@@ -61,6 +62,9 @@ export function MatchCard({
           <TeamWithFlag
             team={homeTeam}
             nameClassName={twMerge(styles.teamName, 'text-right')}
+            href={
+              homeTeam.documentId ? selecaoPath(homeTeam.documentId) : undefined
+            }
           />
         ) : (
           <span className={styles.teamName}>???</span>
@@ -107,7 +111,13 @@ export function MatchCard({
 
       <div className={styles.teamColAway}>
         {awayTeam ? (
-          <TeamWithFlag team={awayTeam} nameClassName={styles.teamName} />
+          <TeamWithFlag
+            team={awayTeam}
+            nameClassName={styles.teamName}
+            href={
+              awayTeam.documentId ? selecaoPath(awayTeam.documentId) : undefined
+            }
+          />
         ) : (
           <span className={styles.teamName}>???</span>
         )}
@@ -115,24 +125,9 @@ export function MatchCard({
     </>
   );
 
-  const matchLineEl =
-    !canShowEditor && detailHref ? (
-      <Link
-        href={detailHref}
-        className={twMerge(
-          styles.matchLine,
-          'cursor-pointer rounded-md no-underline text-inherit outline-offset-2 transition-colors',
-          '-mx-1 min-w-0 flex-1 px-1 py-0.5 hover:bg-neutral-50/90'
-        )}
-        aria-label="Ver palpites para a partida"
-      >
-        {matchLineInner}
-      </Link>
-    ) : (
-      <div className={twMerge(styles.matchLine, 'min-w-0 flex-1')}>
-        {matchLineInner}
-      </div>
-    );
+  const matchLineEl = (
+    <div className={twMerge(styles.matchLine, 'min-w-0 flex-1')}>{matchLineInner}</div>
+  );
 
   return (
     <div
@@ -140,7 +135,6 @@ export function MatchCard({
         styles.card,
         outcomeBorder,
         isLive && styles.cardLive,
-        detailHref && 'transition-shadow hover:shadow-sm',
         bettingLocked &&
           'bg-neutral-50/90 opacity-[0.88] saturate-[0.92] shadow-none'
       )}
