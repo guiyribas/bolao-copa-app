@@ -17,7 +17,7 @@ import { FixtureMatchRow } from '@/components/FixtureMatchRow/fixtureMatchRow';
 import { TeamSelectionHero } from '@/components/TeamSelectionHero/teamSelectionHero';
 import type { Match, Team } from '@/types';
 
-const FIXTURES_GRID_CLASS = 'grid grid-cols-1 md:grid-cols-2 gap-2';
+const FIXTURES_LIST_CLASS = 'flex flex-col gap-2';
 
 export default function SelecaoPage() {
   const params = useParams();
@@ -108,7 +108,7 @@ export default function SelecaoPage() {
                     >
                       {label}
                     </h3>
-                    <div className={FIXTURES_GRID_CLASS}>
+                    <div className={FIXTURES_LIST_CLASS}>
                       {dayMatches.map((m) => (
                         <FixtureMatchRow
                           key={m.documentId}
