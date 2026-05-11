@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
 import {
   Root as TabsRoot,
   List as TabsList,
@@ -14,9 +13,10 @@ import { apiFetch } from '@/lib/api';
 import { matchesListPath } from '@/lib/matches-query';
 import { standingsFromGroupMatches } from '@/lib/standings-from-matches';
 import { isKnockoutPhase } from '@/lib/match-phases';
-import { HOME_TAB_QUERY_KEY, MEUS_BOLOES_PATH } from '@/lib/navigation';
+import { HOME_TAB_QUERY_KEY } from '@/lib/navigation';
 import { parseAsStringLiteral, useQueryState } from 'nuqs';
 import { FixtureMatchRow } from '@/components/FixtureMatchRow/fixtureMatchRow';
+import { HomePalpitesFab } from '@/components/HomePalpitesFab/homePalpitesFab';
 import { GroupTable } from '@/components/GroupTable/groupTable';
 import { KnockoutBracket } from '@/components/KnockoutBracket/knockoutBracket';
 import {
@@ -132,26 +132,16 @@ export default function HomePage() {
             aria-hidden
           />
 
-          <div className="relative flex flex-wrap items-start justify-between gap-5">
-            <div className="max-w-xl space-y-3">
-              <h1
-                id="copa-real-heading"
-                className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl"
-              >
-                Copa do Mundo da FIFA 2026™
-              </h1>
-              <p className="text-sm leading-relaxed text-slate-600 md:text-[15px]">
-                Partidas e Resultados em tempo real
-              </p>
-            </div>
-            {jwt ? (
-              <Link
-                href={MEUS_BOLOES_PATH}
-                className="inline-flex shrink-0 items-center justify-center rounded-xl bg-linear-to-r from-emerald-800 via-emerald-900 to-emerald-950 px-4 py-2.5 text-sm font-semibold text-yellow-50 shadow-lg shadow-emerald-950/25 transition hover:from-emerald-700 hover:via-emerald-800 hover:to-emerald-900 focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-              >
-                Bolões
-              </Link>
-            ) : null}
+          <div className="relative max-w-xl space-y-3">
+            <h1
+              id="copa-real-heading"
+              className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl"
+            >
+              Copa do Mundo da FIFA 2026™
+            </h1>
+            <p className="text-sm leading-relaxed text-slate-600 md:text-[15px]">
+              Partidas e Resultados em tempo real
+            </p>
           </div>
         </div>
 
@@ -163,7 +153,7 @@ export default function HomePage() {
           className="w-full"
         >
           <TabsList
-            className="flex flex-wrap gap-1 border-b border-slate-200/95 mb-4"
+            className="mb-4 flex flex-wrap gap-1 border-b border-slate-200/95"
             aria-label="Filtrar por fase"
           >
             <TabsTrigger value="all" className={TAB_TRIGGER_CLASS}>
@@ -299,6 +289,7 @@ export default function HomePage() {
           </TabsContent>
         </TabsRoot>
       </section>
+      {showPalpitesLink ? <HomePalpitesFab /> : null}
     </div>
   );
 }
