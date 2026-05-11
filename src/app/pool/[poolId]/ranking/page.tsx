@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import { apiFetch } from '@/lib/api';
 import { RankingTable } from '@/components/RankingTable/rankingTable';
+import { usePoolLayout } from '@/contexts/pool-layout-context';
 import type { RankingEntry } from '@/types';
 
 function pickNum(row: Record<string, unknown>, keys: string[]): number | undefined {
@@ -57,6 +58,7 @@ function normalizeRankingEntry(raw: unknown): RankingEntry | null {
 export default function RankingPage() {
   const params = useParams();
   const poolId = params.poolId as string;
+  const { pool } = usePoolLayout();
   const { jwt, hasHydrated } = useAuthStore();
   const [ranking, setRanking] = useState<RankingEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -89,7 +91,7 @@ export default function RankingPage() {
       {ranking.length === 0 ? (
         <p className="text-gray-500">Nenhum palpite computado ainda.</p>
       ) : (
-        <RankingTable ranking={ranking} />
+        <RankingTable ranking={ranking} admin={pool.admin} />
       )}
     </div>
   );

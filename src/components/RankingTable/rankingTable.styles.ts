@@ -39,3 +39,8 @@ export const nameSubHeader = twMerge(
 export const pointsSubHeader = twMerge(
   'py-3 px-2 text-right text-[11px] font-medium normal-case tracking-normal text-neutral-500'
 );
+export const participantCell = twMerge('inline-flex items-center gap-2');
+export const adminBadge = twMerge(
+  'text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded border',
+  'border-neutral-300 text-neutral-600 bg-neutral-50'
+);

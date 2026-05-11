@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import type { RankingTableProps } from './rankingTable.types';
+import { isRankingEntryAdmin } from './rankingTable.utils';
 import * as styles from './rankingTable.styles';
+
+const ADMIN_BADGE_LABEL = 'Administrador do bolão';
 
 function pointsCellValue(n: number | null | undefined): string {
   if (n == null || Number.isNaN(Number(n))) return '-';
@@ -26,7 +29,7 @@ function nameClassForRank(rank: number): string {
   return styles.nameCell;
 }
 
-export function RankingTable({ ranking }: RankingTableProps) {
+export function RankingTable({ ranking, admin }: RankingTableProps) {
   return (
     <div className={styles.wrapper}>
       <table className={styles.table}>
@@ -50,12 +53,23 @@ export function RankingTable({ ranking }: RankingTableProps) {
               <tr key={entry.userId} className={rowClassForRank(rank)}>
                 <td className={posClassForRank(rank)}>{rank}</td>
                 <td className={nameClassForRank(rank)}>
-                  <Link
-                    href={`/user/${encodeURIComponent(entry.username)}`}
-                    className="underline underline-offset-2 decoration-neutral-400 hover:decoration-neutral-900 hover:text-neutral-950"
-                  >
-                    {entry.username}
-                  </Link>
+                  <span className={styles.participantCell}>
+                    <Link
+                      href={`/user/${encodeURIComponent(entry.username)}`}
+                      className="underline underline-offset-2 decoration-neutral-400 hover:decoration-neutral-900 hover:text-neutral-950"
+                    >
+                      {entry.username}
+                    </Link>
+                    {isRankingEntryAdmin(entry, admin) ? (
+                      <span
+                        className={styles.adminBadge}
+                        title={ADMIN_BADGE_LABEL}
+                        aria-label={ADMIN_BADGE_LABEL}
+                      >
+                        Admin
+                      </span>
+                    ) : null}
+                  </span>
                 </td>
                 <td className={styles.pointsCell}>
                   {pointsCellValue(entry.pointsGroupPhase)}
