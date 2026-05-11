@@ -177,8 +177,6 @@ export default function RegrasEPontuacaoPage() {
           </p>
         </div>
       </section>
-
-      <SiteFifaDisclaimer />
     </div>
   );
 }

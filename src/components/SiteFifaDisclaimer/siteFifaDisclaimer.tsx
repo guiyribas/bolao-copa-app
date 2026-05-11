@@ -9,11 +9,7 @@ type SiteFifaDisclaimerProps = {
 
 export function SiteFifaDisclaimer({ className }: SiteFifaDisclaimerProps) {
   return (
-    <aside
-      aria-label="Aviso legal"
-      role="note"
-      className={className ? `${boxClass} ${className}` : boxClass}
-    >
+    <aside aria-label="Aviso legal" role="note" className="italic">
       <p className="m-0">{SITE_FIFA_DISCLAIMER}</p>
     </aside>
   );

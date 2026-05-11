@@ -351,7 +351,6 @@ export function SobreForm() {
             interface e da API está disponível para consulta, aprendizado ou
             sugestões.
           </p>
-          <SiteFifaDisclaimer className="mt-3" />
           <OpenSourceRepoLinks />
           <p>
             Por ser um serviço à comunidade, os custos de hospedagem e operação
@@ -371,6 +370,7 @@ export function SobreForm() {
         </div>
         <SupportQrBlock />
       </section>
+      <SiteFifaDisclaimer className="mt-3" />
     </div>
   );
 }
