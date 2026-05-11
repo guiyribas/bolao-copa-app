@@ -2,15 +2,27 @@ import { apiFetch } from './api';
 import { normalizePoolFromApi } from './pool-normalize';
 import type { Pool } from '@/types';
 
-export async function fetchPoolByInviteCode(
-  inviteCode: string
-): Promise<Pool | null> {
-  const res = await apiFetch<{ data: unknown[] }>(
-    `/api/pools?filters[inviteCode][$eq]=${encodeURIComponent(inviteCode)}`
-  );
+async function fetchPoolFromListFilter(path: string): Promise<Pool | null> {
+  const res = await apiFetch<{ data: unknown[] }>(path);
   const first = res.data?.[0];
   if (first == null) return null;
   return normalizePoolFromApi({ data: first });
+}
+
+export async function fetchPoolByInviteCode(
+  inviteCode: string
+): Promise<Pool | null> {
+  return fetchPoolFromListFilter(
+    `/api/pools?filters[inviteCode][$eq]=${encodeURIComponent(inviteCode)}`
+  );
+}
+
+export async function fetchPoolByDocumentId(
+  documentId: string
+): Promise<Pool | null> {
+  return fetchPoolFromListFilter(
+    `/api/pools?filters[documentId][$eq]=${encodeURIComponent(documentId)}`
+  );
 }
 
 export async function joinPoolByInviteCode(

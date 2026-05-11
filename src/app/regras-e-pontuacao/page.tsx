@@ -1,16 +1,15 @@
-import type { Metadata } from 'next';
 import {
   REGRAS_PONTUACAO_META,
   esclarecimentosPontuacao,
   tabelaPontuacaoPartidas,
 } from '@/lib/regras-pontuacao';
+import { pageMetadata } from '@/lib/site-metadata';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { SiteFifaDisclaimer } from '@/components/SiteFifaDisclaimer/siteFifaDisclaimer';
 
-export const metadata: Metadata = {
-  title: `${REGRAS_PONTUACAO_META.title} · Bolão Copa 2026`,
+export const metadata = pageMetadata(REGRAS_PONTUACAO_META.title, {
   description: REGRAS_PONTUACAO_META.description,
-};
+});
 
 const sectionClass = 'mb-8 last:mb-0';
 const h2Class = 'text-lg font-semibold text-neutral-900 mb-2';

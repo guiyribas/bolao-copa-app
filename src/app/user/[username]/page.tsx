@@ -1,8 +1,10 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { MatchCard } from '@/components/MatchCard/matchCard';
 import { matchesListPath } from '@/lib/matches-query';
 import { normalizeBetsPayload, normalizeMatchesPayload } from '@/lib/match-status';
+import { pageMetadata } from '@/lib/site-metadata';
 import {
   buildTeamFlagLookup,
   enrichBetsWithTeamFlagLookup,
@@ -11,6 +13,14 @@ import {
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
 
 type PageProps = { params: Promise<{ username: string }> };
+
+export async function generateMetadata({
+  params,
+}: Pick<PageProps, 'params'>): Promise<Metadata> {
+  const { username } = await params;
+  const displayName = decodeURIComponent(username).trim() || 'Perfil público';
+  return pageMetadata(`Perfil público — ${displayName}`);
+}
 
 function LoadError({ kind, status }: { kind: 'network' | 'http'; status?: number }) {
   return (

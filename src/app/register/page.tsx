@@ -1,5 +1,8 @@
 import { Suspense } from 'react';
+import { pageMetadata } from '@/lib/site-metadata';
 import { RegisterForm } from './register-form';
+
+export const metadata = pageMetadata('Cadastro');
 
 export default function RegisterPage() {
   return (

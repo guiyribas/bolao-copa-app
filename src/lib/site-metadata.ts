@@ -2,6 +2,33 @@ import type { Metadata } from 'next';
 import { SITE_BRAND_LOGO_PATH, SITE_DESCRIPTION, SITE_NAME } from '@/lib/site-brand';
 import { getSiteUrl } from '@/lib/site-url';
 
+type PageMetadataOptions = {
+  description?: string;
+  openGraph?: Metadata['openGraph'];
+  twitter?: Metadata['twitter'];
+};
+
+export function pageMetadata(
+  title: string,
+  options: PageMetadataOptions = {}
+): Metadata {
+  const metadata: Metadata = { title };
+
+  if (options.description) {
+    metadata.description = options.description;
+  }
+
+  if (options.openGraph) {
+    metadata.openGraph = options.openGraph;
+  }
+
+  if (options.twitter) {
+    metadata.twitter = options.twitter;
+  }
+
+  return metadata;
+}
+
 export const defaultSiteMetadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {

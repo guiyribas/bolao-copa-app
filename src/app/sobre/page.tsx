@@ -1,11 +1,10 @@
-import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/site-metadata';
 import { SobreForm } from './sobre-form';
 
-export const metadata: Metadata = {
-  title: 'Sobre · Bolão Copa 2026',
+export const metadata = pageMetadata('Sobre', {
   description:
     'Sobre o projeto (código aberto), apoio opcional e pedido de criação de um novo bolão.',
-};
+});
 
 export default function SobrePage() {
   return <SobreForm />;
