@@ -31,7 +31,7 @@ const HOME_TAB_VALUES = ['all', 'today', 'groups', 'knockout'] as const;
 
 const homeTabParser = parseAsStringLiteral(HOME_TAB_VALUES).withDefault('all');
 
-const HOME_FIXTURES_GRID_CLASS = 'grid grid-cols-2 gap-2';
+const HOME_FIXTURES_GRID_CLASS = 'grid grid-cols-1 md:grid-cols-2 gap-2';
 
 const TAB_TRIGGER_CLASS = twMerge(
   'text-sm px-3 py-2 rounded-t-md border border-b-0 border-slate-200/90 transition-colors',
