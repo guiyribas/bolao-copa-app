@@ -6,13 +6,25 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import {
+  FORGOT_PASSWORD_PATH,
   HOME_PATH,
   MEUS_BOLOES_PATH,
   REGRAS_E_PONTUACAO_PATH,
+  RESET_PASSWORD_PATH,
   SOBRE_PATH,
 } from '@/lib/navigation';
 import { SITE_BRAND_LOGO_PATH } from '@/lib/site-brand';
+import type { User } from '@/types';
 import * as styles from './header.styles';
+
+function formatHeaderUserLabel(
+  user: Pick<User, 'username' | 'email'> | null | undefined
+): string {
+  if (!user?.username) return '';
+  const email = user.email?.trim();
+  if (!email) return user.username;
+  return `${user.username} (${email})`;
+}
 
 export function Header() {
   const pathname = usePathname();
@@ -21,9 +33,14 @@ export function Header() {
   const isHomeActive = pathname === HOME_PATH;
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const isAuthPage = pathname === '/login' || pathname === '/register';
+  const isAuthPage =
+    pathname === '/login' ||
+    pathname === '/register' ||
+    pathname === FORGOT_PASSWORD_PATH ||
+    pathname === RESET_PASSWORD_PATH;
   const showUserNav = hasHydrated && !!jwt && !isAuthPage;
   const showGuestNav = hasHydrated && !jwt;
+  const headerUserLabel = formatHeaderUserLabel(user);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -41,7 +58,12 @@ export function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.headerInner}>
-        <Link href={HOME_PATH} className={styles.logoLink}>
+        <Link
+          href={HOME_PATH}
+          className={
+            showUserNav ? styles.logoLinkWithUser : styles.logoLink
+          }
+        >
           <Image
             src={SITE_BRAND_LOGO_PATH}
             alt=""
@@ -53,7 +75,9 @@ export function Header() {
           {showUserNav ? (
             <div className={styles.logoTextColumn}>
               <span className={styles.logoTitle}>Bolão Copa 2026</span>
-              <span className={styles.logoUserName}>{user?.username}</span>
+              <span className={styles.logoUserName} title={headerUserLabel}>
+                {headerUserLabel}
+              </span>
             </div>
           ) : (
             <span className={styles.logoTitle}>Bolão Copa 2026</span>
@@ -81,12 +105,28 @@ export function Header() {
               >
                 Sobre
               </Link>
-              <Link
-                href="/login"
-                className={styles.navLink(pathname === '/login')}
-              >
-                Entrar
-              </Link>
+              <div className={styles.guestAuthActions}>
+                <Link
+                  href="/login"
+                  className={styles.guestAuthLoginLink(pathname === '/login')}
+                >
+                  <span className={styles.guestAuthIcon} aria-hidden>
+                    login
+                  </span>
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className={styles.guestAuthRegisterButton(
+                    pathname === '/register'
+                  )}
+                >
+                  <span className={styles.guestAuthIcon} aria-hidden>
+                    person_add
+                  </span>
+                  Criar conta
+                </Link>
+              </div>
             </nav>
 
             <button
@@ -218,13 +258,32 @@ export function Header() {
             >
               Sobre
             </Link>
-            <Link
-              href="/login"
-              onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(pathname === '/login')}
-            >
-              Entrar
-            </Link>
+            <div className={styles.mobileGuestAuthActions}>
+              <Link
+                href="/login"
+                onClick={() => setMenuOpen(false)}
+                className={styles.mobileGuestAuthLoginLink(
+                  pathname === '/login'
+                )}
+              >
+                <span className={styles.guestAuthIcon} aria-hidden>
+                  login
+                </span>
+                Login
+              </Link>
+              <Link
+                href="/register"
+                onClick={() => setMenuOpen(false)}
+                className={styles.mobileGuestAuthRegisterButton(
+                  pathname === '/register'
+                )}
+              >
+                <span className={styles.guestAuthIcon} aria-hidden>
+                  person_add
+                </span>
+                Criar conta
+              </Link>
+            </div>
           </nav>
         </div>
       )}
@@ -239,7 +298,7 @@ export function Header() {
           <div className={styles.mobileOverlayBar}>
             <Link
               href={HOME_PATH}
-              className={styles.logoLink}
+              className={styles.logoLinkWithUser}
               onClick={() => setMenuOpen(false)}
             >
               <Image
@@ -251,7 +310,9 @@ export function Header() {
               />
               <div className={styles.logoTextColumn}>
                 <span className={styles.logoTitle}>Bolão Copa 2026</span>
-                <span className={styles.logoUserName}>{user?.username}</span>
+                <span className={styles.logoUserName} title={headerUserLabel}>
+                  {headerUserLabel}
+                </span>
               </div>
             </Link>
             <button

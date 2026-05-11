@@ -10,6 +10,12 @@ export const SOBRE_PATH = '/sobre';
 /** Página inicial: placar Copa. */
 export const HOME_PATH = '/';
 
+/** Pedido de e-mail para redefinir senha. */
+export const FORGOT_PASSWORD_PATH = '/forgot-password';
+
+/** Nova senha a partir do link enviado por e-mail. */
+export const RESET_PASSWORD_PATH = '/reset-password';
+
 /** Query param da aba na home: `all` | `today` | `groups` | `knockout`. */
 export const HOME_TAB_QUERY_KEY = 'tab';
 

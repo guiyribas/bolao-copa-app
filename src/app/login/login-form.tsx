@@ -5,7 +5,11 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { login } from '@/lib/auth';
-import { HOME_PATH, safeReturnUrl } from '@/lib/navigation';
+import {
+  FORGOT_PASSWORD_PATH,
+  HOME_PATH,
+  safeReturnUrl,
+} from '@/lib/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 
 export function LoginForm() {
@@ -23,6 +27,11 @@ export function LoginForm() {
     returnUrl !== HOME_PATH
       ? `/register?returnUrl=${encodeURIComponent(returnUrl)}`
       : '/register';
+
+  const forgotPasswordHref =
+    returnUrl !== HOME_PATH
+      ? `${FORGOT_PASSWORD_PATH}?returnUrl=${encodeURIComponent(returnUrl)}`
+      : FORGOT_PASSWORD_PATH;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -60,6 +69,11 @@ export function LoginForm() {
           required
           className="border px-3 py-2 rounded"
         />
+        <p className="text-sm">
+          <Link href={forgotPasswordHref} className="underline">
+            Esqueci a senha
+          </Link>
+        </p>
         {error && <p className="text-red-600 text-sm">{error}</p>}
         <button
           type="submit"
