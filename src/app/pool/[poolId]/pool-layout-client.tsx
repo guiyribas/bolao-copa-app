@@ -8,10 +8,11 @@ import { apiFetch } from '@/lib/api';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { PoolNav } from '@/components/PoolNav/poolNav';
 import { MEUS_BOLOES_PATH } from '@/lib/navigation';
+import { formatJoinedPtBr } from '@/lib/format-joined-date';
 import { normalizePoolFromApi } from '@/lib/pool-normalize';
 import { isSameUser } from '@/lib/user-match';
 import { PoolLayoutProvider } from '@/contexts/pool-layout-context';
-import type { Pool } from '@/types';
+import type { Pool, PoolMembership } from '@/types';
 
 const brl = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -20,6 +21,9 @@ const brl = new Intl.NumberFormat('pt-BR', {
 
 function PoolHeader({ pool }: { pool: Pool }) {
   const description = pool.description?.trim();
+  const joined = pool.viewerJoinedAt
+    ? formatJoinedPtBr(pool.viewerJoinedAt)
+    : '';
   const memberCount = pool.memberCount ?? 0;
   const paidCount = pool.paidCount ?? 0;
   const valueCents = pool.value ?? 0;
@@ -59,6 +63,16 @@ function PoolHeader({ pool }: { pool: Pool }) {
                 {brl.format(valueCents / 100)}
               </dd>
             </div>
+            {joined ? (
+              <div className="flex items-baseline justify-between gap-6 border-t border-neutral-100 pt-2.5">
+                <dt className="text-[11px] font-medium uppercase tracking-wide text-neutral-500">
+                  Sua inscrição
+                </dt>
+                <dd className="text-right text-sm font-semibold tabular-nums text-neutral-900">
+                  {joined}
+                </dd>
+              </div>
+            ) : null}
             {hasMembers ? (
               <div className="border-t border-neutral-100 pt-2.5 text-right">
                 <dd className="text-sm font-semibold tabular-nums text-neutral-900">
@@ -171,11 +185,29 @@ export default function PoolLayoutClient({
       return;
     }
 
-    apiFetch<unknown>(`/api/pools/${poolId}/session`, {}, jwt)
-      .then((res) => {
-        const normalized = normalizePoolFromApi(res);
-        if (normalized) setPool(normalized);
-        else router.push(MEUS_BOLOES_PATH);
+    Promise.all([
+      apiFetch<unknown>(`/api/pools/${poolId}/session`, {}, jwt),
+      apiFetch<{ data: PoolMembership[] }>(
+        '/api/pools/mine/memberships',
+        {},
+        jwt
+      ),
+    ])
+      .then(([sessionRes, membershipsRes]) => {
+        const normalized = normalizePoolFromApi(sessionRes);
+        if (!normalized) {
+          router.push(MEUS_BOLOES_PATH);
+          return;
+        }
+        if (!normalized.viewerJoinedAt) {
+          const membership = (membershipsRes.data || []).find(
+            (m) => m.pool.documentId === normalized.documentId
+          );
+          if (membership?.joinedAt) {
+            normalized.viewerJoinedAt = membership.joinedAt;
+          }
+        }
+        setPool(normalized);
       })
       .catch(() => router.push(MEUS_BOLOES_PATH));
   }, [jwt, poolId, router, hasHydrated]);

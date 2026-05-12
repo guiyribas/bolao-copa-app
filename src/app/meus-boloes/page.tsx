@@ -10,20 +10,12 @@ import { saveBtn } from '@/components/MatchCard/matchCard.styles';
 import { useAuthStore } from '@/stores/auth-store';
 import { apiFetch } from '@/lib/api';
 import { CRIAR_BOLOAO_PATH } from '@/lib/navigation';
+import {
+  formatPoolRankingAriaLabel,
+  formatPoolRankingLabel,
+} from '@/lib/ranking-label';
 import { twMerge } from 'tailwind-merge';
 import type { PoolMembership } from '@/types';
-
-function formatJoinedPtBr(iso: string) {
-  try {
-    return new Date(iso).toLocaleDateString('pt-BR', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    });
-  } catch {
-    return '';
-  }
-}
 
 export default function MeusBoloesPage() {
   const router = useRouter();
@@ -121,12 +113,21 @@ export default function MeusBoloesPage() {
           aria-label="Lista de bolões"
         >
           {memberships.map((m) => {
-            const joined = formatJoinedPtBr(m.joinedAt);
             const rankingTotal = m.rankingTotal ?? 0;
-            const showRanking = rankingTotal > 0;
-            const rankFraction = showRanking ? (
-              <span className="font-medium tabular-nums text-slate-700">
-                {m.rankingPlace != null ? m.rankingPlace : '–'}/{rankingTotal}
+            const rankingLabel = formatPoolRankingLabel(
+              m.rankingPlace,
+              rankingTotal
+            );
+            const rankingAriaLabel = formatPoolRankingAriaLabel(
+              m.rankingPlace,
+              rankingTotal
+            );
+            const rankingSummary = rankingLabel ? (
+              <span
+                className="font-medium tabular-nums text-slate-700"
+                aria-label={rankingAriaLabel ?? undefined}
+              >
+                {rankingLabel}
               </span>
             ) : null;
             return (
@@ -146,23 +147,9 @@ export default function MeusBoloesPage() {
                       <p className="text-lg font-semibold leading-snug text-slate-900 transition group-hover:text-emerald-950">
                         {m.pool.name}
                       </p>
-                      {(joined || showRanking) && (
-                        <p className="text-sm text-slate-600">
-                          {joined ? (
-                            <>
-                              Desde {joined}
-                              {showRanking ? (
-                                <>
-                                  {' '}
-                                  <span aria-hidden>·</span> {rankFraction}
-                                </>
-                              ) : null}
-                            </>
-                          ) : (
-                            rankFraction
-                          )}
-                        </p>
-                      )}
+                      {rankingSummary ? (
+                        <p className="text-sm text-slate-600">{rankingSummary}</p>
+                      ) : null}
                       <div className="flex flex-wrap items-center gap-2">
                         <span
                           className={

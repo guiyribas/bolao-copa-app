@@ -83,6 +83,36 @@ function pickOptionalCount(
   return undefined;
 }
 
+function pickViewerJoinedAt(flat: Record<string, unknown>): string | undefined {
+  const direct = pickStr(flat, [
+    'viewerJoinedAt',
+    'viewer_joined_at',
+    'joinedAt',
+    'joined_at',
+  ]);
+  if (direct) return direct;
+
+  const membership = flat.membership ?? flat.poolMembership;
+  if (membership == null || typeof membership !== 'object') return undefined;
+
+  let membershipObj = membership as Record<string, unknown>;
+  if (
+    membershipObj.data != null &&
+    typeof membershipObj.data === 'object' &&
+    !Array.isArray(membershipObj.data)
+  ) {
+    membershipObj = membershipObj.data as Record<string, unknown>;
+  }
+
+  const attrs = membershipObj.attributes;
+  const src =
+    attrs && typeof attrs === 'object' && !Array.isArray(attrs)
+      ? (attrs as Record<string, unknown>)
+      : membershipObj;
+
+  return pickStr(src, ['joinedAt', 'joined_at', 'createdAt', 'created_at']);
+}
+
 /**
  * Normaliza resposta de um bolão (controller custom ou Strapi REST).
  */
@@ -134,5 +164,7 @@ export function normalizePoolFromApi(body: unknown): Pool | null {
       'totalCollected',
       'total_collected',
     ]),
+    viewerJoinedAt:
+      pickViewerJoinedAt(flat) ?? pickViewerJoinedAt(root),
   };
 }

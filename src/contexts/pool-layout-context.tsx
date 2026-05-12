@@ -45,7 +45,12 @@ export function PoolLayoutProvider({
       jwt
     );
     const next = normalizePoolFromApi(res);
-    if (next) setPool(next);
+    if (next) {
+      setPool((prev) => ({
+        ...next,
+        viewerJoinedAt: next.viewerJoinedAt ?? prev?.viewerJoinedAt,
+      }));
+    }
   }, [jwt, poolId, setPool]);
 
   const value = useMemo(

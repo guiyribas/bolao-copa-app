@@ -35,6 +35,8 @@ export interface Pool {
   paidCount?: number;
   /** Soma arrecadada = `paidCount * value` (vindo de `/session`). */
   totalCollected?: number;
+  /** Data de entrada do usuário autenticado (vindo de `/session` ou memberships). */
+  viewerJoinedAt?: string;
 }
 
 export interface PoolMembership {
