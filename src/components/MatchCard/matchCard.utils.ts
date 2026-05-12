@@ -57,3 +57,25 @@ export function localCalendarDayKey(dateStr: string): string {
   const day = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${day}`;
 }
+
+/** Chave `YYYY-MM-DD` para uma data de referência no calendário local. */
+export function localCalendarDayKeyFromDate(ref: Date = new Date()): string {
+  const y = ref.getFullYear();
+  const m = String(ref.getMonth() + 1).padStart(2, '0');
+  const day = String(ref.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/** Dia de hoje na lista, senão o próximo dia futuro com partidas. */
+export function pickNearestMatchDayKey(
+  dayKeys: string[],
+  ref: Date = new Date()
+): string | null {
+  if (dayKeys.length === 0) return null;
+
+  const todayKey = localCalendarDayKeyFromDate(ref);
+  if (dayKeys.includes(todayKey)) return todayKey;
+
+  const nextDayKey = dayKeys.find((dayKey) => dayKey > todayKey);
+  return nextDayKey ?? null;
+}

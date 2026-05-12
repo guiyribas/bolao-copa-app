@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -24,6 +24,7 @@ import {
 } from '@/components/MatchCard/matchCard.utils';
 import { FilterPill } from '@/components/FilterPill/filterPill';
 import { GroupTable } from '@/components/GroupTable/groupTable';
+import { useScrollToNearestMatchDay } from '@/hooks/useScrollToNearestMatchDay';
 import type { Match, Bet, TeamStanding } from '@/types';
 import { useQueryState } from 'nuqs';
 
@@ -241,6 +242,27 @@ export default function PalpitesPage() {
     return groups;
   }, [displayMatches]);
 
+  const displayMatchDayKeys = useMemo(
+    () => displayMatchesByDay.map(({ dayKey }) => dayKey),
+    [displayMatchesByDay]
+  );
+
+  const getPalpitesMatchDayAnchorId = useCallback(
+    (dayKey: string) => `palpites-match-day-${dayKey}`,
+    []
+  );
+
+  useScrollToNearestMatchDay({
+    dayKeys: displayMatchDayKeys,
+    enabled:
+      hasHydrated &&
+      Boolean(jwt) &&
+      !loading &&
+      partidasOpen &&
+      displayMatchDayKeys.length > 0,
+    getAnchorId: getPalpitesMatchDayAnchorId,
+  });
+
   if (!hasHydrated || !jwt) {
     return (
       <div>
@@ -360,7 +382,7 @@ export default function PalpitesPage() {
                   >
                     <h2
                       id={`palpites-match-day-${dayKey}`}
-                      className="text-xs font-semibold text-slate-600 capitalize"
+                      className="scroll-mt-20 text-xs font-semibold text-slate-600 capitalize"
                     >
                       {label}
                     </h2>

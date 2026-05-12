@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Root as TabsRoot,
   List as TabsList,
@@ -25,6 +25,7 @@ import {
 } from '@/components/MatchCard/matchCard.utils';
 import { normalizeMatchesPayload } from '@/lib/match-status';
 import { groupMatchesByLocalDay } from '@/lib/team-matches';
+import { useScrollToNearestMatchDay } from '@/hooks/useScrollToNearestMatchDay';
 import type { Match } from '@/types';
 
 const HOME_TAB_VALUES = ['all', 'today', 'groups', 'knockout'] as const;
@@ -88,6 +89,26 @@ export default function HomePage() {
     () => groupMatchesByLocalDay(sortedAllMatches),
     [sortedAllMatches]
   );
+
+  const allMatchesDayKeys = useMemo(
+    () => sortedAllMatchesByDay.map(({ dayKey }) => dayKey),
+    [sortedAllMatchesByDay]
+  );
+
+  const getHomeMatchDayAnchorId = useCallback(
+    (dayKey: string) => `match-day-${dayKey}`,
+    []
+  );
+
+  useScrollToNearestMatchDay({
+    dayKeys: allMatchesDayKeys,
+    enabled:
+      homeTab === 'all' &&
+      !matchesLoading &&
+      matchesError == null &&
+      allMatchesDayKeys.length > 0,
+    getAnchorId: getHomeMatchDayAnchorId,
+  });
 
   const groupStandings = useMemo(
     () => standingsFromGroupMatches(matches),
@@ -178,7 +199,7 @@ export default function HomePage() {
                   >
                     <h2
                       id={`match-day-${dayKey}`}
-                      className="text-xs font-semibold text-slate-600 capitalize"
+                      className="scroll-mt-20 text-xs font-semibold text-slate-600 capitalize"
                     >
                       {label}
                     </h2>
