@@ -6,11 +6,13 @@ import { useParams, useRouter } from 'next/navigation';
 import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 import { twMerge } from 'tailwind-merge';
 import { useAuthStore } from '@/stores/auth-store';
+import { apiFetch } from '@/lib/api';
 import {
   fetchPoolByInviteCode,
   joinPoolByInviteCode,
   resolvePoolDocumentIdFromJoinResponse,
 } from '@/lib/pools';
+import { normalizePoolFromApi } from '@/lib/pool-normalize';
 import {
   isAlreadyMemberError,
   messageForJoinError,
@@ -18,7 +20,7 @@ import {
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { saveBtn } from '@/components/MatchCard/matchCard.styles';
 import { MEUS_BOLOES_PATH } from '@/lib/navigation';
-import type { Pool } from '@/types';
+import type { Pool, PoolMembership } from '@/types';
 
 const brl = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -93,6 +95,9 @@ export default function InvitePage() {
   const [poolError, setPoolError] = useState('');
   const [joinError, setJoinError] = useState('');
   const [joinBusy, setJoinBusy] = useState(false);
+  const [membershipCheckedDocumentId, setMembershipCheckedDocumentId] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -128,6 +133,53 @@ export default function InvitePage() {
     },
     [router]
   );
+
+  useEffect(() => {
+    if (!hasHydrated || !jwt || !pool?.documentId) {
+      return;
+    }
+
+    let cancelled = false;
+
+    Promise.allSettled([
+      apiFetch<unknown>(`/api/pools/${pool.documentId}/session`, {}, jwt),
+      apiFetch<{ data: PoolMembership[] }>(
+        '/api/pools/mine/memberships',
+        {},
+        jwt
+      ),
+    ])
+      .then((results) => {
+        if (cancelled) return;
+        const sessionRes =
+          results[0].status === 'fulfilled' ? results[0].value : null;
+        const membershipsRes =
+          results[1].status === 'fulfilled' ? results[1].value : null;
+        const normalized = sessionRes ? normalizePoolFromApi(sessionRes) : null;
+        let joinedAt = normalized?.viewerJoinedAt;
+        if (!joinedAt && membershipsRes) {
+          const membership = (membershipsRes.data || []).find(
+            (m) =>
+              m.pool.documentId === pool.documentId ||
+              m.pool.inviteCode === pool.inviteCode
+          );
+          joinedAt = membership?.joinedAt;
+        }
+        if (joinedAt) {
+          goToPool(pool.documentId);
+          return;
+        }
+        setMembershipCheckedDocumentId(pool.documentId);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [hasHydrated, jwt, pool?.documentId, pool?.inviteCode, goToPool]);
+
+  const needsMembershipCheck = hasHydrated && Boolean(jwt && pool?.documentId);
+  const membershipCheckComplete =
+    !needsMembershipCheck || membershipCheckedDocumentId === pool?.documentId;
 
   const runJoin = useCallback(async () => {
     if (!jwt || !pool) return;
@@ -179,6 +231,10 @@ export default function InvitePage() {
   }
 
   if (!pool || pool.inviteCode !== inviteCode) {
+    return <p className="mt-16 text-center">Carregando convite...</p>;
+  }
+
+  if (jwt && !membershipCheckComplete) {
     return <p className="mt-16 text-center">Carregando convite...</p>;
   }
 
