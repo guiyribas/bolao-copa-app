@@ -47,6 +47,15 @@ export default function RegrasEPontuacaoPage() {
               valor fica travado.
             </li>
           </ul>
+          <p>
+            No <strong>mata-mata</strong> (da segunda fase em diante), as
+            partidas são criadas quando a fase anterior termina — após o último
+            jogo daquela fase — e os palpiteiros só podem palpitar quando os
+            confrontos estiverem definidos. Na prática, as partidas da{' '}
+            <strong>segunda fase</strong> ficam habilitadas para apostar apenas
+            depois do último jogo da <strong>fase de grupos</strong>; nas
+            etapas seguintes, o mesmo vale de fase a fase.
+          </p>
         </div>
       </section>
 

@@ -5,6 +5,7 @@ import type { Match } from '@/types';
 import { selecaoPath } from '@/lib/navigation';
 import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
 import { formatMatchDate } from '@/components/MatchCard/matchCard.utils';
+import { resolveKnockoutSlotLabel } from '@/lib/knockout-slot-label';
 import { resolveTeamFlagUrl } from '@/lib/strapi-media';
 import {
   BRACKET_CARD_HEIGHT_REM,
@@ -71,6 +72,7 @@ function BracketTeamRow({
     );
   }
 
+  const slotLabel = resolveKnockoutSlotLabel(match, side);
   const flagSrc = team ? resolveTeamFlagUrl(team) : null;
   return (
     <div className={styles.teamRow}>
@@ -86,7 +88,9 @@ function BracketTeamRow({
       ) : (
         <ShieldPlaceholder />
       )}
-      <span className={styles.placeholderLabel}>A definir</span>
+      <span className={twMerge(styles.placeholderLabel, 'min-w-0 truncate')} title={slotLabel}>
+        {slotLabel}
+      </span>
       {score != null ? <span className={styles.scoreInline}>{score}</span> : null}
     </div>
   );
