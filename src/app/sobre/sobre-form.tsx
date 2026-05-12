@@ -111,21 +111,21 @@ export function SobreForm() {
             sugestões.
           </p>
           <OpenSourceRepoLinks />
-          <p>
-            Por ser um serviço à comunidade, os custos de hospedagem e operação
-            ficam por conta do desenvolvedor. Se quiser me pagar um café para
-            ajudar nas despesas do projeto via QR abaixo, qualquer quantia é
-            bem-vinda (e totalmente opcional).
-          </p>
         </div>
       </section>
 
       <section className={sectionClass} aria-labelledby="sobre-apoio">
-        <h2 id="sobre-apoio" className={h2Class}>
-          Apoiar os custos do projeto (opcional)
+        <h2 id="sobre-apoio" className={`${h2Class} scroll-mt-24`}>
+          Apoiar os custos do projeto
         </h2>
         <div className={`${proseClass} mb-4`}>
-          <p>Qualquer contribuição para manter o site no ar é bem-vinda.</p>
+          <p>
+            O bolão é gratuito e foi feito para os brasileiros amantes de
+            futebol. Por ser um serviço à comunidade, os custos de hospedagem e
+            operação ficam por conta do desenvolvedor. Se quiser ajudar com as
+            despesas do projeto, você pode me pagar um café pelo QR abaixo,
+            qualquer valor é bem-vindo.
+          </p>
         </div>
         <SupportQrBlock />
       </section>
