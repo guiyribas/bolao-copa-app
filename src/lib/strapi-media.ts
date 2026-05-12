@@ -1,12 +1,9 @@
 import type { Team } from '@/types';
+import { resolvePublicApiBaseUrl } from './api';
 
-/** Base da API (Strapi): usada para transformar `/uploads/...` em URL absoluta. */
+/** Base pública (same-origin em produção): `/uploads/...` → URL absoluta. */
 export function apiBaseUrl(): string {
-  return (
-    typeof process.env.NEXT_PUBLIC_API_URL === 'string'
-      ? process.env.NEXT_PUBLIC_API_URL
-      : 'http://localhost:1337'
-  ).replace(/\/$/, '');
+  return resolvePublicApiBaseUrl();
 }
 
 export function absoluteStrapiMediaUrl(pathOrUrl: string): string {

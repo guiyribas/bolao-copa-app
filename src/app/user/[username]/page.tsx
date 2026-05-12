@@ -9,8 +9,7 @@ import {
   buildTeamFlagLookup,
   enrichBetsWithTeamFlagLookup,
 } from '@/lib/team-flag-lookup';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
+import { resolveApiBaseUrl } from '@/lib/api';
 
 type PageProps = { params: Promise<{ username: string }> };
 
@@ -39,8 +38,9 @@ export default async function UserPublicProfilePage({ params }: PageProps) {
   const { username: usernameParam } = await params;
   const usernameSegment = decodeURIComponent(usernameParam);
 
-  const betsUrl = `${API_URL}/api/bets/by-username/${encodeURIComponent(usernameSegment)}/public`;
-  const matchesUrl = `${API_URL}${matchesListPath(undefined)}`;
+  const apiBase = resolveApiBaseUrl();
+  const betsUrl = `${apiBase}/api/bets/by-username/${encodeURIComponent(usernameSegment)}/public`;
+  const matchesUrl = `${apiBase}${matchesListPath(undefined)}`;
 
   const [betsOutcome, matchesOutcome] = await Promise.allSettled([
     fetch(betsUrl, { next: { revalidate: 30 } }),

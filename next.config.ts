@@ -30,9 +30,27 @@ const strapiRemotePatterns =
         },
       ];
 
+const strapiApiUrl = (
+  process.env.STRAPI_API_URL?.trim() || 'http://localhost:1337'
+).replace(/\/$/, '');
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: strapiRemotePatterns,
+  },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/api/:path*',
+          destination: `${strapiApiUrl}/api/:path*`,
+        },
+        {
+          source: '/uploads/:path*',
+          destination: `${strapiApiUrl}/uploads/:path*`,
+        },
+      ],
+    };
   },
 };
 

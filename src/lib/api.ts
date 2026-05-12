@@ -1,4 +1,26 @@
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
+const DEFAULT_API_URL = 'http://localhost:1337';
+
+function normalizeApiBaseUrl(raw: string | undefined): string {
+  const trimmed = raw?.trim();
+  if (!trimmed) return DEFAULT_API_URL;
+  return trimmed.replace(/\/$/, '');
+}
+
+/** Base pública (browser / same-origin em produção). */
+export function resolvePublicApiBaseUrl(): string {
+  return normalizeApiBaseUrl(process.env.NEXT_PUBLIC_API_URL);
+}
+
+/** Base para fetch: Strapi direto no servidor; origem pública no client. */
+export function resolveApiBaseUrl(): string {
+  if (typeof window === 'undefined') {
+    const strapiUrl = process.env.STRAPI_API_URL?.trim();
+    if (strapiUrl) return strapiUrl.replace(/\/$/, '');
+  }
+  return resolvePublicApiBaseUrl();
+}
+
+export const API_URL = resolvePublicApiBaseUrl();
 
 export class ApiError extends Error {
   constructor(
@@ -38,7 +60,7 @@ export async function apiFetch<T>(
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await fetch(`${resolveApiBaseUrl()}${path}`, {
     ...options,
     headers,
   });
