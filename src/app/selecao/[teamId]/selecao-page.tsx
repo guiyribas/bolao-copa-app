@@ -104,7 +104,7 @@ export default function SelecaoPage() {
                   >
                     <h3
                       id={`selecao-match-day-${dayKey}`}
-                      className="border-b border-slate-200 pb-2 text-xs font-semibold capitalize text-slate-600"
+                      className="text-xs font-semibold capitalize text-slate-600"
                     >
                       {label}
                     </h3>

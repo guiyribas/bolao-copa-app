@@ -360,7 +360,7 @@ export default function PalpitesPage() {
                   >
                     <h2
                       id={`palpites-match-day-${dayKey}`}
-                      className="text-xs font-semibold text-slate-600 border-b border-slate-200 pb-2 capitalize"
+                      className="text-xs font-semibold text-slate-600 capitalize"
                     >
                       {label}
                     </h2>

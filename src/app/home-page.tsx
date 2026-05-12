@@ -178,7 +178,7 @@ export default function HomePage() {
                   >
                     <h2
                       id={`match-day-${dayKey}`}
-                      className="text-xs font-semibold text-slate-600 border-b border-slate-200 pb-2 capitalize"
+                      className="text-xs font-semibold text-slate-600 capitalize"
                     >
                       {label}
                     </h2>
@@ -214,7 +214,7 @@ export default function HomePage() {
               </p>
             ) : (
               <>
-                <p className="text-xs font-semibold text-slate-600 border-b border-slate-200 pb-2 mb-2 capitalize">
+                <p className="text-xs font-semibold text-slate-600 mb-2 capitalize">
                   {formatLocalDateLong()}
                 </p>
                 <div className={HOME_FIXTURES_GRID_CLASS}>
