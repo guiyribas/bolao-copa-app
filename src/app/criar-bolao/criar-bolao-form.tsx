@@ -10,6 +10,11 @@ import {
   handlePoolValueRawInput,
   poolValueDigitsToNumber,
 } from '@/lib/pool-value-input';
+import {
+  POOL_ADMIN_PAYMENT_ADMIN_FIELDSET_INTRO,
+  POOL_ADMIN_PAYMENT_CALLOUT,
+  POOL_ADMIN_PAYMENT_POOL_VALUE_HINT,
+} from '@/lib/site-brand';
 import { useAuthStore } from '@/stores/auth-store';
 
 const inputClass =
@@ -17,6 +22,8 @@ const inputClass =
 const disabledInputClass =
   'w-full border border-neutral-200 rounded px-3 py-2 text-sm text-neutral-700 bg-neutral-50 cursor-not-allowed';
 const labelClass = 'block text-xs font-medium text-neutral-700 mb-1';
+const paymentNoticeClass =
+  'mb-8 max-w-xl rounded-lg border border-amber-200/80 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-900';
 
 export function CriarBolaoForm() {
   const router = useRouter();
@@ -104,6 +111,16 @@ export function CriarBolaoForm() {
         à sua conta e usamos o e-mail dela para acompanhar a criação.
       </p>
 
+      {!success ? (
+        <aside
+          role="note"
+          aria-label="Responsabilidade do administrador sobre pagamentos"
+          className={paymentNoticeClass}
+        >
+          {POOL_ADMIN_PAYMENT_CALLOUT}
+        </aside>
+      ) : null}
+
       {success ? (
         <div
           role="status"
@@ -188,8 +205,7 @@ export function CriarBolaoForm() {
                 placeholder="Opcional — ex.: cada um entra com R$ 20"
               />
               <p id="poolValue-hint" className="mt-1 text-xs text-neutral-500">
-                Digite apenas números; o valor aparece em reais (R$). Deixe em
-                branco se não couber pagamento entre participantes.
+                {POOL_ADMIN_PAYMENT_POOL_VALUE_HINT}
               </p>
             </div>
           </fieldset>
@@ -199,7 +215,7 @@ export function CriarBolaoForm() {
               Admin do bolão
             </legend>
             <p className="text-xs text-neutral-500">
-              Dados da sua conta logada; não podem ser alterados neste pedido.
+              {POOL_ADMIN_PAYMENT_ADMIN_FIELDSET_INTRO}
             </p>
             <div>
               <label htmlFor="adminName" className={labelClass}>

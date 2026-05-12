@@ -4,6 +4,11 @@ import Link from 'next/link';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { SiteFifaDisclaimer } from '@/components/SiteFifaDisclaimer/siteFifaDisclaimer';
 import { CRIAR_BOLOAO_PATH } from '@/lib/navigation';
+import {
+  POOL_ADMIN_PAYMENT_SECTION_PARAGRAPHS,
+  POOL_ADMIN_PAYMENT_SECTION_TITLE,
+  POOL_ADMIN_PAYMENT_SUPPORT_CONTRAST,
+} from '@/lib/site-brand';
 
 const sectionClass = 'mb-10 last:mb-0';
 const h2Class = 'text-lg font-semibold text-neutral-900 mb-2';
@@ -111,6 +116,18 @@ export function SobreForm() {
             sugestões.
           </p>
           <OpenSourceRepoLinks />
+        </div>
+      </section>
+
+      <section className={sectionClass} aria-labelledby="sobre-pagamentos">
+        <h2 id="sobre-pagamentos" className={h2Class}>
+          {POOL_ADMIN_PAYMENT_SECTION_TITLE}
+        </h2>
+        <div className={proseClass}>
+          {POOL_ADMIN_PAYMENT_SECTION_PARAGRAPHS.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+          <p>{POOL_ADMIN_PAYMENT_SUPPORT_CONTRAST}</p>
         </div>
       </section>
 
