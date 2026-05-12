@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -9,7 +8,7 @@ import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { saveBtn } from '@/components/MatchCard/matchCard.styles';
 import { useAuthStore } from '@/stores/auth-store';
 import { apiFetch } from '@/lib/api';
-import { CRIAR_BOLOAO_PATH } from '@/lib/navigation';
+import { CRIAR_BOLOAO_PATH, MEUS_BOLOES_PATH } from '@/lib/navigation';
 import {
   formatPoolRankingAriaLabel,
   formatPoolRankingLabel,
@@ -17,16 +16,18 @@ import {
 import { twMerge } from 'tailwind-merge';
 import type { PoolMembership } from '@/types';
 
+const loginHref = `/login?returnUrl=${encodeURIComponent(MEUS_BOLOES_PATH)}`;
+
 export default function MeusBoloesPage() {
-  const router = useRouter();
   const { jwt, hasHydrated } = useAuthStore();
   const [memberships, setMemberships] = useState<PoolMembership[]>([]);
   const [loading, setLoading] = useState(true);
+  const isGuest = hasHydrated && !jwt;
 
   useEffect(() => {
     if (!hasHydrated) return;
     if (!jwt) {
-      router.push('/login');
+      void Promise.resolve().then(() => setLoading(false));
       return;
     }
 
@@ -34,10 +35,9 @@ export default function MeusBoloesPage() {
       .then((res) => setMemberships(res.data || []))
       .catch(() => setMemberships([]))
       .finally(() => setLoading(false));
-  }, [jwt, router, hasHydrated]);
+  }, [jwt, hasHydrated]);
 
   if (!hasHydrated) return <p>Carregando...</p>;
-  if (!jwt) return null;
 
   return (
     <div className="space-y-8">
@@ -62,7 +62,7 @@ export default function MeusBoloesPage() {
           >
             Meus bolões
           </h1>
-          <p className="max-w-xl text-sm leading-relaxed text-slate-600 md:text-[15px]">
+          <p className="text-sm leading-relaxed text-slate-600 md:text-[15px]">
             Os bolões em que você está inscrito. Calendário, jogos e placar
             oficial continuam na{' '}
             <Link
@@ -96,16 +96,18 @@ export default function MeusBoloesPage() {
             Peça um convite ao administrador ou aceite um link para entrar —
             aqui vai aparecer cada bolão com acesso rápido ao ranking.
           </p>
-          <Link
-            href={CRIAR_BOLOAO_PATH}
-            className={twMerge(
-              saveBtn,
-              'mt-5 inline-flex gap-1 hover:bg-emerald-700'
-            )}
-          >
-            Criar bolão
-            <ChevronRightIcon sx={{ fontSize: 20 }} aria-hidden />
-          </Link>
+          <div className="mt-5 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+            <Link
+              href={CRIAR_BOLOAO_PATH}
+              className={twMerge(
+                saveBtn,
+                'inline-flex gap-1 hover:bg-emerald-700'
+              )}
+            >
+              Criar bolão
+              <ChevronRightIcon sx={{ fontSize: 20 }} aria-hidden />
+            </Link>
+          </div>
         </div>
       ) : (
         <ul
@@ -148,7 +150,9 @@ export default function MeusBoloesPage() {
                         {m.pool.name}
                       </p>
                       {rankingSummary ? (
-                        <p className="text-sm text-slate-600">{rankingSummary}</p>
+                        <p className="text-sm text-slate-600">
+                          {rankingSummary}
+                        </p>
                       ) : null}
                       <div className="flex flex-wrap items-center gap-2">
                         <span

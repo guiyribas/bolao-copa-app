@@ -1,4 +1,4 @@
-/** Lista de bolões do usuário autenticado. */
+/** Landing pública de bolões; a lista pessoal exige sessão autenticada. */
 export const MEUS_BOLOES_PATH = '/meus-boloes';
 
 /** Regras do bolão e critérios de pontuação (página pública). */

@@ -97,6 +97,12 @@ export function Header() {
                 Partidas e resultados
               </Link>
               <Link
+                href={MEUS_BOLOES_PATH}
+                className={styles.navLink(pathname === MEUS_BOLOES_PATH)}
+              >
+                Bolões
+              </Link>
+              <Link
                 href={REGRAS_E_PONTUACAO_PATH}
                 className={styles.navLink(pathname === REGRAS_E_PONTUACAO_PATH)}
               >
@@ -250,6 +256,13 @@ export function Header() {
               className={styles.mobileNavLink(isHomeActive)}
             >
               Partidas e resultados
+            </Link>
+            <Link
+              href={MEUS_BOLOES_PATH}
+              onClick={() => setMenuOpen(false)}
+              className={styles.mobileNavLink(pathname === MEUS_BOLOES_PATH)}
+            >
+              Bolões
             </Link>
             <Link
               href={REGRAS_E_PONTUACAO_PATH}
