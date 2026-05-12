@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import { usePoolLayout } from '@/contexts/pool-layout-context';
 import { apiFetch } from '@/lib/api';
 import { showErrorToast } from '@/lib/toast';
+import { isSameUser } from '@/lib/user-match';
 import {
   extractMembersFromResponse,
   normalizeMemberEntry,
@@ -145,16 +146,32 @@ function AdminPoolSettingsForm() {
   );
 }
 
+function memberAsUser(member: MemberEntry) {
+  return {
+    id: member.id,
+    documentId: member.userDocumentId,
+    username: member.username,
+    email: member.email,
+  };
+}
+
 export default function AdminPage() {
   const params = useParams();
   const poolId = params.poolId as string;
   const { jwt, hasHydrated } = useAuthStore();
+  const { pool, refreshPool } = usePoolLayout();
   const [members, setMembers] = useState<MemberEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [pendingUserDocumentId, setPendingUserDocumentId] = useState<
     string | null
   >(null);
+  const [memberPendingRemoval, setMemberPendingRemoval] =
+    useState<MemberEntry | null>(null);
+  const [removingUserDocumentId, setRemovingUserDocumentId] = useState<
+    string | null
+  >(null);
+  const confirmDialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!hasHydrated || !jwt) return;
@@ -172,6 +189,45 @@ export default function AdminPage() {
       )
       .finally(() => setLoading(false));
   }, [jwt, poolId, hasHydrated]);
+
+  useEffect(() => {
+    if (!memberPendingRemoval) return;
+
+    confirmDialogRef.current?.focus();
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setMemberPendingRemoval(null);
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [memberPendingRemoval]);
+
+  async function confirmRemoveMember() {
+    const member = memberPendingRemoval;
+    if (!jwt || !member?.userDocumentId) return;
+
+    const userDocumentId = member.userDocumentId;
+    setRemovingUserDocumentId(userDocumentId);
+    try {
+      await apiFetch(
+        `/api/pools/${poolId}/members/${encodeURIComponent(userDocumentId)}`,
+        { method: 'DELETE' },
+        jwt
+      );
+      setMembers((prev) =>
+        prev.filter((m) => m.userDocumentId !== userDocumentId)
+      );
+      setMemberPendingRemoval(null);
+      await refreshPool();
+    } catch (e) {
+      showErrorToast(e);
+    } finally {
+      setRemovingUserDocumentId(null);
+    }
+  }
 
   async function togglePayment(userDocumentId: string, currentStatus: boolean) {
     if (!jwt || !userDocumentId) return;
@@ -230,7 +286,8 @@ export default function AdminPage() {
               <th className="py-3 pl-4 pr-2">Nome</th>
               <th className="py-3 pr-2 hidden sm:table-cell">Email</th>
               <th className="py-3 px-2 text-center">Pagamento</th>
-              <th className="py-3 pr-4 text-right">Entrada</th>
+              <th className="py-3 pr-2 text-right">Entrada</th>
+              <th className="py-3 pr-4 text-center">Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -238,7 +295,12 @@ export default function AdminPage() {
               const busy =
                 pendingUserDocumentId !== null &&
                 pendingUserDocumentId === m.userDocumentId;
+              const removing =
+                removingUserDocumentId !== null &&
+                removingUserDocumentId === m.userDocumentId;
               const canToggle = Boolean(m.userDocumentId);
+              const isPoolAdminMember = isSameUser(pool.admin, memberAsUser(m));
+              const canRemove = canToggle && !isPoolAdminMember;
               return (
                 <tr
                   key={m.membershipId || m.userDocumentId || String(m.id)}
@@ -284,8 +346,23 @@ export default function AdminPage() {
                       </label>
                     </div>
                   </td>
-                  <td className="py-3 pr-4 text-right text-xs text-neutral-500 tabular-nums">
+                  <td className="py-3 pr-2 text-right text-xs text-neutral-500 tabular-nums">
                     {new Date(m.joinedAt).toLocaleDateString('pt-BR')}
+                  </td>
+                  <td className="py-3 pr-4 text-center">
+                    {canRemove ? (
+                      <button
+                        type="button"
+                        aria-label={`Remover ${m.username} do bolão`}
+                        disabled={removing}
+                        onClick={() => setMemberPendingRemoval(m)}
+                        className="inline-flex items-center justify-center rounded-lg p-1.5 text-neutral-500 transition-colors hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <span className="material-symbols-outlined text-lg" aria-hidden>
+                          delete
+                        </span>
+                      </button>
+                    ) : null}
                   </td>
                 </tr>
               );
@@ -293,6 +370,61 @@ export default function AdminPage() {
           </tbody>
         </table>
       </div>
+
+      {memberPendingRemoval ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/40 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="remove-member-title"
+          onClick={() => setMemberPendingRemoval(null)}
+        >
+          <div
+            ref={confirmDialogRef}
+            tabIndex={-1}
+            className="w-full max-w-md rounded-xl border border-neutral-200 bg-white p-5 shadow-xl shadow-neutral-950/10 outline-none"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h3
+              id="remove-member-title"
+              className="text-base font-semibold text-neutral-900"
+            >
+              Remover participante
+            </h3>
+            <p className="mt-2 text-sm text-neutral-600">
+              Tem certeza de que deseja remover{' '}
+              <span className="font-medium text-neutral-900">
+                {memberPendingRemoval.username}
+              </span>{' '}
+              deste bolão?
+            </p>
+            {memberPendingRemoval.hasPaid ? (
+              <p className="mt-3 rounded-lg border border-amber-200/80 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                Este participante está marcado como pago. A exclusão não reverte
+                automaticamente o pagamento.
+              </p>
+            ) : null}
+            <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => setMemberPendingRemoval(null)}
+                disabled={removingUserDocumentId !== null}
+                className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50 disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={() => void confirmRemoveMember()}
+                disabled={removingUserDocumentId !== null}
+                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+              >
+                {removingUserDocumentId !== null ? 'Excluindo…' : 'Excluir'}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {members.some((m) => !m.userDocumentId) ? (
         <p className="mt-3 text-xs text-amber-800 bg-amber-50 border border-amber-200/80 rounded-lg px-3 py-2">

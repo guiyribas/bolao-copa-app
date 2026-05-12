@@ -108,40 +108,42 @@ export function PartidaMatchHero({ match }: PartidaMatchHeroProps) {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 items-center gap-8 sm:grid-cols-[1fr_auto_1fr] sm:gap-6">
-          <div className="flex justify-center sm:justify-end">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-6">
+          <div className="flex justify-end">
             {match.homeTeam ? (
               <TeamWithFlag
                 team={match.homeTeam}
-                className="max-w-full flex-col items-center gap-3 sm:items-end [&_img]:h-8! [&_img]:w-11!"
-                nameClassName="text-center text-base font-semibold text-neutral-900 sm:text-right sm:text-lg"
+                className="max-w-full flex-col items-end gap-1.5 sm:gap-3 [&_img]:h-6! [&_img]:w-9! sm:[&_img]:h-8! sm:[&_img]:w-11!"
+                nameClassName="text-right text-xs font-semibold text-neutral-900 sm:text-lg"
               />
             ) : (
               <span className="text-neutral-500">—</span>
             )}
           </div>
 
-          <div className="flex flex-col items-center justify-center gap-2 px-2">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-400">
+          <div className="flex flex-col items-center justify-center gap-1 px-1 sm:gap-2 sm:px-2">
+            <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-neutral-400 sm:text-[10px] sm:tracking-[0.2em]">
               {isLive ? 'Placar ao vivo' : hasOfficial ? 'Resultado' : 'Placar'}
             </span>
-            <div className="flex items-baseline gap-2 font-mono tabular-nums">
-              <span className="min-w-[2ch] text-center text-3xl font-bold text-neutral-900 sm:text-4xl">
+            <div className="flex items-baseline gap-1 font-mono tabular-nums sm:gap-2">
+              <span className="min-w-[2ch] text-center text-2xl font-bold text-neutral-900 sm:text-4xl">
                 {hasOfficial ? hs : '—'}
               </span>
-              <span className="pb-1 text-lg font-light text-neutral-300">×</span>
-              <span className="min-w-[2ch] text-center text-3xl font-bold text-neutral-900 sm:text-4xl">
+              <span className="pb-0.5 text-sm font-light text-neutral-300 sm:pb-1 sm:text-lg">
+                ×
+              </span>
+              <span className="min-w-[2ch] text-center text-2xl font-bold text-neutral-900 sm:text-4xl">
                 {hasOfficial ? as : '—'}
               </span>
             </div>
           </div>
 
-          <div className="flex justify-center sm:justify-start">
+          <div className="flex justify-start">
             {match.awayTeam ? (
               <TeamWithFlag
                 team={match.awayTeam}
-                className="max-w-full flex-col items-center gap-3 sm:items-start [&_img]:h-8! [&_img]:w-11!"
-                nameClassName="text-center text-base font-semibold text-neutral-900 sm:text-left sm:text-lg"
+                className="max-w-full flex-col items-start gap-1.5 sm:gap-3 [&_img]:h-6! [&_img]:w-9! sm:[&_img]:h-8! sm:[&_img]:w-11!"
+                nameClassName="text-left text-xs font-semibold text-neutral-900 sm:text-lg"
               />
             ) : (
               <span className="text-neutral-500">—</span>
