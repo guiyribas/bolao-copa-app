@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
 import {
+  CRIAR_BOLOAO_PATH,
   FORGOT_PASSWORD_PATH,
   HOME_PATH,
   isGoogleAuthCallbackPath,
@@ -159,6 +160,12 @@ export function Header() {
                 className={styles.navLink(pathname === MEUS_BOLOES_PATH)}
               >
                 Bolões
+              </Link>
+              <Link
+                href={CRIAR_BOLOAO_PATH}
+                className={styles.navLink(pathname === CRIAR_BOLOAO_PATH)}
+              >
+                Criar bolão
               </Link>
               <Link
                 href="/palpites"
@@ -343,6 +350,13 @@ export function Header() {
               className={styles.mobileNavLink(pathname === MEUS_BOLOES_PATH)}
             >
               Bolões
+            </Link>
+            <Link
+              href={CRIAR_BOLOAO_PATH}
+              onClick={() => setMenuOpen(false)}
+              className={styles.mobileNavLink(pathname === CRIAR_BOLOAO_PATH)}
+            >
+              Criar bolão
             </Link>
             <Link
               href="/palpites"

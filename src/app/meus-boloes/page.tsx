@@ -9,6 +9,7 @@ import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { saveBtn } from '@/components/MatchCard/matchCard.styles';
 import { useAuthStore } from '@/stores/auth-store';
 import { apiFetch } from '@/lib/api';
+import { CRIAR_BOLOAO_PATH } from '@/lib/navigation';
 import { twMerge } from 'tailwind-merge';
 import type { PoolMembership } from '@/types';
 
@@ -103,6 +104,16 @@ export default function MeusBoloesPage() {
             Peça um convite ao administrador ou aceite um link para entrar —
             aqui vai aparecer cada bolão com acesso rápido ao ranking.
           </p>
+          <Link
+            href={CRIAR_BOLOAO_PATH}
+            className={twMerge(
+              saveBtn,
+              'mt-5 inline-flex gap-1 hover:bg-emerald-700'
+            )}
+          >
+            Criar bolão
+            <ChevronRightIcon sx={{ fontSize: 20 }} aria-hidden />
+          </Link>
         </div>
       ) : (
         <ul

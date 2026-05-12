@@ -4,8 +4,11 @@ export const MEUS_BOLOES_PATH = '/meus-boloes';
 /** Regras do bolão e critérios de pontuação (página pública). */
 export const REGRAS_E_PONTUACAO_PATH = '/regras-e-pontuacao';
 
-/** Sobre o projeto, pedido de novo bolão e opção de apoio ao custo público do site. */
+/** Sobre o projeto e opção de apoio ao custo público do site. */
 export const SOBRE_PATH = '/sobre';
+
+/** Pedido de criação de novo bolão (requer login). */
+export const CRIAR_BOLOAO_PATH = '/criar-bolao';
 
 /** Página inicial: placar Copa. */
 export const HOME_PATH = '/';
