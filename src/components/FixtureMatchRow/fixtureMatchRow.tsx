@@ -26,7 +26,7 @@ function statusLabel(status: Match['status']): string {
     case 'live':
       return 'Ao vivo';
     case 'finished':
-      return 'Final';
+      return 'Encerrada';
     default:
       return 'Agendada';
   }

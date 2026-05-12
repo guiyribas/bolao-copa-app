@@ -29,7 +29,7 @@ function statusChip(match: Match): { label: string; className: string } {
       };
     case 'finished':
       return {
-        label: 'Finalizada',
+        label: 'Encerrada',
         className:
           'border-neutral-300 bg-neutral-100/90 text-neutral-700 ring-1 ring-neutral-200/80',
       };
