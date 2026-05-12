@@ -21,6 +21,23 @@ export const FORGOT_PASSWORD_PATH = '/forgot-password';
 /** Nova senha a partir do link enviado por e-mail. */
 export const RESET_PASSWORD_PATH = '/reset-password';
 
+/** Retorno do OAuth Google após o Strapi redirecionar o navegador. */
+export const GOOGLE_CONNECT_REDIRECT_PATH = '/connect/google/redirect';
+
+/** Alias legado do redirect do Google OAuth no front-end. */
+export const GOOGLE_AUTH_CALLBACK_PATH = '/auth/google/callback';
+
+export const GOOGLE_AUTH_CALLBACK_PATHS = [
+  GOOGLE_CONNECT_REDIRECT_PATH,
+  GOOGLE_AUTH_CALLBACK_PATH,
+] as const;
+
+export function isGoogleAuthCallbackPath(pathname: string): boolean {
+  return GOOGLE_AUTH_CALLBACK_PATHS.includes(
+    pathname as (typeof GOOGLE_AUTH_CALLBACK_PATHS)[number]
+  );
+}
+
 /** Query param da aba na home: `all` | `today` | `groups` | `knockout`. */
 export const HOME_TAB_QUERY_KEY = 'tab';
 

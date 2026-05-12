@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { GoogleSignInButton } from '@/components/GoogleSignInButton/googleSignInButton';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { register } from '@/lib/auth';
 import { HOME_PATH, safeReturnUrl } from '@/lib/navigation';
@@ -79,6 +80,12 @@ export function RegisterForm() {
           {loading ? 'Criando...' : 'Criar conta'}
         </button>
       </form>
+      <div className="my-4 flex items-center gap-3 text-sm text-neutral-500">
+        <span className="h-px flex-1 bg-neutral-200" />
+        ou
+        <span className="h-px flex-1 bg-neutral-200" />
+      </div>
+      <GoogleSignInButton returnUrl={returnUrl} />
       <p className="mt-4 text-sm">
         Já tem conta?{' '}
         <Link href={loginHref} className="underline">

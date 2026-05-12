@@ -1,5 +1,10 @@
-import { apiFetch } from './api';
+import { apiFetch, API_URL } from './api';
 import type { User } from '@/types';
+
+export const OAUTH_RETURN_URL_STORAGE_KEY = 'bolao-oauth-return-url';
+
+export const GOOGLE_ONLY_LOGIN_MESSAGE =
+  'This account uses Google Sign-In. Please use the Google button to log in.';
 
 interface AuthResponse {
   jwt: string;
@@ -45,6 +50,18 @@ export async function resetPassword(
     method: 'POST',
     body: JSON.stringify({ code, password, passwordConfirmation }),
   });
+}
+
+export function getGoogleConnectUrl(): string {
+  return `${API_URL}/api/connect/google`;
+}
+
+export async function loginWithProvider(
+  provider: string,
+  query: string
+): Promise<AuthResponse> {
+  const suffix = query.startsWith('?') ? query : `?${query}`;
+  return apiFetch<AuthResponse>(`/api/auth/${provider}/callback${suffix}`);
 }
 
 export async function getMe(token: string): Promise<User> {

@@ -8,6 +8,7 @@ import { useAuthStore } from '@/stores/auth-store';
 import {
   FORGOT_PASSWORD_PATH,
   HOME_PATH,
+  isGoogleAuthCallbackPath,
   MEUS_BOLOES_PATH,
   REGRAS_E_PONTUACAO_PATH,
   RESET_PASSWORD_PATH,
@@ -37,7 +38,8 @@ export function Header() {
     pathname === '/login' ||
     pathname === '/register' ||
     pathname === FORGOT_PASSWORD_PATH ||
-    pathname === RESET_PASSWORD_PATH;
+    pathname === RESET_PASSWORD_PATH ||
+    isGoogleAuthCallbackPath(pathname);
   const showUserNav = hasHydrated && !!jwt && !isAuthPage;
   const showGuestNav = hasHydrated && !jwt;
   const headerUserLabel = formatHeaderUserLabel(user);
