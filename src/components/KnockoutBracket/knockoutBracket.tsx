@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import { TeamFlagImage } from '@/components/TeamWithFlag/teamFlagImage';
 import type { Match } from '@/types';
 import { selecaoPath } from '@/lib/navigation';
 import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
@@ -77,14 +77,7 @@ function BracketTeamRow({
   return (
     <div className={styles.teamRow}>
       {flagSrc ? (
-        <Image
-          src={flagSrc}
-          alt=""
-          width={18}
-          height={13}
-          className="shrink-0 rounded-[2px] border border-neutral-600 object-cover"
-          unoptimized
-        />
+        <TeamFlagImage src={flagSrc} size="bracket" />
       ) : (
         <ShieldPlaceholder />
       )}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
+import { TeamFlagImage } from '@/components/TeamWithFlag/teamFlagImage';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import {
@@ -114,16 +114,7 @@ function MiniFlag({ team }: { team: Team }) {
       </span>
     );
   }
-  return (
-    <Image
-      src={src}
-      alt=""
-      width={20}
-      height={14}
-      className="inline-block shrink-0 rounded border border-neutral-200 object-cover align-middle"
-      unoptimized
-    />
-  );
+  return <TeamFlagImage src={src} size="md" />;
 }
 
 function PalpiteCell({

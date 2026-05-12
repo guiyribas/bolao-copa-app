@@ -11,10 +11,6 @@ export const content = twMerge(
   'flex flex-col items-center gap-5 text-center sm:flex-row sm:items-center sm:gap-8 sm:text-left'
 );
 
-export const flagImg = twMerge(
-  'h-16 w-24 shrink-0 rounded-md border border-neutral-200/90 object-cover shadow-sm sm:h-20 sm:w-28'
-);
-
 export const flagPlaceholder = twMerge(
   'inline-flex h-16 w-24 shrink-0 items-center justify-center rounded-md border border-neutral-200 bg-neutral-100',
   'text-lg font-semibold text-neutral-500 sm:h-20 sm:w-28'

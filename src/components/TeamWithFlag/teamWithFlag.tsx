@@ -1,9 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Team } from '@/types';
 import { absoluteStrapiMediaUrl, resolveTeamFlagUrl } from '@/lib/strapi-media';
+import { TeamFlagImage } from '@/components/TeamWithFlag/teamFlagImage';
 import * as styles from './teamWithFlag.styles';
 import { twMerge } from 'tailwind-merge';
 
@@ -27,14 +27,7 @@ export function TeamWithFlag({
   const content = (
     <>
       {src ? (
-        <Image
-          src={src}
-          alt=""
-          width={22}
-          height={16}
-          className={styles.flagImg}
-          unoptimized
-        />
+        <TeamFlagImage src={src} size="sm" />
       ) : (
         <span className={styles.flagPlaceholder} aria-hidden>
           {code.slice(0, 2)}
@@ -89,14 +82,7 @@ export function StandingWithFlag({
   const content = (
     <>
       {src ? (
-        <Image
-          src={src}
-          alt=""
-          width={22}
-          height={16}
-          className={styles.flagImg}
-          unoptimized
-        />
+        <TeamFlagImage src={src} size="sm" />
       ) : (
         <span className={styles.flagPlaceholder} aria-hidden>
           {(code || '??').slice(0, 2)}

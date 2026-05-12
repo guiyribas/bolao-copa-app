@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import { TeamFlagImage } from '@/components/TeamWithFlag/teamFlagImage';
 import { resolveTeamFlagUrl } from '@/lib/strapi-media';
 import type { TeamSelectionHeroProps } from './teamSelectionHero.types';
 import * as styles from './teamSelectionHero.styles';
@@ -16,14 +16,7 @@ export function TeamSelectionHero({ team, fifaRanking }: TeamSelectionHeroProps)
       <div className={styles.body}>
         <div className={styles.content}>
           {src ? (
-            <Image
-              src={src}
-              alt=""
-              width={112}
-              height={80}
-              className={styles.flagImg}
-              unoptimized
-            />
+            <TeamFlagImage src={src} size="lg" />
           ) : (
             <span className={styles.flagPlaceholder} aria-hidden>
               {code.slice(0, 2)}

@@ -113,7 +113,7 @@ export function PartidaMatchHero({ match }: PartidaMatchHeroProps) {
             {match.homeTeam ? (
               <TeamWithFlag
                 team={match.homeTeam}
-                className="max-w-full flex-col items-end gap-1.5 sm:gap-3 [&_img]:h-6! [&_img]:w-9! sm:[&_img]:h-8! sm:[&_img]:w-11!"
+                className="max-w-full flex-col items-end gap-1.5 sm:gap-3 [&_[data-flag-frame]]:h-6! [&_[data-flag-frame]]:w-9! sm:[&_[data-flag-frame]]:h-8! sm:[&_[data-flag-frame]]:w-11!"
                 nameClassName="text-right text-xs font-semibold text-neutral-900 sm:text-lg"
               />
             ) : (
@@ -142,7 +142,7 @@ export function PartidaMatchHero({ match }: PartidaMatchHeroProps) {
             {match.awayTeam ? (
               <TeamWithFlag
                 team={match.awayTeam}
-                className="max-w-full flex-col items-start gap-1.5 sm:gap-3 [&_img]:h-6! [&_img]:w-9! sm:[&_img]:h-8! sm:[&_img]:w-11!"
+                className="max-w-full flex-col items-start gap-1.5 sm:gap-3 [&_[data-flag-frame]]:h-6! [&_[data-flag-frame]]:w-9! sm:[&_[data-flag-frame]]:h-8! sm:[&_[data-flag-frame]]:w-11!"
                 nameClassName="text-left text-xs font-semibold text-neutral-900 sm:text-lg"
               />
             ) : (
