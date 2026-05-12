@@ -153,26 +153,12 @@ export default function InvitePage() {
     router.replace(MEUS_BOLOES_PATH);
   }, [router]);
 
-  useEffect(() => {
-    if (!hasHydrated || !inviteCode) return;
-    if (!jwt) {
-      const returnUrl = `/invite/${encodeURIComponent(inviteCode)}`;
-      router.replace(
-        `/login?returnUrl=${encodeURIComponent(returnUrl)}`
-      );
-    }
-  }, [hasHydrated, jwt, inviteCode, router]);
+  const loginHref = `/login?returnUrl=${encodeURIComponent(
+    `/invite/${inviteCode}`
+  )}`;
 
   if (!hasHydrated) {
     return <p className="mt-16 text-center">Carregando...</p>;
-  }
-
-  if (!jwt) {
-    return (
-      <p className="mt-16 text-center text-gray-600">
-        Redirecionando para o login...
-      </p>
-    );
   }
 
   if (poolError) {
@@ -196,7 +182,7 @@ export default function InvitePage() {
     return <p className="mt-16 text-center">Carregando convite...</p>;
   }
 
-  if (joinError) {
+  if (jwt && joinError) {
     return (
       <div className="mx-auto mt-16 max-w-lg space-y-6">
         <PageBreadcrumb label="Convite" className="mb-0" />
@@ -250,9 +236,20 @@ export default function InvitePage() {
             Você foi convidado para um bolão
           </h1>
           <p className="max-w-xl text-sm leading-relaxed text-slate-600 md:text-[15px]">
-            Revise as informações abaixo antes de entrar. Ao aceitar, você passa
-            a participar deste bolão e deve seguir as regras e o pagamento
-            definidos pelo administrador. Consulte também as{' '}
+            Revise as informações abaixo antes de entrar.
+            {jwt ? (
+              <>
+                {' '}
+                Ao aceitar, você passa a participar deste bolão e deve seguir
+                as regras e o pagamento definidos pelo administrador.
+              </>
+            ) : (
+              <>
+                {' '}
+                Para aceitar o convite, faça login ou crie uma conta.
+              </>
+            )}{' '}
+            Consulte também as{' '}
             <Link
               href="/regras-e-pontuacao"
               className="font-medium text-emerald-800 underline decoration-emerald-300/90 underline-offset-2 transition hover:text-emerald-950 hover:decoration-emerald-700"
@@ -275,16 +272,25 @@ export default function InvitePage() {
         >
           Recusar
         </button>
-        <button
-          type="button"
-          disabled={joinBusy}
-          onClick={() => {
-            void runJoin();
-          }}
-          className={twMerge(saveBtn, 'hover:bg-emerald-700')}
-        >
-          {joinBusy ? 'Entrando...' : 'Aceitar e entrar'}
-        </button>
+        {jwt ? (
+          <button
+            type="button"
+            disabled={joinBusy}
+            onClick={() => {
+              void runJoin();
+            }}
+            className={twMerge(saveBtn, 'hover:bg-emerald-700')}
+          >
+            {joinBusy ? 'Entrando...' : 'Aceitar e entrar'}
+          </button>
+        ) : (
+          <Link
+            href={loginHref}
+            className={twMerge(saveBtn, 'hover:bg-emerald-700')}
+          >
+            Fazer login
+          </Link>
+        )}
       </div>
     </div>
   );
