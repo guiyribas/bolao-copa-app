@@ -6,14 +6,8 @@ import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { ApiError, apiFetch } from '@/lib/api';
 import { CRIAR_BOLOAO_PATH } from '@/lib/navigation';
 import {
-  formatPoolValueBRL,
-  handlePoolValueRawInput,
-  poolValueDigitsToNumber,
-} from '@/lib/pool-value-input';
-import {
   POOL_ADMIN_PAYMENT_ADMIN_FIELDSET_INTRO,
   POOL_ADMIN_PAYMENT_CALLOUT,
-  POOL_ADMIN_PAYMENT_POOL_VALUE_HINT,
 } from '@/lib/site-brand';
 import { useAuthStore } from '@/stores/auth-store';
 
@@ -30,7 +24,6 @@ export function CriarBolaoForm() {
   const { jwt, user, hasHydrated } = useAuthStore();
   const [poolName, setPoolName] = useState('');
   const [poolDescription, setPoolDescription] = useState('');
-  const [poolValueDigits, setPoolValueDigits] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -55,15 +48,6 @@ export function CriarBolaoForm() {
     setSuccess(false);
     setLoading(true);
     try {
-      let pv: number | undefined;
-      try {
-        pv = poolValueDigitsToNumber(poolValueDigits);
-      } catch (verr) {
-        setError(verr instanceof Error ? verr.message : 'Valor inválido');
-        setLoading(false);
-        return;
-      }
-
       await apiFetch<{ data: { ok?: boolean } }>(
         '/api/pool-leads/submit',
         {
@@ -71,7 +55,6 @@ export function CriarBolaoForm() {
           body: JSON.stringify({
             poolName: poolName.trim(),
             poolDescription: poolDescription.trim(),
-            ...(pv !== undefined ? { poolValue: pv } : {}),
             adminName,
             adminEmail,
           }),
@@ -81,7 +64,6 @@ export function CriarBolaoForm() {
       setSuccess(true);
       setPoolName('');
       setPoolDescription('');
-      setPoolValueDigits('');
     } catch (err) {
       if (err instanceof ApiError) setError(err.message);
       else setError('Não foi possível enviar. Tente de novo mais tarde.');
@@ -185,28 +167,6 @@ export function CriarBolaoForm() {
                 className={inputClass}
                 placeholder="Ex.: bolão da firma, prêmios, regras internas…"
               />
-            </div>
-            <div>
-              <label htmlFor="poolValue" className={labelClass}>
-                Valor por participante
-              </label>
-              <input
-                id="poolValue"
-                name="poolValue"
-                type="text"
-                inputMode="numeric"
-                autoComplete="off"
-                aria-describedby="poolValue-hint"
-                value={formatPoolValueBRL(poolValueDigits)}
-                onChange={(e) =>
-                  setPoolValueDigits(handlePoolValueRawInput(e.target.value))
-                }
-                className={`${inputClass} font-mono tabular-nums`}
-                placeholder="Opcional — ex.: cada um entra com R$ 20"
-              />
-              <p id="poolValue-hint" className="mt-1 text-xs text-neutral-500">
-                {POOL_ADMIN_PAYMENT_POOL_VALUE_HINT}
-              </p>
             </div>
           </fieldset>
 

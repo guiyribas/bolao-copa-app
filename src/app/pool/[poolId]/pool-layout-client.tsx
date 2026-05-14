@@ -12,6 +12,10 @@ import { formatJoinedPtBr } from '@/lib/format-joined-date';
 import { normalizePoolFromApi } from '@/lib/pool-normalize';
 import { isSameUser } from '@/lib/user-match';
 import { PoolLayoutProvider } from '@/contexts/pool-layout-context';
+import {
+  POOL_NO_ENTRY_FEE_EXPLAINER,
+  POOL_NO_ENTRY_FEE_TITLE,
+} from '@/lib/site-brand';
 import type { Pool, PoolMembership } from '@/types';
 
 const brl = new Intl.NumberFormat('pt-BR', {
@@ -27,19 +31,25 @@ function PoolHeader({ pool }: { pool: Pool }) {
   const memberCount = pool.memberCount ?? 0;
   const paidCount = pool.paidCount ?? 0;
   const valueCents = pool.value ?? 0;
+  const hasEntryFee = valueCents > 0;
   /** `pool.value` é guardado em centavos; aqui convertemos para reais ao formatar. */
   const totalCollectedCents =
     pool.totalCollected ?? paidCount * valueCents;
   const expectedTotalCents = memberCount * valueCents;
   const hasMembers = memberCount > 0;
 
+  const summaryCardClass =
+    'w-full rounded-xl border border-neutral-200/80 bg-white px-4 py-3 shadow-sm shadow-neutral-950/5';
+  const summaryCardNoFeeClass =
+    'w-full rounded-xl border border-neutral-200/80 bg-white px-3 py-2 shadow-sm shadow-neutral-950/5';
+
   return (
     <header
       className="mb-6 overflow-hidden rounded-2xl border border-neutral-200/80 bg-gradient-to-br from-white via-white to-neutral-50 p-5 shadow-sm shadow-neutral-950/5 sm:p-6"
       aria-labelledby="pool-heading"
     >
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-        <div className="min-w-0 flex-1">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
+        <div className="min-w-0 w-full sm:flex-[2]">
           <h1
             id="pool-heading"
             className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl"
@@ -53,40 +63,72 @@ function PoolHeader({ pool }: { pool: Pool }) {
           ) : null}
         </div>
 
-        <div className="rounded-xl border border-neutral-200/80 bg-white px-4 py-3 shadow-sm shadow-neutral-950/5 sm:min-w-55">
-          <dl className="space-y-2.5">
-            <div className="flex items-baseline justify-between gap-6">
-              <dt className="text-[11px] font-medium uppercase tracking-wide text-neutral-500">
-                Entrada
-              </dt>
-              <dd className="text-base font-semibold tabular-nums text-neutral-900">
-                {brl.format(valueCents / 100)}
-              </dd>
-            </div>
-            {joined ? (
-              <div className="flex items-baseline justify-between gap-6 border-t border-neutral-100 pt-2.5">
+        <div className="min-w-0 w-full shrink-0 sm:flex-1">
+          <div
+            className={hasEntryFee ? summaryCardClass : summaryCardNoFeeClass}
+          >
+          {hasEntryFee ? (
+            <dl className="space-y-2.5">
+              <div className="flex items-baseline justify-between gap-6">
                 <dt className="text-[11px] font-medium uppercase tracking-wide text-neutral-500">
-                  Sua inscrição
+                  Entrada
                 </dt>
-                <dd className="text-right text-sm font-semibold tabular-nums text-neutral-900">
+                <dd className="text-base font-semibold tabular-nums text-neutral-900">
+                  {brl.format(valueCents / 100)}
+                </dd>
+              </div>
+              {joined ? (
+                <div className="flex items-baseline justify-between gap-6 border-t border-neutral-100 pt-2.5">
+                  <dt className="text-[11px] font-medium uppercase tracking-wide text-neutral-500">
+                    Sua inscrição
+                  </dt>
+                  <dd className="text-right text-sm font-semibold tabular-nums text-neutral-900">
+                    {joined}
+                  </dd>
+                </div>
+              ) : null}
+              {hasMembers ? (
+                <div className="border-t border-neutral-100 pt-2.5 text-right">
+                  <dd className="text-sm font-semibold tabular-nums text-neutral-900">
+                    {brl.format(totalCollectedCents / 100)}{' '}
+                    <span className="font-normal text-neutral-400">/</span>{' '}
+                    {brl.format(expectedTotalCents / 100)}
+                  </dd>
+                  <dd className="mt-0.5 text-[11px] text-neutral-500">
+                    {paidCount} de {memberCount}{' '}
+                    {memberCount === 1 ? 'pagou' : 'pagaram'}
+                  </dd>
+                </div>
+              ) : null}
+            </dl>
+          ) : joined ? (
+            <div className="space-y-1">
+              <p className="text-sm font-semibold leading-tight text-neutral-900">
+                {POOL_NO_ENTRY_FEE_TITLE}
+              </p>
+              <p className="text-[11px] leading-snug text-neutral-600">
+                {POOL_NO_ENTRY_FEE_EXPLAINER}
+              </p>
+              <div className="flex items-baseline justify-between gap-6 border-t border-neutral-100 pt-1.5">
+                <span className="text-[11px] font-medium uppercase tracking-wide text-neutral-500">
+                  Sua inscrição
+                </span>
+                <span className="text-right text-sm font-semibold tabular-nums text-neutral-900">
                   {joined}
-                </dd>
+                </span>
               </div>
-            ) : null}
-            {hasMembers ? (
-              <div className="border-t border-neutral-100 pt-2.5 text-right">
-                <dd className="text-sm font-semibold tabular-nums text-neutral-900">
-                  {brl.format(totalCollectedCents / 100)}{' '}
-                  <span className="font-normal text-neutral-400">/</span>{' '}
-                  {brl.format(expectedTotalCents / 100)}
-                </dd>
-                <dd className="mt-0.5 text-[11px] text-neutral-500">
-                  {paidCount} de {memberCount}{' '}
-                  {memberCount === 1 ? 'pagou' : 'pagaram'}
-                </dd>
-              </div>
-            ) : null}
-          </dl>
+            </div>
+          ) : (
+            <div className="space-y-1">
+              <p className="text-sm font-semibold leading-tight text-neutral-900">
+                {POOL_NO_ENTRY_FEE_TITLE}
+              </p>
+              <p className="text-[11px] leading-snug text-neutral-600">
+                {POOL_NO_ENTRY_FEE_EXPLAINER}
+              </p>
+            </div>
+          )}
+          </div>
         </div>
       </div>
     </header>

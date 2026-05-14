@@ -24,8 +24,10 @@ export const POOL_ADMIN_PAYMENT_SUPPORT_CONTRAST =
 export const POOL_ADMIN_PAYMENT_CALLOUT =
   'Quem solicita o bolão será o administrador e define premiação e valor de entrada. Cobrança e recebimento (ex.: PIX) ficam com o admin; a plataforma não gerencia pagamentos do bolão.';
 
-export const POOL_ADMIN_PAYMENT_POOL_VALUE_HINT =
-  'Digite apenas números; o valor aparece em reais (R$). É uma referência para o grupo — cobrança e recebimento ficam com o admin. Deixe em branco se não houver pagamento entre participantes.';
-
 export const POOL_ADMIN_PAYMENT_ADMIN_FIELDSET_INTRO =
   'Quem solicita será o administrador do bolão e assume premiação, valor de entrada e recebimento entre participantes (em geral via PIX), fora da plataforma. Dados da sua conta logada; não podem ser alterados neste pedido.';
+
+export const POOL_NO_ENTRY_FEE_TITLE = 'Sem taxa de entrada';
+
+export const POOL_NO_ENTRY_FEE_EXPLAINER =
+  'Não há valor de inscrição cadastrado neste bolão. Se houver combinação de valores, fica a critério do grupo.';

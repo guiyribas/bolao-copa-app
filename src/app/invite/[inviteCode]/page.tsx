@@ -20,6 +20,10 @@ import {
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { saveBtn } from '@/components/MatchCard/matchCard.styles';
 import { MEUS_BOLOES_PATH } from '@/lib/navigation';
+import {
+  POOL_NO_ENTRY_FEE_EXPLAINER,
+  POOL_NO_ENTRY_FEE_TITLE,
+} from '@/lib/site-brand';
 import type { Pool, PoolMembership } from '@/types';
 
 const brl = new Intl.NumberFormat('pt-BR', {
@@ -30,6 +34,11 @@ const brl = new Intl.NumberFormat('pt-BR', {
 function InvitePoolPreview({ pool }: { pool: Pool }) {
   const description = pool.description?.trim();
   const valueCents = pool.value ?? 0;
+  const hasEntryFee = valueCents > 0;
+  const summaryCardClass =
+    'w-full rounded-xl border border-neutral-200/80 bg-white px-4 py-3 shadow-sm shadow-neutral-950/5';
+  const summaryCardNoFeeClass =
+    'w-full rounded-xl border border-neutral-200/80 bg-white px-3 py-2 shadow-sm shadow-neutral-950/5';
   const adminLabel =
     pool.admin?.username?.trim() || pool.admin?.email?.trim() || null;
 
@@ -38,8 +47,8 @@ function InvitePoolPreview({ pool }: { pool: Pool }) {
       className="rounded-xl border border-dashed border-emerald-200/90 bg-linear-to-br from-emerald-50/50 to-white px-5 py-6 shadow-sm sm:px-6 sm:py-7"
       aria-labelledby="invite-pool-heading"
     >
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-        <div className="flex min-w-0 flex-1 flex-col gap-5 sm:flex-row sm:items-start sm:gap-5">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
+        <div className="flex min-w-0 w-full sm:flex-[2] flex-col gap-5 sm:flex-row sm:items-start sm:gap-5">
           <div
             className="mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-100/90 text-emerald-800 shadow-inner shadow-emerald-900/5 sm:mx-0"
             aria-hidden
@@ -68,17 +77,32 @@ function InvitePoolPreview({ pool }: { pool: Pool }) {
           </div>
         </div>
 
-        <div className="rounded-xl border border-neutral-200/80 bg-white px-4 py-3 shadow-sm shadow-neutral-950/5 sm:min-w-55">
-          <dl>
-            <div className="flex items-baseline justify-between gap-6">
-              <dt className="text-[11px] font-medium uppercase tracking-wide text-neutral-500">
-                Entrada
-              </dt>
-              <dd className="text-base font-semibold tabular-nums text-neutral-900">
-                {brl.format(valueCents / 100)}
-              </dd>
+        <div className="min-w-0 w-full shrink-0 sm:flex-1">
+          <div
+            className={hasEntryFee ? summaryCardClass : summaryCardNoFeeClass}
+          >
+          {hasEntryFee ? (
+            <dl>
+              <div className="flex items-baseline justify-between gap-6">
+                <dt className="text-[11px] font-medium uppercase tracking-wide text-neutral-500">
+                  Entrada
+                </dt>
+                <dd className="text-base font-semibold tabular-nums text-neutral-900">
+                  {brl.format(valueCents / 100)}
+                </dd>
+              </div>
+            </dl>
+          ) : (
+            <div className="space-y-1">
+              <p className="text-sm font-semibold leading-tight text-neutral-900">
+                {POOL_NO_ENTRY_FEE_TITLE}
+              </p>
+              <p className="text-[11px] leading-snug text-neutral-600">
+                {POOL_NO_ENTRY_FEE_EXPLAINER}
+              </p>
             </div>
-          </dl>
+          )}
+          </div>
         </div>
       </div>
     </section>
