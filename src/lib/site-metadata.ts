@@ -1,5 +1,5 @@
-import type { Metadata } from 'next';
-import { SITE_BRAND_LOGO_PATH, SITE_DESCRIPTION, SITE_NAME } from '@/lib/site-brand';
+import type { Metadata, Viewport } from 'next';
+import { SITE_DESCRIPTION, SITE_NAME } from '@/lib/site-brand';
 import { getSiteUrl } from '@/lib/site-url';
 
 type PageMetadataOptions = {
@@ -31,11 +31,17 @@ export function pageMetadata(
 
 export const defaultSiteMetadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
+  applicationName: SITE_NAME,
   title: {
     default: SITE_NAME,
     template: `%s · ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
+  appleWebApp: {
+    capable: true,
+    title: SITE_NAME,
+    statusBarStyle: 'default',
+  },
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
@@ -50,7 +56,11 @@ export const defaultSiteMetadata: Metadata = {
     description: SITE_DESCRIPTION,
   },
   icons: {
-    icon: SITE_BRAND_LOGO_PATH,
-    apple: SITE_BRAND_LOGO_PATH,
+    icon: '/icons/icon-192.png',
+    apple: '/icons/apple-touch-icon.png',
   },
+};
+
+export const defaultSiteViewport: Viewport = {
+  themeColor: '#ffffff',
 };

@@ -3,7 +3,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Header } from '@/components/Header/header';
 import { AppToaster } from '@/components/AppToaster/app-toaster';
 import { SiteSupportFooter } from '@/components/SiteSupportFooter/siteSupportFooter';
-import { defaultSiteMetadata } from '@/lib/site-metadata';
+import { defaultSiteMetadata, defaultSiteViewport } from '@/lib/site-metadata';
 import './globals.css';
 
 const geistSans = Geist({
@@ -12,6 +12,7 @@ const geistSans = Geist({
 });
 
 export const metadata = defaultSiteMetadata;
+export const viewport = defaultSiteViewport;
 
 export default function RootLayout({
   children,
