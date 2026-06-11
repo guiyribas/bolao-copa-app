@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useMatchDisplayNow } from '@/hooks/useMatchDisplayNow';
 import { TeamFlagImage } from '@/components/TeamWithFlag/teamFlagImage';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -287,6 +288,8 @@ export default function PartidaPage() {
   const [poolData, setPoolData] = useState<PoolMatchBetsPayload | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const displayMatches = useMemo(() => (match ? [match] : []), [match]);
+  const displayNow = useMatchDisplayNow(displayMatches);
 
   useEffect(() => {
     if (!hasHydrated) return;
@@ -368,7 +371,7 @@ export default function PartidaPage() {
         ) : null}
 
         <div className="mb-8">
-          <PartidaMatchHero match={match} />
+          <PartidaMatchHero match={match} displayNow={displayNow} />
         </div>
 
         {!poolData || poolData.pools.length === 0 ? (

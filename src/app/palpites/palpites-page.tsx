@@ -25,6 +25,7 @@ import {
 import { FilterPill } from '@/components/FilterPill/filterPill';
 import { GroupTable } from '@/components/GroupTable/groupTable';
 import { useScrollToNearestMatchDay } from '@/hooks/useScrollToNearestMatchDay';
+import { useMatchDisplayNow } from '@/hooks/useMatchDisplayNow';
 import type { Match, Bet, TeamStanding } from '@/types';
 import { useQueryState } from 'nuqs';
 
@@ -79,6 +80,7 @@ export default function PalpitesPage() {
   const [simulacaoOpen, setSimulacaoOpen] = useState(true);
 
   const showGroupSimulation = phase === '' || phase === GROUP_PHASE;
+  const displayNow = useMatchDisplayNow(matches);
 
   useEffect(() => {
     if (!hasHydrated) return;
@@ -398,6 +400,7 @@ export default function PalpitesPage() {
                             bet={bet}
                             onSave={(h, a) => saveBet(match.documentId, h, a)}
                             detailHref={`/partida/${match.documentId}`}
+                            displayNow={displayNow}
                           />
                         );
                       })}

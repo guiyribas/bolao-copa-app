@@ -10,4 +10,5 @@ export type BracketPhaseColumn =
 
 export type KnockoutBracketProps = {
   matches: Match[];
+  displayNow?: number;
 };

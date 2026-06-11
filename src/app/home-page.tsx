@@ -26,6 +26,7 @@ import {
 import { normalizeMatchesPayload } from '@/lib/match-status';
 import { groupMatchesByLocalDay } from '@/lib/team-matches';
 import { useScrollToNearestMatchDay } from '@/hooks/useScrollToNearestMatchDay';
+import { useMatchDisplayNow } from '@/hooks/useMatchDisplayNow';
 import type { Match } from '@/types';
 
 const HOME_TAB_VALUES = ['all', 'today', 'groups', 'knockout'] as const;
@@ -51,6 +52,7 @@ export default function HomePage() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [matchesError, setMatchesError] = useState<string | null>(null);
   const [matchesLoading, setMatchesLoading] = useState(true);
+  const displayNow = useMatchDisplayNow(matches);
 
   useEffect(() => {
     if (!hasHydrated) return;
@@ -209,6 +211,7 @@ export default function HomePage() {
                           key={m.documentId}
                           match={m}
                           showPalpitesLink={showPalpitesLink}
+                          displayNow={displayNow}
                         />
                       ))}
                     </div>
@@ -244,6 +247,7 @@ export default function HomePage() {
                       key={m.documentId}
                       match={m}
                       showPalpitesLink={showPalpitesLink}
+                      displayNow={displayNow}
                     />
                   ))}
                 </div>
@@ -292,7 +296,7 @@ export default function HomePage() {
                 Não foi possível carregar as partidas: {matchesError}
               </p>
             ) : (
-              <KnockoutBracket matches={knockoutMatches} />
+              <KnockoutBracket matches={knockoutMatches} displayNow={displayNow} />
             )}
           </TabsContent>
         </TabsRoot>

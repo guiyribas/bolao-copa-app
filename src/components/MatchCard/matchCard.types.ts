@@ -8,4 +8,6 @@ export interface MatchCardProps {
   onSave?: (homeScore: number, awayScore: number) => Promise<void>;
   /** Link opcional para a página da partida (palpites por bolão). */
   detailHref?: string;
+  /** Timestamp for derived display state (kickoff / score placeholder). */
+  displayNow?: number;
 }

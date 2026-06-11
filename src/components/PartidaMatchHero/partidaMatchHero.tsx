@@ -5,6 +5,12 @@ import type { Match } from '@/types';
 import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
 import { LiveBroadcastDot } from '@/components/LiveBroadcastDot/liveBroadcastDot';
 import { formatMatchDate } from '@/components/MatchCard/matchCard.utils';
+import {
+  getEffectiveMatchStatus,
+  resolveDisplayScores,
+} from '@/lib/match-display';
+import { useDisplayNow } from '@/hooks/useDisplayNow';
+import { selecaoPath } from '@/lib/navigation';
 
 function phaseLabel(phase: string): string {
   const m: Record<string, string> = {
@@ -19,8 +25,11 @@ function phaseLabel(phase: string): string {
   return m[phase] ?? phase;
 }
 
-function statusChip(match: Match): { label: string; className: string } {
-  switch (match.status) {
+function statusChip(status: Match['status']): {
+  label: string;
+  className: string;
+} {
+  switch (status) {
     case 'live':
       return {
         label: 'Ao vivo',
@@ -53,15 +62,15 @@ function matchHeadingTitle(match: Match): string {
 
 type PartidaMatchHeroProps = {
   match: Match;
+  displayNow?: number;
 };
 
-export function PartidaMatchHero({ match }: PartidaMatchHeroProps) {
-  const isLive = match.status === 'live';
-  const hs = match.homeScore;
-  const as = match.awayScore;
-  const hasOfficial = hs != null && as != null;
-
-  const status = statusChip(match);
+export function PartidaMatchHero({ match, displayNow }: PartidaMatchHeroProps) {
+  const now = useDisplayNow([match], displayNow);
+  const effectiveStatus = getEffectiveMatchStatus(match, now);
+  const displayScores = resolveDisplayScores(match, now);
+  const isLive = effectiveStatus === 'live';
+  const status = statusChip(effectiveStatus);
 
   const metaParts = [
     `J${match.matchNumber}`,
@@ -88,7 +97,9 @@ export function PartidaMatchHero({ match }: PartidaMatchHeroProps) {
       </header>
 
       <div className="relative px-5 py-6 sm:px-8 sm:py-8">
-        {isLive ? <LiveBroadcastDot className="left-5 top-6 sm:left-8" /> : null}
+        {isLive ? (
+          <LiveBroadcastDot className="left-5 top-6 sm:left-8" />
+        ) : null}
         <div className="mb-6 flex flex-wrap items-center justify-center gap-2">
           <span
             className={twMerge(
@@ -115,6 +126,11 @@ export function PartidaMatchHero({ match }: PartidaMatchHeroProps) {
                 team={match.homeTeam}
                 className="max-w-full flex-col items-end gap-1.5 sm:gap-3 [&_[data-flag-frame]]:h-6! [&_[data-flag-frame]]:w-9! sm:[&_[data-flag-frame]]:h-8! sm:[&_[data-flag-frame]]:w-11!"
                 nameClassName="text-right text-xs font-semibold text-neutral-900 sm:text-lg"
+                href={
+                  match.homeTeam.documentId
+                    ? selecaoPath(match.homeTeam.documentId)
+                    : undefined
+                }
               />
             ) : (
               <span className="text-neutral-500">—</span>
@@ -123,17 +139,21 @@ export function PartidaMatchHero({ match }: PartidaMatchHeroProps) {
 
           <div className="flex flex-col items-center justify-center gap-1 px-1 sm:gap-2 sm:px-2">
             <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-neutral-400 sm:text-[10px] sm:tracking-[0.2em]">
-              {isLive ? 'Placar ao vivo' : hasOfficial ? 'Resultado' : 'Placar'}
+              {isLive
+                ? 'Placar ao vivo'
+                : displayScores
+                  ? 'Resultado'
+                  : 'Placar'}
             </span>
             <div className="flex items-baseline gap-1 font-mono tabular-nums sm:gap-2">
               <span className="min-w-[2ch] text-center text-2xl font-bold text-neutral-900 sm:text-4xl">
-                {hasOfficial ? hs : '—'}
+                {displayScores ? displayScores.home : '—'}
               </span>
               <span className="pb-0.5 text-sm font-light text-neutral-300 sm:pb-1 sm:text-lg">
                 ×
               </span>
               <span className="min-w-[2ch] text-center text-2xl font-bold text-neutral-900 sm:text-4xl">
-                {hasOfficial ? as : '—'}
+                {displayScores ? displayScores.away : '—'}
               </span>
             </div>
           </div>
@@ -144,6 +164,11 @@ export function PartidaMatchHero({ match }: PartidaMatchHeroProps) {
                 team={match.awayTeam}
                 className="max-w-full flex-col items-start gap-1.5 sm:gap-3 [&_[data-flag-frame]]:h-6! [&_[data-flag-frame]]:w-9! sm:[&_[data-flag-frame]]:h-8! sm:[&_[data-flag-frame]]:w-11!"
                 nameClassName="text-left text-xs font-semibold text-neutral-900 sm:text-lg"
+                href={
+                  match.awayTeam.documentId
+                    ? selecaoPath(match.awayTeam.documentId)
+                    : undefined
+                }
               />
             ) : (
               <span className="text-neutral-500">—</span>

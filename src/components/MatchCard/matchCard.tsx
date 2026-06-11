@@ -12,6 +12,11 @@ import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
 import { LiveBroadcastDot } from '@/components/LiveBroadcastDot/liveBroadcastDot';
 import { matchDetailTextLinkClass } from '@/components/FixtureMatchRow/fixtureMatchRow.styles';
 import { areMatchOpponentsDefined } from '@/lib/match-opponents';
+import {
+  getEffectiveMatchStatus,
+  resolveDisplayScores,
+} from '@/lib/match-display';
+import { useDisplayNow } from '@/hooks/useDisplayNow';
 import { selecaoPath } from '@/lib/navigation';
 
 export function MatchCard({
@@ -20,10 +25,15 @@ export function MatchCard({
   onSave,
   readOnly,
   detailHref,
+  displayNow,
 }: MatchCardProps) {
+  const now = useDisplayNow([match], displayNow);
   const isPast = new Date(match.date) <= new Date();
   const isFinished = match.status === 'finished';
-  const isLive = match.status === 'live';
+  const isLive = getEffectiveMatchStatus(match, now) === 'live';
+  const finishedDisplayScores = isFinished
+    ? resolveDisplayScores(match, now)
+    : null;
   /** Edição só em partidas futuras / não encerradas, com permissão explícita. */
   const canShowEditor = !readOnly && !isPast && !isFinished;
   const opponentsDefined = areMatchOpponentsDefined(match);
@@ -226,7 +236,9 @@ export function MatchCard({
                 ·
               </span>
               <span className={styles.resultInfo}>
-                {match.homeScore ?? '-'} x {match.awayScore ?? '-'}
+                {finishedDisplayScores
+                  ? `${finishedDisplayScores.home} x ${finishedDisplayScores.away}`
+                  : '- x -'}
               </span>
             </>
           )}

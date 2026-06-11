@@ -6,6 +6,11 @@ import type { Match } from '@/types';
 import { selecaoPath } from '@/lib/navigation';
 import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
 import { formatMatchDate } from '@/components/MatchCard/matchCard.utils';
+import {
+  getEffectiveMatchStatus,
+  resolveDisplayScores,
+} from '@/lib/match-display';
+import { useDisplayNow } from '@/hooks/useDisplayNow';
 import * as styles from './fixtureMatchRow.styles';
 import { twMerge } from 'tailwind-merge';
 import { LiveBroadcastDot } from '@/components/LiveBroadcastDot/liveBroadcastDot';
@@ -35,14 +40,16 @@ function statusLabel(status: Match['status']): string {
 export function FixtureMatchRow({
   match,
   showPalpitesLink = true,
+  displayNow,
 }: {
   match: Match;
   showPalpitesLink?: boolean;
+  displayNow?: number;
 }) {
-  const hs = match.homeScore;
-  const as = match.awayScore;
-  const hasScores = hs != null && as != null;
-  const isLive = match.status === 'live';
+  const now = useDisplayNow([match], displayNow);
+  const effectiveStatus = getEffectiveMatchStatus(match, now);
+  const displayScores = resolveDisplayScores(match, now);
+  const isLive = effectiveStatus === 'live';
 
   return (
     <div className={twMerge(styles.row, isLive && styles.rowLive)}>
@@ -64,11 +71,11 @@ export function FixtureMatchRow({
       </div>
 
       <div className={styles.scores}>
-        {hasScores ? (
+        {displayScores ? (
           <>
-            <span>{hs}</span>
+            <span>{displayScores.home}</span>
             <span className="text-neutral-400">×</span>
-            <span>{as}</span>
+            <span>{displayScores.away}</span>
           </>
         ) : (
           <span className="text-neutral-400 font-normal text-sm select-none">
@@ -93,7 +100,9 @@ export function FixtureMatchRow({
       </div>
 
       <div className={styles.meta}>
-        <span className={statusBadgeClass(match.status)}>{statusLabel(match.status)}</span>
+        <span className={statusBadgeClass(effectiveStatus)}>
+          {statusLabel(effectiveStatus)}
+        </span>
         <div className={styles.metaDetailRow}>
           <span className="min-w-0 shrink text-neutral-500">
             J{match.matchNumber}

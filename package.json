@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test src/lib/knockout-slot-label.test.ts"
+    "test": "tsx --test src/lib/knockout-slot-label.test.ts src/lib/match-display.test.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

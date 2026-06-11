@@ -12,6 +12,7 @@ import {
   groupMatchesByLocalDay,
   matchesForTeam,
 } from '@/lib/team-matches';
+import { useMatchDisplayNow } from '@/hooks/useMatchDisplayNow';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { FixtureMatchRow } from '@/components/FixtureMatchRow/fixtureMatchRow';
 import { TeamSelectionHero } from '@/components/TeamSelectionHero/teamSelectionHero';
@@ -26,6 +27,7 @@ export default function SelecaoPage() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [matchesError, setMatchesError] = useState<string | null>(null);
   const [matchesLoading, setMatchesLoading] = useState(true);
+  const displayNow = useMatchDisplayNow(matches);
 
   useEffect(() => {
     if (!hasHydrated) return;
@@ -114,6 +116,7 @@ export default function SelecaoPage() {
                           key={m.documentId}
                           match={m}
                           showPalpitesLink={showPalpitesLink}
+                          displayNow={displayNow}
                         />
                       ))}
                     </div>
