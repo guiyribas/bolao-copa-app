@@ -14,6 +14,7 @@ import { useDisplayNow } from '@/hooks/useDisplayNow';
 import * as styles from './fixtureMatchRow.styles';
 import { twMerge } from 'tailwind-merge';
 import { LiveBroadcastDot } from '@/components/LiveBroadcastDot/liveBroadcastDot';
+import { liveFramePing } from '@/components/LiveBroadcastDot/liveBroadcast.styles';
 
 function statusBadgeClass(status: Match['status']): string {
   switch (status) {
@@ -53,6 +54,7 @@ export function FixtureMatchRow({
 
   return (
     <div className={twMerge(styles.row, isLive && styles.rowLive)}>
+      {isLive ? <span className={liveFramePing} aria-hidden /> : null}
       {isLive ? <LiveBroadcastDot /> : null}
       <div className={styles.sideHome}>
         {match.homeTeam ? (

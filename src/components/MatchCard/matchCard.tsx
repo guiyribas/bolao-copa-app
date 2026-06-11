@@ -10,6 +10,7 @@ import { formatMatchDate, matchCardBorderClass } from './matchCard.utils';
 import * as styles from './matchCard.styles';
 import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
 import { LiveBroadcastDot } from '@/components/LiveBroadcastDot/liveBroadcastDot';
+import { liveFramePing } from '@/components/LiveBroadcastDot/liveBroadcast.styles';
 import { matchDetailTextLinkClass } from '@/components/FixtureMatchRow/fixtureMatchRow.styles';
 import { areMatchOpponentsDefined } from '@/lib/match-opponents';
 import {
@@ -149,6 +150,7 @@ export function MatchCard({
           'bg-neutral-50/90 opacity-[0.88] saturate-[0.92] shadow-none'
       )}
     >
+      {isLive ? <span className={liveFramePing} aria-hidden /> : null}
       {isLive ? <LiveBroadcastDot /> : null}
       <div className={styles.mainRow}>
         {matchLineEl}

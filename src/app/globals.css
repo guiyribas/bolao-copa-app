@@ -11,6 +11,15 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --animate-live-frame-ping: live-frame-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes live-frame-ping {
+  75%,
+  100% {
+    transform: scale(1.008);
+    opacity: 0;
+  }
 }
 
 body {

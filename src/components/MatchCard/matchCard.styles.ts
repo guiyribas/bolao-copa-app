@@ -1,4 +1,5 @@
 import { twMerge } from 'tailwind-merge';
+import { liveFrame } from '@/components/LiveBroadcastDot/liveBroadcast.styles';
 
 /** Duas linhas: times + placar centralizados; meta abaixo evita flex-wrap que zerava as colunas dos times. */
 export const card = twMerge(
@@ -6,9 +7,7 @@ export const card = twMerge(
 );
 
 /** Partida ao vivo: destaque sem sombra grande (evita “manchar” o card seguinte na lista). */
-export const cardLive = twMerge(
-  'relative ring-2 ring-red-500/35 shadow-sm shadow-neutral-900/10'
-);
+export const cardLive = liveFrame;
 
 /** Mobile: times + placar numa linha; Salvar em linha cheia abaixo. sm+: tudo numa linha. */
 export const mainRow = twMerge(
