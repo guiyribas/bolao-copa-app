@@ -29,7 +29,7 @@ import type {
 
 const PARTIDA_PAGE_SHELL_CLASS = 'px-3 py-8';
 const PARTIDA_PAGE_CARDS_CLASS = 'mx-auto w-full max-w-3xl';
-const PARTICIPANT_NAME_TRUNCATE_AT = 15;
+const PARTICIPANT_NAME_TRUNCATE_AT = 18;
 
 function clipParticipantName(name: string): string {
   if (name.length <= PARTICIPANT_NAME_TRUNCATE_AT) return name;
@@ -239,7 +239,12 @@ function PartidaPoolSection({
                         title={entry.username}
                         className="font-medium text-neutral-900 underline decoration-neutral-200 underline-offset-2 hover:text-emerald-900 hover:decoration-emerald-400"
                       >
-                        {clipParticipantName(entry.username)}
+                        <span className="sm:hidden">
+                          {clipParticipantName(entry.username)}
+                        </span>
+                        <span className="hidden sm:inline">
+                          {entry.username}
+                        </span>
                         {entry.isViewer ? (
                           <span className="ml-1 text-xs font-normal text-emerald-700 no-underline">
                             (você)
