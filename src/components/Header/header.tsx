@@ -15,6 +15,7 @@ import {
   RESET_PASSWORD_PATH,
   SOBRE_PATH,
 } from '@/lib/navigation';
+import { POOL_REQUESTS_ENABLED } from '@/lib/pool-requests';
 import { SITE_BRAND_LOGO_PATH } from '@/lib/site-brand';
 import type { User } from '@/types';
 import * as styles from './header.styles';
@@ -167,12 +168,14 @@ export function Header() {
               >
                 Bolões
               </Link>
-              <Link
-                href={CRIAR_BOLOAO_PATH}
-                className={styles.navLink(pathname === CRIAR_BOLOAO_PATH)}
-              >
-                Criar bolão
-              </Link>
+              {POOL_REQUESTS_ENABLED ? (
+                <Link
+                  href={CRIAR_BOLOAO_PATH}
+                  className={styles.navLink(pathname === CRIAR_BOLOAO_PATH)}
+                >
+                  Criar bolão
+                </Link>
+              ) : null}
               <Link
                 href="/palpites"
                 className={styles.navLink(pathname.startsWith('/palpites'))}
@@ -364,13 +367,15 @@ export function Header() {
             >
               Bolões
             </Link>
-            <Link
-              href={CRIAR_BOLOAO_PATH}
-              onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(pathname === CRIAR_BOLOAO_PATH)}
-            >
-              Criar bolão
-            </Link>
+            {POOL_REQUESTS_ENABLED ? (
+              <Link
+                href={CRIAR_BOLOAO_PATH}
+                onClick={() => setMenuOpen(false)}
+                className={styles.mobileNavLink(pathname === CRIAR_BOLOAO_PATH)}
+              >
+                Criar bolão
+              </Link>
+            ) : null}
             <Link
               href="/palpites"
               onClick={() => setMenuOpen(false)}

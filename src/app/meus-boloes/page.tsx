@@ -9,6 +9,7 @@ import { saveBtn } from '@/components/MatchCard/matchCard.styles';
 import { useAuthStore } from '@/stores/auth-store';
 import { apiFetch } from '@/lib/api';
 import { CRIAR_BOLOAO_PATH, MEUS_BOLOES_PATH } from '@/lib/navigation';
+import { POOL_REQUESTS_ENABLED } from '@/lib/pool-requests';
 import {
   formatPoolRankingAriaLabel,
   formatPoolRankingLabel,
@@ -96,18 +97,20 @@ export default function MeusBoloesPage() {
             Peça um convite ao administrador ou aceite um link para entrar —
             aqui vai aparecer cada bolão com acesso rápido ao ranking.
           </p>
-          <div className="mt-5 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-            <Link
-              href={CRIAR_BOLOAO_PATH}
-              className={twMerge(
-                saveBtn,
-                'inline-flex gap-1 hover:bg-emerald-700'
-              )}
-            >
-              Criar bolão
-              <ChevronRightIcon sx={{ fontSize: 20 }} aria-hidden />
-            </Link>
-          </div>
+          {POOL_REQUESTS_ENABLED ? (
+            <div className="mt-5 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+              <Link
+                href={CRIAR_BOLOAO_PATH}
+                className={twMerge(
+                  saveBtn,
+                  'inline-flex gap-1 hover:bg-emerald-700'
+                )}
+              >
+                Criar bolão
+                <ChevronRightIcon sx={{ fontSize: 20 }} aria-hidden />
+              </Link>
+            </div>
+          ) : null}
         </div>
       ) : (
         <ul

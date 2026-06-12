@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { SiteFifaDisclaimer } from '@/components/SiteFifaDisclaimer/siteFifaDisclaimer';
 import { CRIAR_BOLOAO_PATH } from '@/lib/navigation';
+import { POOL_REQUESTS_ENABLED } from '@/lib/pool-requests';
 import {
   POOL_ADMIN_PAYMENT_SECTION_PARAGRAPHS,
   POOL_ADMIN_PAYMENT_SECTION_TITLE,
@@ -99,17 +100,24 @@ export function SobreForm() {
             Copa. A criação de um novo bolão por solicitação é{' '}
             <strong>gratuita</strong>.
           </p>
-          <p>
-            Quem quiser organizar um grupo pode{' '}
-            <Link
-              href={CRIAR_BOLOAO_PATH}
-              className="font-medium text-emerald-800 underline decoration-emerald-300 underline-offset-2 outline-none hover:text-emerald-950 hover:decoration-emerald-600 focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
-            >
-              solicitar a criação de um bolão
-            </Link>
-            . É preciso estar logado; sem sessão, o site pede login antes do
-            formulário.
-          </p>
+          {POOL_REQUESTS_ENABLED ? (
+            <p>
+              Quem quiser organizar um grupo pode{' '}
+              <Link
+                href={CRIAR_BOLOAO_PATH}
+                className="font-medium text-emerald-800 underline decoration-emerald-300 underline-offset-2 outline-none hover:text-emerald-950 hover:decoration-emerald-600 focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
+              >
+                solicitar a criação de um bolão
+              </Link>
+              . É preciso estar logado; sem sessão, o site pede login antes do
+              formulário.
+            </p>
+          ) : (
+            <p>
+              A Copa do Mundo 2026 já começou e não estamos mais aceitando
+              pedidos de criação de novos bolões nesta edição.
+            </p>
+          )}
           <p>
             O projeto é <strong>código aberto</strong>: o código-fonte da
             interface e da API está disponível para consulta, aprendizado ou

@@ -6,6 +6,10 @@ import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { ApiError, apiFetch } from '@/lib/api';
 import { CRIAR_BOLOAO_PATH } from '@/lib/navigation';
 import {
+  POOL_REQUESTS_CLOSED_MESSAGE,
+  POOL_REQUESTS_ENABLED,
+} from '@/lib/pool-requests';
+import {
   POOL_ADMIN_PAYMENT_ADMIN_FIELDSET_INTRO,
   POOL_ADMIN_PAYMENT_CALLOUT,
 } from '@/lib/site-brand';
@@ -33,6 +37,7 @@ export function CriarBolaoForm() {
   const hasAdminIdentity = Boolean(adminName && adminEmail);
 
   useEffect(() => {
+    if (!POOL_REQUESTS_ENABLED) return;
     if (!hasHydrated) return;
     if (!jwt) {
       router.replace(
@@ -70,6 +75,31 @@ export function CriarBolaoForm() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (!POOL_REQUESTS_ENABLED) {
+    return (
+      <div className="max-w-3xl pb-16">
+        <PageBreadcrumb label="Criar bolão" className="mb-3" />
+        <h1 className="text-2xl font-bold text-neutral-900 mb-2">Criar bolão</h1>
+        <div
+          role="status"
+          className="max-w-xl rounded-xl border-2 border-amber-300 bg-amber-50 px-6 py-8 shadow-sm ring-1 ring-amber-200/80"
+        >
+          <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:text-left">
+            <span
+              className="material-symbols-outlined shrink-0 text-5xl text-amber-600"
+              aria-hidden
+            >
+              info
+            </span>
+            <p className="text-sm leading-relaxed text-amber-950">
+              {POOL_REQUESTS_CLOSED_MESSAGE}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (!hasHydrated) {
