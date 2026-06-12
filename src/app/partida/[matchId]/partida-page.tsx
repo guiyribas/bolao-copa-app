@@ -29,6 +29,12 @@ import type {
 
 const PARTIDA_PAGE_SHELL_CLASS = 'px-3 py-8';
 const PARTIDA_PAGE_CARDS_CLASS = 'mx-auto w-full max-w-3xl';
+const PARTICIPANT_NAME_TRUNCATE_AT = 15;
+
+function clipParticipantName(name: string): string {
+  if (name.length <= PARTICIPANT_NAME_TRUNCATE_AT) return name;
+  return `${name.slice(0, PARTICIPANT_NAME_TRUNCATE_AT)}...`;
+}
 
 function pickNullableNum(v: unknown): number | null {
   if (v === null || v === undefined || v === '') return null;
@@ -228,21 +234,18 @@ function PartidaPoolSection({
                 >
                   <td className="px-3 py-2">
                     <span className="flex flex-wrap items-center gap-1.5">
-                      {entry.isViewer ? (
-                        <span className="font-medium text-neutral-900">
-                          {entry.username}
-                          <span className="ml-1 text-xs font-normal text-emerald-700">
+                      <Link
+                        href={`/user/${encodeURIComponent(entry.username)}`}
+                        title={entry.username}
+                        className="font-medium text-neutral-900 underline decoration-neutral-200 underline-offset-2 hover:text-emerald-900 hover:decoration-emerald-400"
+                      >
+                        {clipParticipantName(entry.username)}
+                        {entry.isViewer ? (
+                          <span className="ml-1 text-xs font-normal text-emerald-700 no-underline">
                             (você)
                           </span>
-                        </span>
-                      ) : (
-                        <Link
-                          href={`/user/${encodeURIComponent(entry.username)}`}
-                          className="font-medium text-neutral-900 underline decoration-neutral-200 underline-offset-2 hover:text-emerald-900 hover:decoration-emerald-400"
-                        >
-                          {entry.username}
-                        </Link>
-                      )}
+                        ) : null}
+                      </Link>
                     </span>
                   </td>
                   <td className="px-3 py-2 text-center text-neutral-800">
