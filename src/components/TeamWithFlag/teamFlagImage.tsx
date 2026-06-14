@@ -3,6 +3,8 @@ import { twMerge } from 'tailwind-merge';
 
 export type TeamFlagImageSize = 'sm' | 'md' | 'lg' | 'bracket';
 
+const FLAG_FRAME_CHROME = 'border border-neutral-200/80 shadow-sm';
+
 const FRAME_STYLES: Record<TeamFlagImageSize, string> = {
   sm: 'h-[16px] w-[22px] shrink-0 overflow-hidden rounded-[2px]',
   md: 'inline-block h-3.5 w-5 shrink-0 overflow-hidden rounded-[2px] align-middle',
@@ -33,7 +35,7 @@ export function TeamFlagImage({
   return (
     <span
       data-flag-frame=""
-      className={twMerge(FRAME_STYLES[size], className)}
+      className={twMerge(FLAG_FRAME_CHROME, FRAME_STYLES[size], className)}
     >
       <Image
         src={src}
