@@ -15,6 +15,8 @@ import { apiFetch } from '@/lib/api';
 import { matchByDocumentIdPath } from '@/lib/matches-query';
 import { normalizeMatchesPayload } from '@/lib/match-status';
 import { showErrorToast } from '@/lib/toast';
+import { resolvePoolBetDisplayPoints } from '@/lib/bet-scoring';
+import { getEffectiveMatchStatus } from '@/lib/match-display';
 import { MEUS_BOLOES_PATH } from '@/lib/navigation';
 import { resolveTeamFlagUrl } from '@/lib/strapi-media';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
@@ -167,18 +169,53 @@ function PalpiteCell({
   return <span className="text-neutral-400">—</span>;
 }
 
+function PtsCell({
+  entry,
+  match,
+  displayNow,
+}: {
+  entry: PoolMatchBetRow;
+  match: Match;
+  displayNow: number;
+}) {
+  const resolved = resolvePoolBetDisplayPoints(entry, match, displayNow);
+
+  if (!resolved) {
+    return <span className="text-neutral-600">—</span>;
+  }
+
+  const { points } = resolved;
+
+  return (
+    <span
+      className={
+        points === 0
+          ? 'font-medium text-red-600'
+          : 'font-medium text-green-700'
+      }
+      aria-label={`Pontos nesta partida: ${points}`}
+    >
+      {points === 0 ? '0' : `+${points}`}
+    </span>
+  );
+}
+
 function PartidaPoolSection({
   section,
   match,
   revealed,
+  displayNow,
 }: {
   section: PoolMatchSection;
   match: Match;
   revealed: boolean;
+  displayNow: number;
 }) {
   const [open, setOpen] = useState(true);
   const poolTriggerId = `partida-pool-trigger-${section.poolDocumentId}`;
   const poolContentId = `partida-pool-content-${section.poolDocumentId}`;
+  const partialPointsHeader =
+    getEffectiveMatchStatus(match, displayNow) === 'live';
 
   return (
     <CollapsibleRoot
@@ -223,7 +260,16 @@ function PartidaPoolSection({
               <tr className="border-b border-neutral-100 text-left text-xs text-neutral-500 uppercase tracking-wide">
                 <th className="px-3 py-2 font-medium">Participante</th>
                 <th className="px-3 py-2 font-medium text-center">Palpite</th>
-                <th className="px-3 py-2 font-medium text-center w-16">Pts</th>
+                <th
+                  className="px-3 py-2 font-medium text-center w-20 normal-case tracking-normal"
+                  title={
+                    partialPointsHeader
+                      ? 'Pontuação parcial ao vivo; pode mudar se sair mais gol'
+                      : undefined
+                  }
+                >
+                  {partialPointsHeader ? 'Pts (parcial)' : 'Pts'}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -262,19 +308,11 @@ function PartidaPoolSection({
                     />
                   </td>
                   <td className="px-3 py-2 text-center tabular-nums text-neutral-600">
-                    {entry.points != null ? (
-                      <span
-                        className={
-                          entry.points === 0
-                            ? 'text-red-600 font-medium'
-                            : 'text-green-700 font-medium'
-                        }
-                      >
-                        {entry.points === 0 ? '0' : `+${entry.points}`}
-                      </span>
-                    ) : (
-                      '—'
-                    )}
+                    <PtsCell
+                      entry={entry}
+                      match={match}
+                      displayNow={displayNow}
+                    />
                   </td>
                 </tr>
               ))}
@@ -403,6 +441,7 @@ export default function PartidaPage() {
                 section={section}
                 match={match}
                 revealed={revealed}
+                displayNow={displayNow}
               />
             ))}
           </div>
