@@ -6,7 +6,9 @@ import type { Match } from '@/types';
 export async function fetchMatchByDocumentId(
   documentId: string
 ): Promise<Match | null> {
-  const res = await apiFetch<unknown>(matchByDocumentIdPath(documentId));
+  const res = await apiFetch<unknown>(matchByDocumentIdPath(documentId), {
+    next: { revalidate: 120 },
+  });
   const matches = normalizeMatchesPayload(res);
   return matches[0] ?? null;
 }

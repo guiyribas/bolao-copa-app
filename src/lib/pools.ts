@@ -1,9 +1,12 @@
-import { apiFetch } from './api';
+import { apiFetch, type ApiFetchOptions } from './api';
 import { normalizePoolFromApi } from './pool-normalize';
 import type { Pool } from '@/types';
 
-async function fetchPoolFromListFilter(path: string): Promise<Pool | null> {
-  const res = await apiFetch<{ data: unknown[] }>(path);
+async function fetchPoolFromListFilter(
+  path: string,
+  options?: ApiFetchOptions
+): Promise<Pool | null> {
+  const res = await apiFetch<{ data: unknown[] }>(path, options);
   const first = res.data?.[0];
   if (first == null) return null;
   return normalizePoolFromApi({ data: first });
@@ -21,7 +24,8 @@ export async function fetchPoolByDocumentId(
   documentId: string
 ): Promise<Pool | null> {
   return fetchPoolFromListFilter(
-    `/api/pools?filters[documentId][$eq]=${encodeURIComponent(documentId)}`
+    `/api/pools?filters[documentId][$eq]=${encodeURIComponent(documentId)}`,
+    { next: { revalidate: 120 } }
   );
 }
 

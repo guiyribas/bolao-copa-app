@@ -46,9 +46,13 @@ function extractErrorMessage(body: unknown, fallbackStatus: number): string {
   return `Request failed: ${fallbackStatus}`;
 }
 
+export type ApiFetchOptions = RequestInit & {
+  next?: { revalidate?: number | false; tags?: string[] };
+};
+
 export async function apiFetch<T>(
   path: string,
-  options: RequestInit = {},
+  options: ApiFetchOptions = {},
   token?: string | null
 ): Promise<T> {
   const headers: Record<string, string> = {

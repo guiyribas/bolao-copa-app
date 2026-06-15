@@ -7,7 +7,9 @@ import type { Team } from '@/types';
 export async function fetchTeamByDocumentId(
   documentId: string
 ): Promise<Team | null> {
-  const res = await apiFetch<unknown>(matchesListPath(undefined));
+  const res = await apiFetch<unknown>(matchesListPath(undefined), {
+    next: { revalidate: 120 },
+  });
   const matches = normalizeMatchesPayload(res);
   return findTeamInMatches(matches, documentId);
 }
