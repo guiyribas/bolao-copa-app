@@ -44,6 +44,7 @@ export function TeamWithFlag({
     return (
       <Link
         href={href}
+        prefetch={false}
         className={twMerge(styles.row, styles.link, className)}
         title={name}
       >
@@ -99,6 +100,7 @@ export function StandingWithFlag({
     return (
       <Link
         href={href}
+        prefetch={false}
         className={twMerge(styles.row, styles.link, className)}
         title={name}
       >

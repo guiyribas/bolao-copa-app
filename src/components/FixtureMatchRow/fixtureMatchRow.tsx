@@ -115,6 +115,7 @@ export function FixtureMatchRow({
           {showPalpitesLink ? (
             <Link
               href={`/partida/${encodeURIComponent(match.documentId)}`}
+              prefetch={false}
               className={twMerge(styles.matchDetailTextLinkClass, 'shrink-0')}
               aria-label="Ver palpites para a partida"
             >
