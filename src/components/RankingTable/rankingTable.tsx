@@ -56,6 +56,7 @@ export function RankingTable({ ranking, admin }: RankingTableProps) {
                   <span className={styles.participantCell}>
                     <Link
                       href={`/user/${encodeURIComponent(entry.username)}`}
+                      prefetch={false}
                       className="underline underline-offset-2 decoration-neutral-400 hover:decoration-neutral-900 hover:text-neutral-950"
                     >
                       {entry.username}

@@ -282,6 +282,7 @@ function PartidaPoolSection({
                     <span className="flex flex-wrap items-center gap-1.5">
                       <Link
                         href={`/user/${encodeURIComponent(entry.username)}`}
+                        prefetch={false}
                         title={entry.username}
                         className="font-medium text-neutral-900 underline decoration-neutral-200 underline-offset-2 hover:text-emerald-900 hover:decoration-emerald-400"
                       >
