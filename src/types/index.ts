@@ -87,6 +87,18 @@ export interface RankingEntry {
   pointsKnockout?: number | null;
 }
 
+export interface GlobalRankingMeta {
+  page: number;
+  pageSize: number;
+  total: number;
+  pageCount: number;
+}
+
+export interface GlobalRankingResponse {
+  data: RankingEntry[];
+  meta: GlobalRankingMeta;
+}
+
 export interface TeamStanding {
   teamId: string;
   teamName: string;

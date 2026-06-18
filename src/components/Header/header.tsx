@@ -11,6 +11,7 @@ import {
   HOME_PATH,
   isGoogleAuthCallbackPath,
   MEUS_BOLOES_PATH,
+  RANKING_GLOBAL_PATH,
   REGRAS_E_PONTUACAO_PATH,
   RESET_PASSWORD_PATH,
   SOBRE_PATH,
@@ -104,6 +105,12 @@ export function Header() {
                 Bolões
               </Link>
               <Link
+                href={RANKING_GLOBAL_PATH}
+                className={styles.navLink(pathname === RANKING_GLOBAL_PATH)}
+              >
+                Ranking global
+              </Link>
+              <Link
                 href={REGRAS_E_PONTUACAO_PATH}
                 className={styles.navLink(pathname === REGRAS_E_PONTUACAO_PATH)}
               >
@@ -167,6 +174,12 @@ export function Header() {
                 className={styles.navLink(pathname === MEUS_BOLOES_PATH)}
               >
                 Bolões
+              </Link>
+              <Link
+                href={RANKING_GLOBAL_PATH}
+                className={styles.navLink(pathname === RANKING_GLOBAL_PATH)}
+              >
+                Ranking global
               </Link>
               {POOL_REQUESTS_ENABLED ? (
                 <Link
@@ -268,6 +281,13 @@ export function Header() {
               Bolões
             </Link>
             <Link
+              href={RANKING_GLOBAL_PATH}
+              onClick={() => setMenuOpen(false)}
+              className={styles.mobileNavLink(pathname === RANKING_GLOBAL_PATH)}
+            >
+              Ranking global
+            </Link>
+            <Link
               href={REGRAS_E_PONTUACAO_PATH}
               onClick={() => setMenuOpen(false)}
               className={styles.mobileNavLink(
@@ -366,6 +386,13 @@ export function Header() {
               className={styles.mobileNavLink(pathname === MEUS_BOLOES_PATH)}
             >
               Bolões
+            </Link>
+            <Link
+              href={RANKING_GLOBAL_PATH}
+              onClick={() => setMenuOpen(false)}
+              className={styles.mobileNavLink(pathname === RANKING_GLOBAL_PATH)}
+            >
+              Ranking global
             </Link>
             {POOL_REQUESTS_ENABLED ? (
               <Link

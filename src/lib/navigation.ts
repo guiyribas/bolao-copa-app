@@ -13,6 +13,9 @@ export const CRIAR_BOLOAO_PATH = '/criar-bolao';
 /** Página inicial: placar Copa. */
 export const HOME_PATH = '/';
 
+/** Ranking global de todos os participantes (página pública). */
+export const RANKING_GLOBAL_PATH = '/ranking';
+
 /** Página pública de uma seleção (`documentId` do time no Strapi). */
 export function selecaoPath(teamDocumentId: string): string {
   return `/selecao/${encodeURIComponent(teamDocumentId)}`;
