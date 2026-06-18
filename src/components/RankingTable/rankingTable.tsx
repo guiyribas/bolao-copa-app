@@ -29,7 +29,7 @@ function nameClassForRank(rank: number): string {
   return styles.nameCell;
 }
 
-export function RankingTable({ ranking, admin }: RankingTableProps) {
+export function RankingTable({ ranking, admin, rankOffset = 0 }: RankingTableProps) {
   return (
     <div className={styles.wrapper}>
       <table className={styles.table}>
@@ -48,7 +48,7 @@ export function RankingTable({ ranking, admin }: RankingTableProps) {
         </thead>
         <tbody>
           {ranking.map((entry, i) => {
-            const rank = i + 1;
+            const rank = rankOffset + i + 1;
             return (
               <tr key={entry.userId} className={rowClassForRank(rank)}>
                 <td className={posClassForRank(rank)}>{rank}</td>

@@ -51,6 +51,8 @@ export default async function GlobalRankingPage({ searchParams }: PageProps) {
   const pageCount = meta?.pageCount ?? 0;
   const total = meta?.total ?? ranking.length;
   const currentPage = meta?.page ?? page;
+  const pageSize = meta?.pageSize ?? 50;
+  const rankOffset = (currentPage - 1) * pageSize;
 
   return (
     <div className="max-w-3xl">
@@ -65,7 +67,7 @@ export default async function GlobalRankingPage({ searchParams }: PageProps) {
         <p className="text-gray-500">Nenhum palpite computado ainda.</p>
       ) : (
         <>
-          <RankingTable ranking={ranking} />
+          <RankingTable ranking={ranking} rankOffset={rankOffset} />
           {pageCount > 1 ? (
             <nav
               className="mt-6 flex items-center justify-between gap-4 text-sm"
