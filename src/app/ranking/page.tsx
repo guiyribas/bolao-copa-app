@@ -8,7 +8,7 @@ import { pageMetadata } from '@/lib/site-metadata';
 
 export const revalidate = 300;
 
-export const metadata: Metadata = pageMetadata('Ranking global', {
+export const metadata: Metadata = pageMetadata('Ranking geral', {
   description:
     'Classificação geral de todos os participantes do bolão, com pontos na fase de grupos e no mata-mata.',
 });
@@ -38,9 +38,9 @@ export default async function GlobalRankingPage({ searchParams }: PageProps) {
   } catch {
     return (
       <div className="max-w-3xl px-3 py-8">
-        <PageBreadcrumb label="Ranking global" className="mb-4" />
+        <PageBreadcrumb label="Ranking geral" className="mb-4" />
         <p className="text-sm text-red-600" role="alert">
-          Não foi possível carregar o ranking global.
+          Não foi possível carregar o ranking geral.
         </p>
       </div>
     );
@@ -54,8 +54,8 @@ export default async function GlobalRankingPage({ searchParams }: PageProps) {
 
   return (
     <div className="max-w-3xl">
-      <PageBreadcrumb label="Ranking global" className="mb-3" />
-      <h1 className="text-2xl font-bold text-neutral-900 mb-2">Ranking global</h1>
+      <PageBreadcrumb label="Ranking geral" className="mb-3" />
+      <h1 className="text-2xl font-bold text-neutral-900 mb-2">Ranking geral</h1>
       <p className="text-sm text-neutral-600 mb-6">
         Classificação geral de todos os participantes com palpites registrados.
         {total > 0 ? ` ${total} participante${total === 1 ? '' : 's'}.` : ''}

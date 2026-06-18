@@ -108,7 +108,7 @@ export function Header() {
                 href={RANKING_GLOBAL_PATH}
                 className={styles.navLink(pathname === RANKING_GLOBAL_PATH)}
               >
-                Ranking global
+                Ranking geral
               </Link>
               <Link
                 href={REGRAS_E_PONTUACAO_PATH}
@@ -179,7 +179,7 @@ export function Header() {
                 href={RANKING_GLOBAL_PATH}
                 className={styles.navLink(pathname === RANKING_GLOBAL_PATH)}
               >
-                Ranking global
+                Ranking geral
               </Link>
               {POOL_REQUESTS_ENABLED ? (
                 <Link
@@ -285,7 +285,7 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
               className={styles.mobileNavLink(pathname === RANKING_GLOBAL_PATH)}
             >
-              Ranking global
+              Ranking geral
             </Link>
             <Link
               href={REGRAS_E_PONTUACAO_PATH}
@@ -392,7 +392,7 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
               className={styles.mobileNavLink(pathname === RANKING_GLOBAL_PATH)}
             >
-              Ranking global
+              Ranking geral
             </Link>
             {POOL_REQUESTS_ENABLED ? (
               <Link
