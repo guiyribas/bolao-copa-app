@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { RankingTable } from '@/components/RankingTable/rankingTable';
-import { fetchGlobalRanking } from '@/lib/global-ranking';
+import { fetchGlobalRanking, GLOBAL_RANKING_PAGE_SIZE } from '@/lib/global-ranking';
 import { RANKING_GLOBAL_PATH } from '@/lib/navigation';
 import { pageMetadata } from '@/lib/site-metadata';
 
@@ -51,7 +51,7 @@ export default async function GlobalRankingPage({ searchParams }: PageProps) {
   const pageCount = meta?.pageCount ?? 0;
   const total = meta?.total ?? ranking.length;
   const currentPage = meta?.page ?? page;
-  const pageSize = meta?.pageSize ?? 50;
+  const pageSize = meta?.pageSize ?? GLOBAL_RANKING_PAGE_SIZE;
   const rankOffset = (currentPage - 1) * pageSize;
 
   return (
