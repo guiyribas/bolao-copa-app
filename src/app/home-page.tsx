@@ -35,10 +35,18 @@ const homeTabParser = parseAsStringLiteral(HOME_TAB_VALUES).withDefault('all');
 
 const HOME_FIXTURES_GRID_CLASS = 'grid grid-cols-1 md:grid-cols-2 gap-2';
 
+const TAB_LIST_CLASS = twMerge(
+  'sticky z-40 top-[var(--site-header-height)]',
+  'bg-white/95 backdrop-blur-sm supports-[backdrop-filter]:bg-white/80',
+  '-mx-4 px-4 pt-3 pb-2 mb-4 grid grid-cols-2 gap-1.5 border-b border-slate-200/95',
+  'md:flex md:flex-wrap md:gap-1 md:pb-1'
+);
+
 const TAB_TRIGGER_CLASS = twMerge(
-  'text-sm px-3 py-2 rounded-t-md border border-b-0 border-slate-200/90 transition-colors',
-  'data-[state=active]:border-yellow-400/50 data-[state=active]:bg-linear-to-b data-[state=active]:from-emerald-900 data-[state=active]:to-emerald-950',
-  'data-[state=active]:text-yellow-50 data-[state=active]:shadow-[inset_0_-2px_0_rgba(234,179,8,0.4)]',
+  'w-full text-center text-xs leading-snug px-2 py-2.5 rounded-lg border border-slate-200/90 transition-colors',
+  'md:w-auto md:whitespace-nowrap md:text-sm md:px-3 md:py-2 md:rounded-t-md md:border-b-0',
+  'data-[state=active]:border-emerald-800/40 data-[state=active]:bg-linear-to-b data-[state=active]:from-emerald-900 data-[state=active]:to-emerald-950',
+  'data-[state=active]:text-yellow-50',
   'data-[state=inactive]:bg-white/90 data-[state=inactive]:text-slate-700 data-[state=inactive]:hover:bg-emerald-50/90',
   'outline-none focus-visible:ring-2 ring-yellow-500/50 ring-offset-2 ring-offset-white'
 );
@@ -162,10 +170,7 @@ export default function HomePage() {
           }
           className="w-full"
         >
-          <TabsList
-            className="mb-4 flex flex-wrap gap-1 border-b border-slate-200/95"
-            aria-label="Filtrar por fase"
-          >
+          <TabsList className={TAB_LIST_CLASS} aria-label="Filtrar por fase">
             <TabsTrigger value="all" className={TAB_TRIGGER_CLASS}>
               Todas as partidas
             </TabsTrigger>
@@ -193,30 +198,32 @@ export default function HomePage() {
               </p>
             ) : (
               <div className="space-y-6">
-                {sortedAllMatchesByDay.map(({ dayKey, label, matches: dayMatches }) => (
-                  <section
-                    key={dayKey}
-                    aria-labelledby={`match-day-${dayKey}`}
-                    className="space-y-2"
-                  >
-                    <h2
-                      id={`match-day-${dayKey}`}
-                      className="scroll-mt-20 text-xs font-semibold text-slate-600 capitalize"
+                {sortedAllMatchesByDay.map(
+                  ({ dayKey, label, matches: dayMatches }) => (
+                    <section
+                      key={dayKey}
+                      aria-labelledby={`match-day-${dayKey}`}
+                      className="space-y-2"
                     >
-                      {label}
-                    </h2>
-                    <div className={HOME_FIXTURES_GRID_CLASS}>
-                      {dayMatches.map((m) => (
-                        <FixtureMatchRow
-                          key={m.documentId}
-                          match={m}
-                          showPalpitesLink={showPalpitesLink}
-                          displayNow={displayNow}
-                        />
-                      ))}
-                    </div>
-                  </section>
-                ))}
+                      <h2
+                        id={`match-day-${dayKey}`}
+                        className="scroll-mt-[calc(var(--site-header-height)+5.5rem)] md:scroll-mt-[calc(var(--site-header-height)+4rem)] text-xs font-semibold text-slate-600 capitalize"
+                      >
+                        {label}
+                      </h2>
+                      <div className={HOME_FIXTURES_GRID_CLASS}>
+                        {dayMatches.map((m) => (
+                          <FixtureMatchRow
+                            key={m.documentId}
+                            match={m}
+                            showPalpitesLink={showPalpitesLink}
+                            displayNow={displayNow}
+                          />
+                        ))}
+                      </div>
+                    </section>
+                  )
+                )}
               </div>
             )}
           </TabsContent>
@@ -296,7 +303,10 @@ export default function HomePage() {
                 Não foi possível carregar as partidas: {matchesError}
               </p>
             ) : (
-              <KnockoutBracket matches={knockoutMatches} displayNow={displayNow} />
+              <KnockoutBracket
+                matches={knockoutMatches}
+                displayNow={displayNow}
+              />
             )}
           </TabsContent>
         </TabsRoot>

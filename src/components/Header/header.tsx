@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -33,6 +33,7 @@ function formatHeaderUserLabel(
 export function Header() {
   const pathname = usePathname();
   const { jwt, user, hasHydrated, logout } = useAuthStore();
+  const headerRef = useRef<HTMLElement>(null);
 
   const isHomeActive = pathname === HOME_PATH;
   const [menuOpen, setMenuOpen] = useState(false);
@@ -60,8 +61,25 @@ export function Header() {
     queueMicrotask(() => setMenuOpen(false));
   }, [pathname]);
 
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+
+    const syncHeaderHeight = () => {
+      document.documentElement.style.setProperty(
+        '--site-header-height',
+        `${el.offsetHeight}px`
+      );
+    };
+
+    syncHeaderHeight();
+    const observer = new ResizeObserver(syncHeaderHeight);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [showUserNav, showGuestNav, headerUserLabel]);
+
   return (
-    <header className={styles.header}>
+    <header ref={headerRef} className={styles.header}>
       <div className={styles.headerInner}>
         <Link
           href={HOME_PATH}
