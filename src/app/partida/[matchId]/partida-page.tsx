@@ -325,16 +325,20 @@ function PartidaPoolSection({
   );
 }
 
-export default function PartidaPage() {
+export default function PartidaPage({
+  initialMatch = null,
+}: {
+  initialMatch?: Match | null;
+}) {
   const params = useParams();
   const router = useRouter();
   const matchId = params.matchId as string;
 
   const { jwt, hasHydrated } = useAuthStore();
-  const [match, setMatch] = useState<Match | null>(null);
+  const [match, setMatch] = useState<Match | null>(initialMatch);
   const [poolData, setPoolData] = useState<PoolMatchBetsPayload | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialMatch);
   const displayMatches = useMemo(() => (match ? [match] : []), [match]);
   const displayNow = useMatchDisplayNow(displayMatches);
 
@@ -346,12 +350,32 @@ export default function PartidaPage() {
     }
 
     void Promise.resolve().then(() => {
-      setLoading(true);
+      if (!initialMatch) {
+        setLoading(true);
+      }
       setLoadError(null);
     });
 
-    const matchUrl = matchByDocumentIdPath(matchId);
     const betsUrl = `/api/pools/match/${encodeURIComponent(matchId)}/bets`;
+    const hasInitialMatch =
+      initialMatch != null && initialMatch.documentId === matchId;
+
+    const loadBets = apiFetch<unknown>(betsUrl, {}, jwt).then((poolApiPayload) => {
+      setPoolData(normalizePoolMatchBetsPayload(poolApiPayload));
+    });
+
+    if (hasInitialMatch) {
+      loadBets
+        .catch((err: unknown) => {
+          const msg = err instanceof Error ? err.message : 'Erro ao carregar';
+          setLoadError(msg);
+          showErrorToast(msg);
+        })
+        .finally(() => setLoading(false));
+      return;
+    }
+
+    const matchUrl = matchByDocumentIdPath(matchId);
 
     Promise.all([
       apiFetch<unknown>(matchUrl, {}, jwt),
@@ -370,7 +394,7 @@ export default function PartidaPage() {
         showErrorToast(msg);
       })
       .finally(() => setLoading(false));
-  }, [hasHydrated, jwt, matchId, router]);
+  }, [hasHydrated, initialMatch, jwt, matchId, router]);
 
   if (!hasHydrated || !jwt) {
     return (

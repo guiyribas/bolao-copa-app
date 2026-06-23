@@ -248,6 +248,7 @@ export function MatchCard({
         {detailHref ? (
           <Link
             href={detailHref}
+            prefetch={false}
             className={matchDetailTextLinkClass}
             aria-label="Ver palpites para a partida"
           >

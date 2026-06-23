@@ -1,9 +1,10 @@
+import { cache } from 'react';
 import { apiFetch } from '@/lib/api';
 import { matchByDocumentIdPath } from '@/lib/matches-query';
 import { normalizeMatchesPayload } from '@/lib/match-status';
 import type { Match } from '@/types';
 
-export async function fetchMatchByDocumentId(
+export const fetchMatchByDocumentId = cache(async function fetchMatchByDocumentId(
   documentId: string
 ): Promise<Match | null> {
   const res = await apiFetch<unknown>(matchByDocumentIdPath(documentId), {
@@ -11,7 +12,7 @@ export async function fetchMatchByDocumentId(
   });
   const matches = normalizeMatchesPayload(res);
   return matches[0] ?? null;
-}
+});
 
 export function matchPageTitle(match: Match | null): string {
   if (!match) return 'Partida';
