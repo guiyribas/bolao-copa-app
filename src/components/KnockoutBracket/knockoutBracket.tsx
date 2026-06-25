@@ -29,7 +29,13 @@ import { twMerge } from 'tailwind-merge';
 function ShieldPlaceholder() {
   return (
     <span className={styles.placeholderIcon} aria-hidden>
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="text-neutral-500">
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="text-neutral-500"
+      >
         <path d="M12 2 4 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-3Zm0 2.18 6 2.25v4.82c0 4.52-3.1 8.78-6 9.81-2.9-1.03-6-5.29-6-9.81V6.43l6-2.25Z" />
       </svg>
     </span>
@@ -45,7 +51,11 @@ function BracketTeamRow({
   side: 'home' | 'away';
   displayNow?: number;
 }) {
-  const team = match ? (side === 'home' ? match.homeTeam : match.awayTeam) : null;
+  const team = match
+    ? side === 'home'
+      ? match.homeTeam
+      : match.awayTeam
+    : null;
   const displayScores =
     match && displayNow != null
       ? resolveDisplayScores(match, displayNow)
@@ -74,7 +84,9 @@ function BracketTeamRow({
           nameClassName={twMerge(styles.teamName, 'text-[11px]')}
           href={selecaoPath(team.documentId)}
         />
-        {score != null ? <span className={styles.scoreInline}>{score}</span> : null}
+        {score != null ? (
+          <span className={styles.scoreInline}>{score}</span>
+        ) : null}
       </div>
     );
   }
@@ -88,10 +100,15 @@ function BracketTeamRow({
       ) : (
         <ShieldPlaceholder />
       )}
-      <span className={twMerge(styles.placeholderLabel, 'min-w-0 truncate')} title={slotLabel}>
+      <span
+        className={twMerge(styles.placeholderLabel, 'min-w-0 truncate')}
+        title={slotLabel}
+      >
         {slotLabel}
       </span>
-      {score != null ? <span className={styles.scoreInline}>{score}</span> : null}
+      {score != null ? (
+        <span className={styles.scoreInline}>{score}</span>
+      ) : null}
     </div>
   );
 }
@@ -109,7 +126,10 @@ function BracketMatchCard({
   return (
     <div
       className={styles.card}
-      style={{ height: `${BRACKET_CARD_HEIGHT_REM}rem`, minHeight: `${BRACKET_CARD_HEIGHT_REM}rem` }}
+      style={{
+        height: `${BRACKET_CARD_HEIGHT_REM}rem`,
+        minHeight: `${BRACKET_CARD_HEIGHT_REM}rem`,
+      }}
     >
       <div className={styles.cardDate}>{dateLabel}</div>
       <BracketTeamRow match={match} side="home" displayNow={displayNow} />
@@ -126,7 +146,11 @@ export function KnockoutBracket({ matches, displayNow }: KnockoutBracketProps) {
   const gridTemplateRows = `auto repeat(${BRACKET_GRID_MATCH_ROWS}, ${BRACKET_ROW_HEIGHT_REM}rem)`;
 
   return (
-    <div className={styles.scrollWrap} role="region" aria-label="Chaveamento do mata-mata">
+    <div
+      className={styles.scrollWrap}
+      role="region"
+      aria-label="Chaveamento do mata-mata"
+    >
       <div
         className={styles.grid}
         style={{
@@ -139,7 +163,9 @@ export function KnockoutBracket({ matches, displayNow }: KnockoutBracketProps) {
             key={`h-${phase}`}
             className={twMerge(
               styles.phaseTitle,
-              colIdx < BRACKET_PHASE_COLUMNS.length - 1 ? styles.columnDivider : ''
+              colIdx < BRACKET_PHASE_COLUMNS.length - 1
+                ? styles.columnDivider
+                : ''
             )}
             style={{ gridColumn: colIdx + 1, gridRow: 1 }}
           >
@@ -148,7 +174,11 @@ export function KnockoutBracket({ matches, displayNow }: KnockoutBracketProps) {
         ))}
 
         {BRACKET_PHASE_COLUMNS.map((phase, colIdx) => {
-          const padded = padPhaseSlots(byPhase[phase], SLOT_COUNT[phase]);
+          const padded = padPhaseSlots(
+            byPhase[phase],
+            phase,
+            SLOT_COUNT[phase]
+          );
           const isLastCol = colIdx === BRACKET_PHASE_COLUMNS.length - 1;
 
           return padded.map((match, slotIdx) => (
