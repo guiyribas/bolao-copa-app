@@ -1,8 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import { TeamFlagImage } from '@/components/TeamWithFlag/teamFlagImage';
 import type { Match } from '@/types';
-import { selecaoPath } from '@/lib/navigation';
+import { partidaPath } from '@/lib/navigation';
 import { TeamWithFlag } from '@/components/TeamWithFlag/teamWithFlag';
 import { formatMatchDate } from '@/components/MatchCard/matchCard.utils';
 import { resolveDisplayScores } from '@/lib/match-display';
@@ -82,7 +83,6 @@ function BracketTeamRow({
           team={team}
           className="min-w-0 flex-1"
           nameClassName={twMerge(styles.teamName, 'text-[11px]')}
-          href={selecaoPath(team.documentId)}
         />
         {score != null ? (
           <span className={styles.scoreInline}>{score}</span>
@@ -123,17 +123,36 @@ function BracketMatchCard({
   const dateLabel =
     match && match.date ? formatMatchDate(match.date) : 'Data a definir';
 
-  return (
-    <div
-      className={styles.card}
-      style={{
-        height: `${BRACKET_CARD_HEIGHT_REM}rem`,
-        minHeight: `${BRACKET_CARD_HEIGHT_REM}rem`,
-      }}
-    >
+  const cardStyle = {
+    height: `${BRACKET_CARD_HEIGHT_REM}rem`,
+    minHeight: `${BRACKET_CARD_HEIGHT_REM}rem`,
+  };
+
+  const cardContent = (
+    <>
       <div className={styles.cardDate}>{dateLabel}</div>
       <BracketTeamRow match={match} side="home" displayNow={displayNow} />
       <BracketTeamRow match={match} side="away" displayNow={displayNow} />
+    </>
+  );
+
+  if (match) {
+    return (
+      <Link
+        href={partidaPath(match.documentId)}
+        className={styles.cardClickable}
+        style={cardStyle}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {cardContent}
+      </Link>
+    );
+  }
+
+  return (
+    <div className={styles.card} style={cardStyle}>
+      {cardContent}
     </div>
   );
 }

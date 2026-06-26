@@ -24,6 +24,11 @@ export const card = twMerge(
   'shadow-sm'
 );
 
+export const cardClickable = twMerge(
+  card,
+  'transition-colors hover:border-emerald-500/60 hover:bg-neutral-800/80 cursor-pointer'
+);
+
 export const cardCell = twMerge(
   'flex items-center justify-center min-h-0 px-1 py-0.5 box-border'
 );
