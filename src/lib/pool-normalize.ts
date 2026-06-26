@@ -70,6 +70,16 @@ function pickDecimal(obj: Record<string, unknown>, keys: string[]): number {
   return 0;
 }
 
+function pickNumericId(obj: Record<string, unknown>): number | undefined {
+  const idRaw = obj.id;
+  if (typeof idRaw === 'number' && idRaw > 0) return idRaw;
+  if (typeof idRaw === 'string') {
+    const parsed = Number(idRaw);
+    if (!Number.isNaN(parsed) && parsed > 0) return parsed;
+  }
+  return undefined;
+}
+
 function pickOptionalCount(
   obj: Record<string, unknown>,
   keys: string[]
@@ -143,6 +153,8 @@ export function normalizePoolFromApi(body: unknown): Pool | null {
   const name = pickStr(flat, ['name']);
   if (!documentId || !name) return null;
 
+  const id = pickNumericId(flat) ?? pickNumericId(poolObj);
+
   const admin = normalizeUserLike(flat.admin);
 
   const isAdminFlag = flat.isAdmin;
@@ -150,6 +162,7 @@ export function normalizePoolFromApi(body: unknown): Pool | null {
     typeof isAdminFlag === 'boolean' ? isAdminFlag : undefined;
 
   return {
+    id,
     documentId,
     name,
     description: pickStr(flat, ['description']),

@@ -2,6 +2,7 @@ import { Geist } from 'next/font/google';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Header } from '@/components/Header/header';
 import { AppToaster } from '@/components/AppToaster/app-toaster';
+import { InfraSupportModal } from '@/components/InfraSupportModal/infraSupportModal';
 import { SiteSupportFooter } from '@/components/SiteSupportFooter/siteSupportFooter';
 import { defaultSiteMetadata, defaultSiteViewport } from '@/lib/site-metadata';
 import './globals.css';
@@ -29,6 +30,7 @@ export default function RootLayout({
           </main>
           <SiteSupportFooter />
           <AppToaster />
+          <InfraSupportModal />
         </NuqsAdapter>
       </body>
     </html>

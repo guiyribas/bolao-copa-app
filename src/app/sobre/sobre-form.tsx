@@ -148,8 +148,7 @@ export function SobreForm() {
             O bolão é gratuito e foi feito para os brasileiros amantes de
             futebol. Por ser um serviço à comunidade, os custos de hospedagem e
             operação ficam por conta do desenvolvedor. Se quiser ajudar com as
-            despesas do projeto, você pode me pagar um café pelo QR abaixo,
-            qualquer valor é bem-vindo.
+            despesas do projeto, use o QR code abaixo, qualquer valor é bem-vindo.
           </p>
         </div>
         <SupportQrBlock />

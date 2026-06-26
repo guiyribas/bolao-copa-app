@@ -16,6 +16,8 @@ export interface Team {
 }
 
 export interface Pool {
+  /** ID numérico do Strapi (quando disponível no payload). */
+  id?: number;
   documentId: string;
   name: string;
   description?: string;
