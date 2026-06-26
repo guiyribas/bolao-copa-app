@@ -16,8 +16,11 @@ import { matchByDocumentIdPath } from '@/lib/matches-query';
 import { normalizeMatchesPayload } from '@/lib/match-status';
 import { showErrorToast } from '@/lib/toast';
 import { resolvePoolBetDisplayPoints } from '@/lib/bet-scoring';
-import { getEffectiveMatchStatus } from '@/lib/match-display';
-import { MEUS_BOLOES_PATH } from '@/lib/navigation';
+import {
+  getEffectiveMatchStatus,
+  hasKickoffPassed,
+} from '@/lib/match-display';
+import { MEUS_BOLOES_PATH, PALPITES_PATH } from '@/lib/navigation';
 import { resolveTeamFlagUrl } from '@/lib/strapi-media';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { PartidaMatchHero } from '@/components/PartidaMatchHero/partidaMatchHero';
@@ -429,6 +432,7 @@ export default function PartidaPage({
   }
 
   const revealed = poolData?.revealed ?? false;
+  const kickoffNotReached = !hasKickoffPassed(match, displayNow);
 
   return (
     <div className={PARTIDA_PAGE_SHELL_CLASS}>
@@ -444,6 +448,21 @@ export default function PartidaPage({
         <div className="mb-8">
           <PartidaMatchHero match={match} displayNow={displayNow} />
         </div>
+
+        {kickoffNotReached ? (
+          <div className="mb-6 rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-6 text-sm text-neutral-700">
+            <p>
+              Esta partida ainda não começou. Você pode{' '}
+              <Link
+                href={PALPITES_PATH}
+                className="font-semibold text-emerald-800 underline decoration-emerald-200 underline-offset-2 hover:text-emerald-950"
+              >
+                alterar seu palpite
+              </Link>{' '}
+              até o apito inicial.
+            </p>
+          </div>
+        ) : null}
 
         {!poolData || poolData.pools.length === 0 ? (
           <div className="rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-6 text-sm text-neutral-700">

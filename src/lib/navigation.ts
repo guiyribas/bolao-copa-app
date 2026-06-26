@@ -13,12 +13,20 @@ export const CRIAR_BOLOAO_PATH = '/criar-bolao';
 /** Página inicial: placar Copa. */
 export const HOME_PATH = '/';
 
+/** Palpites do usuário (requer login). */
+export const PALPITES_PATH = '/palpites';
+
 /** Ranking geral de todos os participantes (página pública). */
 export const RANKING_GLOBAL_PATH = '/ranking';
 
 /** Página pública de uma seleção (`documentId` do time no Strapi). */
 export function selecaoPath(teamDocumentId: string): string {
   return `/selecao/${encodeURIComponent(teamDocumentId)}`;
+}
+
+/** Página pública de uma partida (`documentId` da partida no Strapi). */
+export function partidaPath(matchDocumentId: string): string {
+  return `/partida/${encodeURIComponent(matchDocumentId)}`;
 }
 
 /** Pedido de e-mail para redefinir senha. */
