@@ -7,7 +7,7 @@ import {
 } from '@/lib/navigation';
 import type { PoolMembership } from '@/types';
 
-export const INFRA_SUPPORT_MODAL_STORAGE_KEY = 'bolao-infra-support-dismissed';
+export const INFRA_SUPPORT_MODAL_STORAGE_KEY = 'bolao-infra-support-dismissed-v2';
 
 /** IDs numéricos do Strapi em produção. */
 export const INFRA_SUPPORT_MODAL_EXCLUDED_POOL_IDS = new Set([5, 34, 37]); // PROD

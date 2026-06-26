@@ -1,7 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import { twMerge } from 'tailwind-merge';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
+import { saveBtn } from '@/components/MatchCard/matchCard.styles';
 import { SiteFifaDisclaimer } from '@/components/SiteFifaDisclaimer/siteFifaDisclaimer';
 import { CRIAR_BOLOAO_PATH } from '@/lib/navigation';
 import { POOL_REQUESTS_ENABLED } from '@/lib/pool-requests';
@@ -57,15 +60,51 @@ function OpenSourceRepoLinks() {
   );
 }
 
-function SupportQrBlock() {
+function SupportPixKeyRow({ pixKey }: { pixKey: string }) {
+  const [copied, setCopied] = useState(false);
+
+  async function copyPixKey() {
+    try {
+      await navigator.clipboard.writeText(pixKey);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  }
+
+  return (
+    <div className="w-full max-w-md space-y-2">
+      <p className="text-sm font-medium text-neutral-900">Chave PIX (aleatória)</p>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <p
+          className="min-w-0 flex-1 break-all rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 font-mono text-xs text-neutral-700"
+          title={pixKey}
+        >
+          {pixKey}
+        </p>
+        <button
+          type="button"
+          onClick={() => void copyPixKey()}
+          className={twMerge(saveBtn, 'w-full shrink-0 hover:bg-emerald-700 sm:w-auto')}
+        >
+          {copied ? 'Copiado!' : 'Copiar chave'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function SupportPixBlock() {
   const customEnv = (process.env.NEXT_PUBLIC_SUPPORT_QR_URL ?? '').trim();
   const resolved = customEnv || APOIO_QR_DEFAULT_PATH;
+  const supportPixKey = (process.env.NEXT_PUBLIC_SUPPORT_PIX_KEY ?? '').trim();
 
   const imgClass =
     'h-44 w-44 rounded-lg border border-neutral-200 bg-white object-contain p-2 shrink-0';
 
   return (
-    <>
+    <div className="space-y-4">
       {/* eslint-disable-next-line @next/next/no-img-element -- jpeg em public/ ou URL absoluta */}
       <img
         src={resolved}
@@ -74,7 +113,8 @@ function SupportQrBlock() {
         height={176}
         className={imgClass}
       />
-    </>
+      {supportPixKey ? <SupportPixKeyRow pixKey={supportPixKey} /> : null}
+    </div>
   );
 }
 
@@ -148,10 +188,10 @@ export function SobreForm() {
             O bolão é gratuito e foi feito para os brasileiros amantes de
             futebol. Por ser um serviço à comunidade, os custos de hospedagem e
             operação ficam por conta do desenvolvedor. Se quiser ajudar com as
-            despesas do projeto, use o QR code abaixo, qualquer valor é bem-vindo.
+            despesas do projeto, use o QR code ou a chave PIX abaixo, qualquer valor é bem-vindo.
           </p>
         </div>
-        <SupportQrBlock />
+        <SupportPixBlock />
       </section>
       <div className="mt-3">
         <SiteFifaDisclaimer />
