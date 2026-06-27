@@ -38,7 +38,7 @@ const HOME_FIXTURES_GRID_CLASS = 'grid grid-cols-1 md:grid-cols-2 gap-2';
 const TAB_LIST_CLASS = twMerge(
   'sticky z-40 top-[var(--site-header-height)]',
   'bg-white/95 backdrop-blur-sm supports-[backdrop-filter]:bg-white/80',
-  '-mx-4 px-4 pt-3 pb-2 mb-4 grid grid-cols-2 gap-1.5 border-b border-slate-200/95',
+  'pt-3 pb-2 mb-4 grid grid-cols-2 gap-1.5 border-b border-slate-200/95',
   'md:flex md:flex-wrap md:gap-1 md:pb-1'
 );
 
