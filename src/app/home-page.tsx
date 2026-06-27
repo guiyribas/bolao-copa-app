@@ -35,12 +35,13 @@ const homeTabParser = parseAsStringLiteral(HOME_TAB_VALUES).withDefault('all');
 
 const HOME_FIXTURES_GRID_CLASS = 'grid grid-cols-1 md:grid-cols-2 gap-2';
 
-const TAB_LIST_CLASS = twMerge(
-  'sticky z-40 top-[var(--site-header-height)]',
+const TAB_LIST_BASE_CLASS = twMerge(
   'bg-white/95 backdrop-blur-sm supports-[backdrop-filter]:bg-white/80',
   'pt-3 pb-2 mb-4 grid grid-cols-2 gap-1.5 border-b border-slate-200/95',
   'md:flex md:flex-wrap md:gap-1 md:pb-1'
 );
+
+const TAB_LIST_STICKY_CLASS = 'sticky z-40 top-[var(--site-header-height)]';
 
 const TAB_TRIGGER_CLASS = twMerge(
   'w-full text-center text-xs leading-snug px-2 py-2.5 rounded-lg border border-slate-200/90 transition-colors',
@@ -133,6 +134,11 @@ export default function HomePage() {
 
   const showPalpitesLink = Boolean(jwt);
 
+  const tabListClass = twMerge(
+    TAB_LIST_BASE_CLASS,
+    homeTab !== 'knockout' && TAB_LIST_STICKY_CLASS
+  );
+
   return (
     <div className="space-y-8">
       <section aria-labelledby="copa-real-heading" className="space-y-6">
@@ -170,7 +176,7 @@ export default function HomePage() {
           }
           className="w-full"
         >
-          <TabsList className={TAB_LIST_CLASS} aria-label="Filtrar por fase">
+          <TabsList className={tabListClass} aria-label="Filtrar por fase">
             <TabsTrigger value="all" className={TAB_TRIGGER_CLASS}>
               Todas as partidas
             </TabsTrigger>
