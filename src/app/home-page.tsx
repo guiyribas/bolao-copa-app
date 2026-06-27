@@ -311,7 +311,9 @@ export default function HomePage() {
           </TabsContent>
         </TabsRoot>
       </section>
-      {showPalpitesLink ? <HomePalpitesFab /> : null}
+      {showPalpitesLink && homeTab !== 'knockout' ? (
+        <HomePalpitesFab />
+      ) : null}
     </div>
   );
 }
