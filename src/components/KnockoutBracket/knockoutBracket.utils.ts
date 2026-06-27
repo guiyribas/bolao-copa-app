@@ -1,10 +1,12 @@
 import type { CSSProperties } from 'react';
 import type { Match } from '@/types';
 import { isKnockoutPhase } from '@/lib/match-phases';
-import type { BracketPhaseColumn } from './knockoutBracket.types';
+import type { BracketPhaseColumn, BracketSide } from './knockoutBracket.types';
 import {
-  BRACKET_GRID_MATCH_ROWS,
+  BRACKET_CENTER_COLUMN_INDEX,
   BRACKET_PHASE_COLUMNS,
+  BRACKET_RIGHT_WING_COLUMN_START,
+  BRACKET_WING_MATCH_ROWS,
   SLOT_COUNT,
 } from './knockoutBracket.constants';
 
@@ -57,18 +59,54 @@ export function padPhaseSlots(
   return out;
 }
 
+export type BracketHalfSlotRange = {
+  start: number;
+  count: number;
+};
+
+/** Índices globais dos slots de uma metade do chaveamento. */
+export function getBracketHalfSlotRange(
+  phase: BracketPhaseColumn,
+  side: BracketSide
+): BracketHalfSlotRange {
+  const total = SLOT_COUNT[phase];
+  const count = total / 2;
+  const start = side === 'left' ? 0 : count;
+  return { start, count };
+}
+
 const MATCH_GRID_FIRST_ROW = 2;
 
-export function bracketCellPlacement(
-  phase: BracketPhaseColumn,
-  slotIndex: number,
-  columnIndex: number
-): CSSProperties {
-  const slots = SLOT_COUNT[phase];
-  const span = BRACKET_GRID_MATCH_ROWS / slots;
-  const start = MATCH_GRID_FIRST_ROW + slotIndex * span;
+function wingGridColumn(side: BracketSide, wingColumnIndex: number): number {
+  if (side === 'left') return wingColumnIndex + 1;
+  return BRACKET_RIGHT_WING_COLUMN_START + wingColumnIndex;
+}
+
+/** Posicionamento de células nas asas esquerda/direita. */
+export function bracketWingCellPlacement({
+  side,
+  phase,
+  localSlotIndex,
+  wingColumnIndex,
+}: {
+  side: BracketSide;
+  phase: BracketPhaseColumn;
+  localSlotIndex: number;
+  wingColumnIndex: number;
+}): CSSProperties {
+  const { count } = getBracketHalfSlotRange(phase, side);
+  const span = BRACKET_WING_MATCH_ROWS / count;
+  const start = MATCH_GRID_FIRST_ROW + localSlotIndex * span;
   return {
-    gridColumn: columnIndex + 1,
+    gridColumn: wingGridColumn(side, wingColumnIndex),
     gridRow: `${start} / span ${span}`,
+  };
+}
+
+/** Posicionamento da Final central, alinhada às semifinais. */
+export function bracketCenterCellPlacement(): CSSProperties {
+  return {
+    gridColumn: BRACKET_CENTER_COLUMN_INDEX,
+    gridRow: `${MATCH_GRID_FIRST_ROW} / span ${BRACKET_WING_MATCH_ROWS}`,
   };
 }

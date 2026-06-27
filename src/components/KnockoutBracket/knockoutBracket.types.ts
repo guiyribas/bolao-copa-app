@@ -8,6 +8,8 @@ export type BracketPhaseColumn =
   | 'third_place'
   | 'final';
 
+export type BracketSide = 'left' | 'right';
+
 export type KnockoutBracketProps = {
   matches: Match[];
   displayNow?: number;

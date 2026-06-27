@@ -12,16 +12,22 @@ import { resolveKnockoutSlotLabel } from '@/lib/knockout-slot-label';
 import { resolveTeamFlagUrl } from '@/lib/strapi-media';
 import {
   BRACKET_CARD_HEIGHT_REM,
-  BRACKET_GRID_MATCH_ROWS,
-  BRACKET_PHASE_COLUMNS,
+  BRACKET_CENTER_COLUMN_INDEX,
+  BRACKET_LEFT_WING_PHASES,
+  BRACKET_RIGHT_WING_PHASES,
   BRACKET_ROW_HEIGHT_REM,
+  BRACKET_TOTAL_COLUMNS,
+  BRACKET_WING_MATCH_ROWS,
+  bracketGridTemplateColumns,
   phaseColumnLabel,
   SLOT_COUNT,
 } from './knockoutBracket.constants';
-import type { KnockoutBracketProps } from './knockoutBracket.types';
+import type { BracketPhaseColumn, KnockoutBracketProps } from './knockoutBracket.types';
 import * as styles from './knockoutBracket.styles';
 import {
-  bracketCellPlacement,
+  bracketCenterCellPlacement,
+  bracketWingCellPlacement,
+  getBracketHalfSlotRange,
   groupKnockoutByPhase,
   padPhaseSlots,
 } from './knockoutBracket.utils';
@@ -157,12 +163,48 @@ function BracketMatchCard({
   );
 }
 
+function renderWingSlots({
+  side,
+  phases,
+  byPhase,
+  resolvedNow,
+}: {
+  side: 'left' | 'right';
+  phases: readonly BracketPhaseColumn[];
+  byPhase: ReturnType<typeof groupKnockoutByPhase>;
+  resolvedNow?: number;
+}) {
+  return phases.flatMap((phase, wingColIdx) => {
+    const padded = padPhaseSlots(byPhase[phase], phase, SLOT_COUNT[phase]);
+    const { start, count } = getBracketHalfSlotRange(phase, side);
+    const isLastWingCol = wingColIdx === phases.length - 1;
+
+    return padded.slice(start, start + count).map((match, localSlotIdx) => (
+      <div
+        key={`${side}-${phase}-${localSlotIdx}`}
+        className={twMerge(
+          styles.cardCell,
+          !isLastWingCol ? styles.columnDivider : ''
+        )}
+        style={bracketWingCellPlacement({
+          side,
+          phase,
+          localSlotIndex: localSlotIdx,
+          wingColumnIndex: wingColIdx,
+        })}
+      >
+        <BracketMatchCard match={match} displayNow={resolvedNow} />
+      </div>
+    ));
+  });
+}
+
 export function KnockoutBracket({ matches, displayNow }: KnockoutBracketProps) {
   const resolvedNow = useDisplayNow(matches, displayNow);
   const byPhase = groupKnockoutByPhase(matches);
 
-  const gridTemplateColumns = `repeat(${BRACKET_PHASE_COLUMNS.length}, minmax(132px, 1fr))`;
-  const gridTemplateRows = `auto repeat(${BRACKET_GRID_MATCH_ROWS}, ${BRACKET_ROW_HEIGHT_REM}rem)`;
+  const gridTemplateColumns = bracketGridTemplateColumns();
+  const gridTemplateRows = `auto repeat(${BRACKET_WING_MATCH_ROWS}, ${BRACKET_ROW_HEIGHT_REM}rem)`;
 
   return (
     <div
@@ -177,41 +219,71 @@ export function KnockoutBracket({ matches, displayNow }: KnockoutBracketProps) {
           gridTemplateRows,
         }}
       >
-        {BRACKET_PHASE_COLUMNS.map((phase, colIdx) => (
+        {BRACKET_LEFT_WING_PHASES.map((phase, colIdx) => (
           <div
-            key={`h-${phase}`}
-            className={twMerge(
-              styles.phaseTitle,
-              colIdx < BRACKET_PHASE_COLUMNS.length - 1
-                ? styles.columnDivider
-                : ''
-            )}
+            key={`h-left-${phase}`}
+            className={twMerge(styles.phaseTitle, styles.columnDivider)}
             style={{ gridColumn: colIdx + 1, gridRow: 1 }}
           >
             {phaseColumnLabel(phase)}
           </div>
         ))}
 
-        {BRACKET_PHASE_COLUMNS.map((phase, colIdx) => {
-          const padded = padPhaseSlots(
-            byPhase[phase],
-            phase,
-            SLOT_COUNT[phase]
-          );
-          const isLastCol = colIdx === BRACKET_PHASE_COLUMNS.length - 1;
+        <div
+          key="h-center"
+          className={twMerge(
+            styles.phaseTitle,
+            styles.centerColumnTitle,
+            styles.columnDivider
+          )}
+          style={{ gridColumn: BRACKET_CENTER_COLUMN_INDEX, gridRow: 1 }}
+        >
+          {phaseColumnLabel('final')}
+        </div>
 
-          return padded.map((match, slotIdx) => (
+        {BRACKET_RIGHT_WING_PHASES.map((phase, colIdx) => {
+          const gridColumn = BRACKET_CENTER_COLUMN_INDEX + 1 + colIdx;
+          const isLastCol = gridColumn === BRACKET_TOTAL_COLUMNS;
+
+          return (
             <div
-              key={`${phase}-${slotIdx}`}
+              key={`h-right-${phase}`}
               className={twMerge(
-                styles.cardCell,
+                styles.phaseTitle,
                 !isLastCol ? styles.columnDivider : ''
               )}
-              style={bracketCellPlacement(phase, slotIdx, colIdx)}
+              style={{ gridColumn, gridRow: 1 }}
             >
-              <BracketMatchCard match={match} displayNow={resolvedNow} />
+              {phaseColumnLabel(phase)}
             </div>
-          ));
+          );
+        })}
+
+        {renderWingSlots({
+          side: 'left',
+          phases: BRACKET_LEFT_WING_PHASES,
+          byPhase,
+          resolvedNow,
+        })}
+
+        <div
+          key="center-final"
+          className={twMerge(styles.cardCell, styles.centerColumnCell)}
+          style={bracketCenterCellPlacement()}
+        >
+          <BracketMatchCard
+            match={
+              padPhaseSlots(byPhase.final, 'final', SLOT_COUNT.final)[0]
+            }
+            displayNow={resolvedNow}
+          />
+        </div>
+
+        {renderWingSlots({
+          side: 'right',
+          phases: BRACKET_RIGHT_WING_PHASES,
+          byPhase,
+          resolvedNow,
         })}
       </div>
     </div>

@@ -6,7 +6,7 @@ export const scrollWrap = twMerge(
 );
 
 export const grid = twMerge(
-  'grid min-w-[820px] sm:min-w-[920px]',
+  'grid min-w-[1100px] sm:min-w-[1200px]',
   'gap-x-0 gap-y-0'
 );
 
@@ -15,7 +15,16 @@ export const phaseTitle = twMerge(
   'text-center pb-2 pt-0 px-1 border-b border-neutral-800 mb-1'
 );
 
+export const centerColumnTitle = twMerge(
+  'flex flex-col gap-0.5 text-neutral-400',
+  'border-x border-neutral-700/80 bg-neutral-900/40'
+);
+
 export const columnDivider = 'border-r border-neutral-800/90';
+
+export const centerColumnCell = twMerge(
+  'border-x border-neutral-700/50 bg-neutral-900/20'
+);
 
 /** Base visual do card; altura fixa vem de `BRACKET_CARD_HEIGHT_REM` no componente. */
 export const card = twMerge(
