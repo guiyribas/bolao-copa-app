@@ -22,6 +22,7 @@ import { POOL_REQUESTS_ENABLED } from '@/lib/pool-requests';
 import { SITE_BRAND_LOGO_PATH } from '@/lib/site-brand';
 import type { User } from '@/types';
 import { HeaderLiveMatchNavLink } from './headerLiveMatchNavLink';
+import { HeaderNavLinkItem } from './headerNavLinkItem';
 import { HeaderPoolNavLink } from './headerPoolNavLink';
 import * as styles from './header.styles';
 
@@ -122,36 +123,41 @@ export function Header() {
         {showGuestNav && (
           <>
             <nav className={styles.desktopNav} aria-label="Principal">
-              <Link
+              <HeaderNavLinkItem
+                variant="desktop"
                 href={HOME_PATH}
-                className={styles.navLink(isHomeActive)}
+                active={isHomeActive}
               >
                 Partidas e resultados
-              </Link>
-              <Link
+              </HeaderNavLinkItem>
+              <HeaderNavLinkItem
+                variant="desktop"
                 href={MEUS_BOLOES_PATH}
-                className={styles.navLink(pathname === MEUS_BOLOES_PATH)}
+                active={pathname === MEUS_BOLOES_PATH}
               >
                 Bolões
-              </Link>
-              <Link
+              </HeaderNavLinkItem>
+              <HeaderNavLinkItem
+                variant="desktop"
                 href={RANKING_GLOBAL_PATH}
-                className={styles.navLink(pathname === RANKING_GLOBAL_PATH)}
+                active={pathname === RANKING_GLOBAL_PATH}
               >
                 Ranking geral
-              </Link>
-              <Link
+              </HeaderNavLinkItem>
+              <HeaderNavLinkItem
+                variant="desktop"
                 href={REGRAS_E_PONTUACAO_PATH}
-                className={styles.navLink(pathname === REGRAS_E_PONTUACAO_PATH)}
+                active={pathname === REGRAS_E_PONTUACAO_PATH}
               >
                 Regras e pontuação
-              </Link>
-              <Link
+              </HeaderNavLinkItem>
+              <HeaderNavLinkItem
+                variant="desktop"
                 href={SOBRE_PATH}
-                className={styles.navLink(pathname === SOBRE_PATH)}
+                active={pathname === SOBRE_PATH}
               >
                 Sobre
-              </Link>
+              </HeaderNavLinkItem>
               <div className={styles.guestAuthActions}>
                 <Link
                   href="/login"
@@ -193,46 +199,52 @@ export function Header() {
         {showUserNav && (
           <>
             <nav className={styles.desktopNav} aria-label="Principal">
-              <Link
+              <HeaderNavLinkItem
+                variant="desktop"
                 href={HOME_PATH}
-                className={styles.navLink(isHomeActive)}
+                active={isHomeActive}
               >
                 Partidas e resultados
-              </Link>
+              </HeaderNavLinkItem>
               <HeaderPoolNavLink variant="desktop" pathname={pathname} />
-              <Link
+              <HeaderNavLinkItem
+                variant="desktop"
                 href={RANKING_GLOBAL_PATH}
-                className={styles.navLink(pathname === RANKING_GLOBAL_PATH)}
+                active={pathname === RANKING_GLOBAL_PATH}
               >
                 Ranking geral
-              </Link>
+              </HeaderNavLinkItem>
               {POOL_REQUESTS_ENABLED ? (
-                <Link
+                <HeaderNavLinkItem
+                  variant="desktop"
                   href={CRIAR_BOLOAO_PATH}
-                  className={styles.navLink(pathname === CRIAR_BOLOAO_PATH)}
+                  active={pathname === CRIAR_BOLOAO_PATH}
                 >
                   Criar bolão
-                </Link>
+                </HeaderNavLinkItem>
               ) : null}
-              <Link
+              <HeaderNavLinkItem
+                variant="desktop"
                 href="/palpites"
-                className={styles.navLink(pathname.startsWith('/palpites'))}
+                active={pathname.startsWith('/palpites')}
               >
                 Palpites
-              </Link>
+              </HeaderNavLinkItem>
               <HeaderLiveMatchNavLink variant="desktop" pathname={pathname} />
-              <Link
+              <HeaderNavLinkItem
+                variant="desktop"
                 href={REGRAS_E_PONTUACAO_PATH}
-                className={styles.navLink(pathname === REGRAS_E_PONTUACAO_PATH)}
+                active={pathname === REGRAS_E_PONTUACAO_PATH}
               >
                 Regras
-              </Link>
-              <Link
+              </HeaderNavLinkItem>
+              <HeaderNavLinkItem
+                variant="desktop"
                 href={SOBRE_PATH}
-                className={styles.navLink(pathname === SOBRE_PATH)}
+                active={pathname === SOBRE_PATH}
               >
                 Sobre
-              </Link>
+              </HeaderNavLinkItem>
               <button
                 type="button"
                 onClick={logout}
@@ -292,43 +304,46 @@ export function Header() {
           </div>
 
           <nav className={styles.mobileNav} aria-label="Principal">
-            <Link
+            <HeaderNavLinkItem
+              variant="mobile"
               href={HOME_PATH}
-              onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(isHomeActive)}
+              active={isHomeActive}
+              onNavigate={() => setMenuOpen(false)}
             >
               Partidas e resultados
-            </Link>
-            <Link
+            </HeaderNavLinkItem>
+            <HeaderNavLinkItem
+              variant="mobile"
               href={MEUS_BOLOES_PATH}
-              onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(pathname === MEUS_BOLOES_PATH)}
+              active={pathname === MEUS_BOLOES_PATH}
+              onNavigate={() => setMenuOpen(false)}
             >
               Bolões
-            </Link>
-            <Link
+            </HeaderNavLinkItem>
+            <HeaderNavLinkItem
+              variant="mobile"
               href={RANKING_GLOBAL_PATH}
-              onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(pathname === RANKING_GLOBAL_PATH)}
+              active={pathname === RANKING_GLOBAL_PATH}
+              onNavigate={() => setMenuOpen(false)}
             >
               Ranking geral
-            </Link>
-            <Link
+            </HeaderNavLinkItem>
+            <HeaderNavLinkItem
+              variant="mobile"
               href={REGRAS_E_PONTUACAO_PATH}
-              onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(
-                pathname === REGRAS_E_PONTUACAO_PATH
-              )}
+              active={pathname === REGRAS_E_PONTUACAO_PATH}
+              onNavigate={() => setMenuOpen(false)}
             >
               Regras e pontuação
-            </Link>
-            <Link
+            </HeaderNavLinkItem>
+            <HeaderNavLinkItem
+              variant="mobile"
               href={SOBRE_PATH}
-              onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(pathname === SOBRE_PATH)}
+              active={pathname === SOBRE_PATH}
+              onNavigate={() => setMenuOpen(false)}
             >
               Sobre
-            </Link>
+            </HeaderNavLinkItem>
             <div className={styles.mobileGuestAuthActions}>
               <Link
                 href="/login"
@@ -399,62 +414,66 @@ export function Header() {
           </div>
 
           <nav className={styles.mobileNav} aria-label="Principal">
-            <Link
+            <HeaderNavLinkItem
+              variant="mobile"
               href={HOME_PATH}
-              onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(isHomeActive)}
+              active={isHomeActive}
+              onNavigate={() => setMenuOpen(false)}
             >
               Partidas e resultados
-            </Link>
+            </HeaderNavLinkItem>
             <HeaderPoolNavLink
               variant="mobile"
               pathname={pathname}
               onNavigate={() => setMenuOpen(false)}
             />
-            <Link
+            <HeaderNavLinkItem
+              variant="mobile"
               href={RANKING_GLOBAL_PATH}
-              onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(pathname === RANKING_GLOBAL_PATH)}
+              active={pathname === RANKING_GLOBAL_PATH}
+              onNavigate={() => setMenuOpen(false)}
             >
               Ranking geral
-            </Link>
+            </HeaderNavLinkItem>
             {POOL_REQUESTS_ENABLED ? (
-              <Link
+              <HeaderNavLinkItem
+                variant="mobile"
                 href={CRIAR_BOLOAO_PATH}
-                onClick={() => setMenuOpen(false)}
-                className={styles.mobileNavLink(pathname === CRIAR_BOLOAO_PATH)}
+                active={pathname === CRIAR_BOLOAO_PATH}
+                onNavigate={() => setMenuOpen(false)}
               >
                 Criar bolão
-              </Link>
+              </HeaderNavLinkItem>
             ) : null}
-            <Link
+            <HeaderNavLinkItem
+              variant="mobile"
               href="/palpites"
-              onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(pathname.startsWith('/palpites'))}
+              active={pathname.startsWith('/palpites')}
+              onNavigate={() => setMenuOpen(false)}
             >
               Palpites
-            </Link>
+            </HeaderNavLinkItem>
             <HeaderLiveMatchNavLink
               variant="mobile"
               pathname={pathname}
               onNavigate={() => setMenuOpen(false)}
             />
-            <Link
+            <HeaderNavLinkItem
+              variant="mobile"
               href={REGRAS_E_PONTUACAO_PATH}
-              onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(
-                pathname === REGRAS_E_PONTUACAO_PATH
-              )}
+              active={pathname === REGRAS_E_PONTUACAO_PATH}
+              onNavigate={() => setMenuOpen(false)}
             >
               Regras e pontuação
-            </Link>
-            <Link
+            </HeaderNavLinkItem>
+            <HeaderNavLinkItem
+              variant="mobile"
               href={SOBRE_PATH}
-              onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(pathname === SOBRE_PATH)}
+              active={pathname === SOBRE_PATH}
+              onNavigate={() => setMenuOpen(false)}
             >
               Sobre
-            </Link>
+            </HeaderNavLinkItem>
             <button
               type="button"
               onClick={() => {
