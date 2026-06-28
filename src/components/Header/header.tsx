@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useUserMemberships } from '@/contexts/user-memberships-context';
+import { useLiveMatch } from '@/hooks/useLiveMatch';
 import { useAuthStore } from '@/stores/auth-store';
 import {
   CRIAR_BOLOAO_PATH,
@@ -19,6 +21,8 @@ import {
 import { POOL_REQUESTS_ENABLED } from '@/lib/pool-requests';
 import { SITE_BRAND_LOGO_PATH } from '@/lib/site-brand';
 import type { User } from '@/types';
+import { HeaderLiveMatchNavLink } from './headerLiveMatchNavLink';
+import { HeaderPoolNavLink } from './headerPoolNavLink';
 import * as styles from './header.styles';
 
 function formatHeaderUserLabel(
@@ -47,6 +51,8 @@ export function Header() {
   const showUserNav = hasHydrated && !!jwt && !isAuthPage;
   const showGuestNav = hasHydrated && !jwt;
   const headerUserLabel = formatHeaderUserLabel(user);
+  const { primaryMembership } = useUserMemberships();
+  const { liveMatch } = useLiveMatch(jwt, hasHydrated);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -76,7 +82,13 @@ export function Header() {
     const observer = new ResizeObserver(syncHeaderHeight);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [showUserNav, showGuestNav, headerUserLabel]);
+  }, [
+    showUserNav,
+    showGuestNav,
+    headerUserLabel,
+    primaryMembership?.pool.name,
+    liveMatch?.documentId,
+  ]);
 
   return (
     <header ref={headerRef} className={styles.header}>
@@ -187,12 +199,7 @@ export function Header() {
               >
                 Partidas e resultados
               </Link>
-              <Link
-                href={MEUS_BOLOES_PATH}
-                className={styles.navLink(pathname === MEUS_BOLOES_PATH)}
-              >
-                Bolões
-              </Link>
+              <HeaderPoolNavLink variant="desktop" pathname={pathname} />
               <Link
                 href={RANKING_GLOBAL_PATH}
                 className={styles.navLink(pathname === RANKING_GLOBAL_PATH)}
@@ -213,6 +220,7 @@ export function Header() {
               >
                 Palpites
               </Link>
+              <HeaderLiveMatchNavLink variant="desktop" pathname={pathname} />
               <Link
                 href={REGRAS_E_PONTUACAO_PATH}
                 className={styles.navLink(pathname === REGRAS_E_PONTUACAO_PATH)}
@@ -398,13 +406,11 @@ export function Header() {
             >
               Partidas e resultados
             </Link>
-            <Link
-              href={MEUS_BOLOES_PATH}
-              onClick={() => setMenuOpen(false)}
-              className={styles.mobileNavLink(pathname === MEUS_BOLOES_PATH)}
-            >
-              Bolões
-            </Link>
+            <HeaderPoolNavLink
+              variant="mobile"
+              pathname={pathname}
+              onNavigate={() => setMenuOpen(false)}
+            />
             <Link
               href={RANKING_GLOBAL_PATH}
               onClick={() => setMenuOpen(false)}
@@ -428,6 +434,11 @@ export function Header() {
             >
               Palpites
             </Link>
+            <HeaderLiveMatchNavLink
+              variant="mobile"
+              pathname={pathname}
+              onNavigate={() => setMenuOpen(false)}
+            />
             <Link
               href={REGRAS_E_PONTUACAO_PATH}
               onClick={() => setMenuOpen(false)}
