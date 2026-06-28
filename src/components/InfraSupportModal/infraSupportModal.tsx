@@ -5,8 +5,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import * as Dialog from '@radix-ui/react-dialog';
 import { twMerge } from 'tailwind-merge';
 import { saveBtn } from '@/components/MatchCard/matchCard.styles';
+import { useUserMemberships } from '@/contexts/user-memberships-context';
 import { useAuthStore } from '@/stores/auth-store';
-import { apiFetch } from '@/lib/api';
 import {
   dismissInfraSupportModal,
   INFRA_SUPPORT_DONATION_HREF,
@@ -19,12 +19,12 @@ import {
   isInfraSupportModalSuppressedPath,
   userBelongsToExcludedPool,
 } from '@/lib/infra-support-modal';
-import type { PoolMembership } from '@/types';
 
 export function InfraSupportModal() {
   const pathname = usePathname();
   const router = useRouter();
   const { jwt, hasHydrated } = useAuthStore();
+  const { memberships, loading: membershipsLoading } = useUserMemberships();
   const [eligible, setEligible] = useState(false);
 
   const canConsiderShowing =
@@ -36,33 +36,25 @@ export function InfraSupportModal() {
   const open = canConsiderShowing && eligible;
 
   useEffect(() => {
-    if (!canConsiderShowing || !jwt) return;
+    if (!canConsiderShowing || !jwt || membershipsLoading) return;
 
     let cancelled = false;
-    let openTimer: ReturnType<typeof setTimeout> | undefined;
 
-    apiFetch<{ data: PoolMembership[] }>('/api/pools/mine/memberships', {}, jwt)
-      .then((res) => {
-        if (cancelled) return;
-        const memberships = res.data ?? [];
-        if (userBelongsToExcludedPool(memberships)) {
-          setEligible(false);
-          return;
-        }
-        openTimer = setTimeout(() => {
-          if (!cancelled) setEligible(true);
-        }, INFRA_SUPPORT_MODAL_OPEN_DELAY_MS);
-      })
-      .catch(() => {
-        if (!cancelled) setEligible(false);
-      });
+    if (userBelongsToExcludedPool(memberships)) {
+      setEligible(false);
+      return;
+    }
+
+    const openTimer = setTimeout(() => {
+      if (!cancelled) setEligible(true);
+    }, INFRA_SUPPORT_MODAL_OPEN_DELAY_MS);
 
     return () => {
       cancelled = true;
       if (openTimer) clearTimeout(openTimer);
       setEligible(false);
     };
-  }, [canConsiderShowing, jwt]);
+  }, [canConsiderShowing, jwt, membershipsLoading, memberships]);
 
   function handleDismiss() {
     dismissInfraSupportModal();
@@ -102,7 +94,10 @@ export function InfraSupportModal() {
             <button
               type="button"
               onClick={handleDonate}
-              className={twMerge(saveBtn, 'w-full sm:w-auto hover:bg-emerald-700')}
+              className={twMerge(
+                saveBtn,
+                'w-full sm:w-auto hover:bg-emerald-700'
+              )}
             >
               {INFRA_SUPPORT_MODAL_DONATE_LABEL}
             </button>

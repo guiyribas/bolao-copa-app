@@ -3,6 +3,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Header } from '@/components/Header/header';
 import { AppToaster } from '@/components/AppToaster/app-toaster';
 import { InfraSupportModal } from '@/components/InfraSupportModal/infraSupportModal';
+import { UserMembershipsProvider } from '@/contexts/user-memberships-context';
 import { SiteSupportFooter } from '@/components/SiteSupportFooter/siteSupportFooter';
 import { defaultSiteMetadata, defaultSiteViewport } from '@/lib/site-metadata';
 import './globals.css';
@@ -24,13 +25,15 @@ export default function RootLayout({
     <html lang="pt-BR" className={`${geistSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <NuqsAdapter>
-          <Header />
-          <main className="w-full max-w-237.5 mx-auto px-4 py-6 flex-1 print:max-w-none print:px-2 print:py-2">
-            {children}
-          </main>
-          <SiteSupportFooter />
-          <AppToaster />
-          <InfraSupportModal />
+          <UserMembershipsProvider>
+            <Header />
+            <main className="w-full max-w-237.5 mx-auto px-4 py-6 flex-1 print:max-w-none print:px-2 print:py-2">
+              {children}
+            </main>
+            <SiteSupportFooter />
+            <AppToaster />
+            <InfraSupportModal />
+          </UserMembershipsProvider>
         </NuqsAdapter>
       </body>
     </html>
