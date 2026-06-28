@@ -64,6 +64,12 @@ export function mobileNavLink(active: boolean, className?: string) {
   );
 }
 
+export function navLinkLabelTruncate(variant: 'desktop' | 'mobile') {
+  return variant === 'desktop'
+    ? twMerge('max-w-[9rem] truncate sm:max-w-[10rem] md:max-w-[11rem]')
+    : twMerge('max-w-full truncate');
+}
+
 export const desktopNav = twMerge(
   'hidden md:flex md:items-center md:gap-4'
 );
