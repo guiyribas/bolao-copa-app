@@ -1,5 +1,6 @@
 import { Geist } from 'next/font/google';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
+import { Analytics } from '@vercel/analytics/next';
 import { Header } from '@/components/Header/header';
 import { AppToaster } from '@/components/AppToaster/app-toaster';
 import { InfraSupportModal } from '@/components/InfraSupportModal/infraSupportModal';
@@ -32,6 +33,7 @@ export default function RootLayout({
           <AppToaster />
           <InfraSupportModal />
         </NuqsAdapter>
+        <Analytics />
       </body>
     </html>
   );
