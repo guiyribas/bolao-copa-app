@@ -29,6 +29,11 @@ export function partidaPath(matchDocumentId: string): string {
   return `/partida/${encodeURIComponent(matchDocumentId)}`;
 }
 
+/** Ranking de um bolão (`documentId` do pool no Strapi). */
+export function poolRankingPath(poolDocumentId: string): string {
+  return `/pool/${encodeURIComponent(poolDocumentId)}/ranking`;
+}
+
 /** Pedido de e-mail para redefinir senha. */
 export const FORGOT_PASSWORD_PATH = '/forgot-password';
 

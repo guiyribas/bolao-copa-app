@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test src/lib/bet-scoring.test.ts src/lib/knockout-slot-label.test.ts src/lib/match-display.test.ts src/components/KnockoutBracket/knockoutBracket.utils.test.ts"
+    "test": "tsx --test src/lib/bet-scoring.test.ts src/lib/knockout-slot-label.test.ts src/lib/match-display.test.ts src/lib/pick-live-match.test.ts src/lib/pick-primary-pool-membership.test.ts src/components/KnockoutBracket/knockoutBracket.utils.test.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
