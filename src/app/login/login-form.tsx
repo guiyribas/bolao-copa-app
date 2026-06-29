@@ -11,6 +11,7 @@ import {
   HOME_PATH,
   safeReturnUrl,
 } from '@/lib/navigation';
+import { MOCK_CREDENTIALS, MOCK_MODE } from '@/mocks/config';
 import { useAuthStore } from '@/stores/auth-store';
 
 export function LoginForm() {
@@ -84,6 +85,13 @@ export function LoginForm() {
           {loading ? 'Entrando...' : 'Entrar'}
         </button>
       </form>
+      {MOCK_MODE && (
+        <p className="mt-3 text-sm text-neutral-500">
+          Mock mode: use{' '}
+          <code className="text-neutral-700">{MOCK_CREDENTIALS.identifier}</code>{' '}
+          / <code className="text-neutral-700">{MOCK_CREDENTIALS.password}</code>
+        </p>
+      )}
       <div className="my-4 flex items-center gap-3 text-sm text-neutral-500">
         <span className="h-px flex-1 bg-neutral-200" />
         ou

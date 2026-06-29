@@ -1,3 +1,6 @@
+import { mockApiFetch } from '@/mocks/api-fetch-mock';
+import { MOCK_MODE } from '@/mocks/config';
+
 const DEFAULT_API_URL = 'http://localhost:1337';
 
 function normalizeApiBaseUrl(raw: string | undefined): string {
@@ -55,6 +58,10 @@ export async function apiFetch<T>(
   options: ApiFetchOptions = {},
   token?: string | null
 ): Promise<T> {
+  if (MOCK_MODE) {
+    return mockApiFetch<T>(path, options, token);
+  }
+
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),

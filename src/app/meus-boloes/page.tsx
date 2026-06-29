@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { PageBreadcrumb } from '@/components/PageBreadcrumb/pageBreadcrumb';
 import { saveBtn } from '@/components/MatchCard/matchCard.styles';
+import { useUserMemberships } from '@/contexts/user-memberships-context';
 import { useAuthStore } from '@/stores/auth-store';
-import { apiFetch } from '@/lib/api';
 import { CRIAR_BOLOAO_PATH, MEUS_BOLOES_PATH } from '@/lib/navigation';
 import { POOL_REQUESTS_ENABLED } from '@/lib/pool-requests';
 import {
@@ -15,28 +14,12 @@ import {
   formatPoolRankingLabel,
 } from '@/lib/ranking-label';
 import { twMerge } from 'tailwind-merge';
-import type { PoolMembership } from '@/types';
 
 const loginHref = `/login?returnUrl=${encodeURIComponent(MEUS_BOLOES_PATH)}`;
 
 export default function MeusBoloesPage() {
-  const { jwt, hasHydrated } = useAuthStore();
-  const [memberships, setMemberships] = useState<PoolMembership[]>([]);
-  const [loading, setLoading] = useState(true);
-  const isGuest = hasHydrated && !jwt;
-
-  useEffect(() => {
-    if (!hasHydrated) return;
-    if (!jwt) {
-      void Promise.resolve().then(() => setLoading(false));
-      return;
-    }
-
-    apiFetch<{ data: PoolMembership[] }>('/api/pools/mine/memberships', {}, jwt)
-      .then((res) => setMemberships(res.data || []))
-      .catch(() => setMemberships([]))
-      .finally(() => setLoading(false));
-  }, [jwt, hasHydrated]);
+  const { hasHydrated } = useAuthStore();
+  const { memberships, loading } = useUserMemberships();
 
   if (!hasHydrated) return <p>Carregando...</p>;
 
