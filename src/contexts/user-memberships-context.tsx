@@ -7,7 +7,6 @@ import type { PoolMembership } from '@/types';
 
 type UserMembershipsValue = {
   memberships: PoolMembership[];
-  primaryMembership: PoolMembership | null;
   loading: boolean;
   error: Error | null;
   refresh: () => Promise<void>;

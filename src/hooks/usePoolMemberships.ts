@@ -1,8 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
-import { pickPrimaryPoolMembership } from '@/lib/pick-primary-pool-membership';
 import type { PoolMembership } from '@/types';
 
 export function usePoolMemberships(
@@ -68,12 +67,7 @@ export function usePoolMemberships(
     };
   }, [jwt, hasHydrated, enabled, fetchMemberships]);
 
-  const primaryMembership = useMemo(
-    () => pickPrimaryPoolMembership(memberships),
-    [memberships],
-  );
-
   const refresh = useCallback(() => fetchMemberships(), [fetchMemberships]);
 
-  return { memberships, primaryMembership, loading, error, refresh };
+  return { memberships, loading, error, refresh };
 }

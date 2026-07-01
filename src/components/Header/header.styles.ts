@@ -153,3 +153,56 @@ export const mobileLogoutButton = twMerge(
   'mt-auto pb-[max(1.5rem,env(safe-area-inset-bottom))] text-left text-xl font-medium text-white no-underline',
   'hover:text-white/95'
 );
+
+export const poolNavDropdownRoot = twMerge('relative');
+
+export function poolNavDropdownTrigger(active: boolean, className?: string) {
+  return twMerge(
+    navLink(active, className),
+    'inline-flex items-center gap-0.5 border-0 bg-transparent p-0'
+  );
+}
+
+export const poolNavDropdownChevron = twMerge(
+  'material-symbols-outlined text-[1.125rem] leading-none transition-transform'
+);
+
+export function poolNavDropdownChevronOpen(className?: string) {
+  return twMerge(poolNavDropdownChevron, 'rotate-180', className);
+}
+
+export const poolNavDropdownPanelWrap = twMerge(
+  'absolute left-0 top-full z-50 pt-2 min-w-[12rem] max-w-[18rem]'
+);
+
+export const poolNavDropdownPanel = twMerge(
+  'rounded-lg border border-yellow-400/40 bg-emerald-950 py-1.5',
+  'shadow-[0_12px_32px_-8px_rgba(0,0,0,0.55)]'
+);
+
+export function poolNavDropdownItem(active: boolean, className?: string) {
+  return twMerge(
+    'block w-full truncate px-3.5 py-2 text-left text-sm no-underline transition-colors',
+    active
+      ? twMerge('font-semibold', headerAccentText, 'bg-white/10')
+      : 'font-medium text-white/90 hover:bg-white/10 hover:text-white',
+    className
+  );
+}
+
+export const poolNavMobileGroup = twMerge('flex flex-col gap-3');
+
+export const poolNavMobileLabel = twMerge(
+  'text-xl font-medium text-white/90'
+);
+
+export const poolNavMobileSubList = twMerge(
+  'flex flex-col gap-2 border-l-2 border-yellow-400/35 pl-4'
+);
+
+export function poolNavMobileSubLink(active: boolean, className?: string) {
+  return twMerge(
+    mobileNavLink(active, className),
+    'text-lg'
+  );
+}

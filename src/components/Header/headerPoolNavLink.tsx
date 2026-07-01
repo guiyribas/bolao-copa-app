@@ -1,9 +1,16 @@
 'use client';
 
+import Link from 'next/link';
 import { useUserMemberships } from '@/contexts/user-memberships-context';
 import { MEUS_BOLOES_PATH, poolRankingPath } from '@/lib/navigation';
+import { HeaderPoolNavDropdown } from './components/headerPoolNavDropdown';
 import { HeaderNavLinkItem } from './headerNavLinkItem';
 import * as styles from './header.styles';
+import {
+  clipPoolNavLabel,
+  isPoolPathActive,
+  sortPoolMembershipsByName,
+} from './headerPoolNavLink.utils';
 
 type HeaderPoolNavLinkProps = {
   variant: 'desktop' | 'mobile';
@@ -11,33 +18,105 @@ type HeaderPoolNavLinkProps = {
   onNavigate?: () => void;
 };
 
+function HeaderPoolNavFallbackLink({
+  variant,
+  pathname,
+  onNavigate,
+}: HeaderPoolNavLinkProps) {
+  return (
+    <HeaderNavLinkItem
+      variant={variant}
+      href={MEUS_BOLOES_PATH}
+      active={pathname === MEUS_BOLOES_PATH}
+      onNavigate={onNavigate}
+    >
+      Bolões
+    </HeaderNavLinkItem>
+  );
+}
+
+function HeaderPoolNavMobileGroup({
+  memberships,
+  pathname,
+  onNavigate,
+}: {
+  memberships: ReturnType<typeof useUserMemberships>['memberships'];
+  pathname: string;
+  onNavigate?: () => void;
+}) {
+  const sortedMemberships = sortPoolMembershipsByName(memberships);
+
+  return (
+    <div className={styles.poolNavMobileGroup}>
+      <span className={styles.poolNavMobileLabel}>Bolões</span>
+      <div className={styles.poolNavMobileSubList}>
+        {sortedMemberships.map((membership) => {
+          const poolId = membership.pool.documentId;
+          const poolName = membership.pool.name.trim();
+          const active = isPoolPathActive(pathname, poolId);
+
+          return (
+            <Link
+              key={membership.documentId}
+              href={poolRankingPath(poolId)}
+              className={styles.poolNavMobileSubLink(active)}
+              onClick={onNavigate}
+            >
+              {poolName}
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function HeaderPoolNavLink({
   variant,
   pathname,
   onNavigate,
 }: HeaderPoolNavLinkProps) {
-  const { primaryMembership, loading } = useUserMemberships();
+  const { memberships, loading } = useUserMemberships();
 
-  const poolId = primaryMembership?.pool.documentId;
-  const poolName = primaryMembership?.pool.name?.trim();
-  const usePoolLink = !loading && !!poolId && !!poolName;
+  if (loading || memberships.length === 0) {
+    return (
+      <HeaderPoolNavFallbackLink
+        variant={variant}
+        pathname={pathname}
+        onNavigate={onNavigate}
+      />
+    );
+  }
 
-  const href = usePoolLink ? poolRankingPath(poolId) : MEUS_BOLOES_PATH;
-  const label = usePoolLink ? poolName : 'Bolões';
-  const active = usePoolLink
-    ? pathname.startsWith(`/pool/${poolId}/`)
-    : pathname === MEUS_BOLOES_PATH;
+  if (memberships.length === 1) {
+    const membership = memberships[0];
+    const poolId = membership.pool.documentId;
+    const poolName = membership.pool.name.trim();
+    const label = clipPoolNavLabel(poolName);
 
-  return (
-    <HeaderNavLinkItem
-      variant={variant}
-      href={href}
-      active={active}
-      onNavigate={onNavigate}
-      className={styles.navLinkLabelTruncate(variant)}
-      title={label}
-    >
-      {label}
-    </HeaderNavLinkItem>
-  );
+    return (
+      <HeaderNavLinkItem
+        variant={variant}
+        href={poolRankingPath(poolId)}
+        active={isPoolPathActive(pathname, poolId)}
+        onNavigate={onNavigate}
+        className={styles.navLinkLabelTruncate(variant)}
+        title={poolName}
+      >
+        {label}
+      </HeaderNavLinkItem>
+    );
+  }
+
+  if (variant === 'mobile') {
+    return (
+      <HeaderPoolNavMobileGroup
+        memberships={memberships}
+        pathname={pathname}
+        onNavigate={onNavigate}
+      />
+    );
+  }
+
+  return <HeaderPoolNavDropdown memberships={memberships} pathname={pathname} />;
 }
