@@ -158,8 +158,12 @@ export const poolNavDropdownRoot = twMerge('relative');
 
 export function poolNavDropdownTrigger(active: boolean, className?: string) {
   return twMerge(
-    navLink(active, className),
-    'inline-flex items-center gap-0.5 border-0 bg-transparent p-0'
+    'text-sm transition-colors',
+    'inline-flex items-center gap-0.5 border-0 bg-transparent p-0',
+    active
+      ? twMerge('font-semibold border-b border-yellow-400/85 pb-px', headerAccentText)
+      : 'font-medium text-white/90 hover:text-white',
+    className
   );
 }
 
