@@ -27,12 +27,9 @@ import { HeaderPoolNavLink } from './headerPoolNavLink';
 import * as styles from './header.styles';
 
 function formatHeaderUserLabel(
-  user: Pick<User, 'username' | 'email'> | null | undefined
+  user: Pick<User, 'username'> | null | undefined
 ): string {
-  if (!user?.username) return '';
-  const email = user.email?.trim();
-  if (!email) return user.username;
-  return `${user.username} (${email})`;
+  return user?.username?.trim() ?? '';
 }
 
 export function Header() {
@@ -52,7 +49,7 @@ export function Header() {
   const showUserNav = hasHydrated && !!jwt && !isAuthPage;
   const showGuestNav = hasHydrated && !jwt;
   const headerUserLabel = formatHeaderUserLabel(user);
-  const { primaryMembership } = useUserMemberships();
+  const { memberships } = useUserMemberships();
   const { liveMatch } = useLiveMatch(jwt, hasHydrated);
 
   useEffect(() => {
@@ -87,7 +84,8 @@ export function Header() {
     showUserNav,
     showGuestNav,
     headerUserLabel,
-    primaryMembership?.pool.name,
+    memberships.length,
+    memberships.map((m) => m.pool.name).join('|'),
     liveMatch?.documentId,
   ]);
 
