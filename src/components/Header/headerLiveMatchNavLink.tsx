@@ -8,13 +8,11 @@ import { HeaderNavLinkItem } from './headerNavLinkItem';
 import * as styles from './header.styles';
 
 type HeaderLiveMatchNavLinkProps = {
-  variant: 'desktop' | 'mobile';
   pathname: string;
   onNavigate?: () => void;
 };
 
 export function HeaderLiveMatchNavLink({
-  variant,
   pathname,
   onNavigate,
 }: HeaderLiveMatchNavLinkProps) {
@@ -29,11 +27,11 @@ export function HeaderLiveMatchNavLink({
 
   return (
     <HeaderNavLinkItem
-      variant={variant}
+      variant="mobile"
       href={href}
       active={active}
       onNavigate={onNavigate}
-      className={styles.navLinkLabelTruncate(variant)}
+      className={styles.navLinkLabelTruncate('mobile')}
       title={label}
     >
       {label}

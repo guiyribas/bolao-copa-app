@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useUserMemberships } from '@/contexts/user-memberships-context';
-import { useLiveMatch } from '@/hooks/useLiveMatch';
 import { useAuthStore } from '@/stores/auth-store';
 import {
   CRIAR_BOLOAO_PATH,
@@ -50,7 +49,6 @@ export function Header() {
   const showGuestNav = hasHydrated && !jwt;
   const headerUserLabel = formatHeaderUserLabel(user);
   const { memberships } = useUserMemberships();
-  const { liveMatch } = useLiveMatch(jwt, hasHydrated);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -86,7 +84,6 @@ export function Header() {
     headerUserLabel,
     memberships.length,
     memberships.map((m) => m.pool.name).join('|'),
-    liveMatch?.documentId,
   ]);
 
   return (
@@ -228,7 +225,6 @@ export function Header() {
               >
                 Palpites
               </HeaderNavLinkItem>
-              <HeaderLiveMatchNavLink variant="desktop" pathname={pathname} />
               <HeaderNavLinkItem
                 variant="desktop"
                 href={REGRAS_E_PONTUACAO_PATH}
@@ -452,7 +448,6 @@ export function Header() {
               Palpites
             </HeaderNavLinkItem>
             <HeaderLiveMatchNavLink
-              variant="mobile"
               pathname={pathname}
               onNavigate={() => setMenuOpen(false)}
             />
