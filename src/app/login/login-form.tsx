@@ -94,8 +94,11 @@ export function LoginForm() {
       {MOCK_MODE && (
         <p className="mt-3 text-sm text-neutral-500">
           Mock mode: use{' '}
-          <code className="text-neutral-700">{MOCK_CREDENTIALS.identifier}</code>{' '}
-          / <code className="text-neutral-700">{MOCK_CREDENTIALS.password}</code>
+          <code className="text-neutral-700">
+            {MOCK_CREDENTIALS.identifier}
+          </code>{' '}
+          /{' '}
+          <code className="text-neutral-700">{MOCK_CREDENTIALS.password}</code>
         </p>
       )}
       <div className="my-4 flex items-center gap-3 text-sm text-neutral-500">

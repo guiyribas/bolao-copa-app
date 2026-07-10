@@ -141,6 +141,21 @@ export function handleMockRequest(ctx: MockRequestContext): unknown {
     return handleAuthLocal(ctx.body, persona);
   }
 
+  if (method === 'POST' && pathname === '/api/auth/forgot-password') {
+    return { ok: true };
+  }
+
+  if (method === 'POST' && pathname === '/api/auth/reset-password') {
+    if (!ctx.body || typeof ctx.body !== 'object') {
+      throw new ApiError('Invalid reset code', 400);
+    }
+    const { code } = ctx.body as Record<string, unknown>;
+    if (typeof code !== 'string' || !code.trim()) {
+      throw new ApiError('Invalid reset code', 400);
+    }
+    return { jwt: MOCK_JWT, user: persona.user };
+  }
+
   if (method === 'GET' && pathname === '/api/users/me') {
     assertMockToken(ctx.token, true);
     return persona.user;
