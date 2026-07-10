@@ -19,6 +19,7 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const setAuth = useAuthStore((s) => s.setAuth);
   const returnUrl = safeReturnUrl(searchParams.get('returnUrl'));
+  const sessionExpired = searchParams.get('session') === 'expired';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -54,6 +55,11 @@ export function LoginForm() {
     <div className="max-w-sm mx-auto mt-16">
       <PageBreadcrumb label="Login" className="mb-4" />
       <h1 className="text-xl font-bold mb-6">Login</h1>
+      {sessionExpired && (
+        <p className="mb-4 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded px-3 py-2">
+          Sua sessão expirou. Faça login novamente para continuar.
+        </p>
+      )}
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <input
           type="email"

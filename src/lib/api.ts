@@ -53,13 +53,34 @@ export type ApiFetchOptions = RequestInit & {
   next?: { revalidate?: number | false; tags?: string[] };
 };
 
+function triggerSessionExpiredRedirect(token?: string | null): void {
+  if (!token || typeof window === 'undefined') return;
+  void import('./handle-session-expired').then(({ handleSessionExpired }) => {
+    handleSessionExpired();
+  });
+}
+
+function throwApiError(status: number, body: unknown, token?: string | null): never {
+  if (status === 401) {
+    triggerSessionExpiredRedirect(token);
+  }
+  throw new ApiError(extractErrorMessage(body, status), status, body);
+}
+
 export async function apiFetch<T>(
   path: string,
   options: ApiFetchOptions = {},
   token?: string | null
 ): Promise<T> {
   if (MOCK_MODE) {
-    return mockApiFetch<T>(path, options, token);
+    try {
+      return await mockApiFetch<T>(path, options, token);
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 401) {
+        triggerSessionExpiredRedirect(token);
+      }
+      throw err;
+    }
   }
 
   const headers: Record<string, string> = {
@@ -87,7 +108,7 @@ export async function apiFetch<T>(
   }
 
   if (!res.ok) {
-    throw new ApiError(extractErrorMessage(body, res.status), res.status, body);
+    throwApiError(res.status, body, token);
   }
 
   return body as T;
